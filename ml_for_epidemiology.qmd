@@ -1,0 +1,1859 @@
+---
+title: "Machine Learning in Epidemiology"
+subtitle: "An Introduction with Case Study of Predicting Extreme Longevity"
+author: "Dr. Dor Atias, MD-MPH"
+institute: "Tel-Aviv University"
+date: today
+format:
+  revealjs:
+    theme: serif
+    #css: custom.css
+    slide-number: true
+    chalkboard: true
+    preview-links: auto
+    logo: "logo.png"
+    footer: "ML in Epidemiology | Advanced statistical methods"
+    transition: slide
+    background-transition: fade
+    incremental: false
+    code-fold: false
+    code-tools: true
+    fig-width: 10
+    fig-height: 6
+    fontsize: 1.2em
+editor: visual
+execute:
+  echo: true
+  warning: false
+  message: false
+  cache: true
+---
+
+```{r}
+#| include: false 
+library(tidyverse)
+library(tidymodels)
+library(knitr)
+library(gt)
+library(ggplot2)
+library(patchwork)
+library(VIM)
+
+# Set theme for all plots
+#theme_set(theme_minimal(base_size = 14))
+# Define your custom theme once
+my_theme <- theme_minimal(base_size = 14) + 
+  theme(
+    plot.title = element_text(face = "bold", size = 16, hjust = 0.5, color = "#2c3e50"),
+    plot.subtitle = element_text(size = 14, hjust = 0.5, color = "#4f5d75"),
+    axis.title = element_text(size = 12, face = "bold", color = "#2c3e50"),
+    axis.text = element_text(color = "#666666"),
+    legend.position = "bottom",
+    legend.title = element_text(face = "bold"),
+    panel.grid.major = element_line(color = "gray80"),
+    panel.grid.minor = element_blank()
+  )
+
+# Create simulated demo data based on the longevity study
+set.seed(42)
+n_patients <- 10000
+demo_data <- tibble(
+  # Demographics
+  age = rnorm(n_patients, 55, 8),
+  # Cardiovascular measures
+  systolic_bp = rnorm(n_patients, 140, 20),
+  diastolic_bp = rnorm(n_patients, 85, 12),
+  hdl = rnorm(n_patients, 45, 15),
+  # Lifestyle factors
+  smoking_status = sample(
+    c("Never", "Former", "Current"),
+    n_patients,
+    prob = c(0.4, 0.35, 0.25),
+    replace = TRUE
+  ),
+  bmi = rnorm(n_patients, 26, 4),
+  # Medical history
+  mi_history = sample(
+    c(0, 1),
+    n_patients,
+    prob = c(0.85, 0.15),
+    replace = TRUE
+  ),
+  glucose = rnorm(n_patients, 100, 25),
+  # Create outcome based on realistic relationships
+  outcome_prob = plogis(
+    -4.5 +
+      -0.1 * (systolic_bp - 140) +
+      -0.8 * (smoking_status == "Current") +
+      -0.4 * (smoking_status == "Former") +
+      0.02 * (hdl - 45) +
+      -1.2 * mi_history +
+      -0.05 * (glucose - 100) +
+      -0.05 * (bmi - 26) +
+      -0.03 * (age - 55)
+  ),
+  outcome = rbinom(n_patients, 1, outcome_prob)
+) %>%
+  mutate(
+    # Convert to factors
+    outcome = factor(
+      outcome,
+      levels = c(0, 1),
+      labels = c("Normal", "Longevity")
+    ),
+    smoking_status = factor(
+      smoking_status,
+      levels = c("Never", "Former", "Current")
+    ),
+    mi_history = factor(mi_history, levels = c(0, 1), labels = c("No", "Yes")),
+    # Add some missing values for realism
+    hdl = ifelse(runif(n_patients) < 0.05, NA, hdl),
+    glucose = ifelse(runif(n_patients) < 0.03, NA, glucose)
+  ) %>%
+  select(-outcome_prob)
+
+# Save demo data for students
+write_csv(demo_data, "longevity_demo_data.csv")
+```
+
+## Learning Objectives
+
+By the end of this lecture, you will be able to:
+
+::: incremental
+-   **Distinguish** between machine learning and traditional epidemiological approaches
+-   **Understand** core ML concepts: supervised learning, overfitting, validation
+-   **Implement** ML workflows using R and tidymodels
+-   **Evaluate** model performance using appropriate metrics
+-   **Apply** explainable AI tools to interpret complex models
+-   **Recognize** when ML is appropriate vs. traditional methods
+-   **Create** reproducible ML pipelines for public health applications
+:::
+
+::: notes
+This lecture bridges traditional epidemiological training with modern ML methods. We'll use the longevity prediction study throughout as our practical example.
+:::
+
+# Introduction: Why Machine Learning in Public Health?
+
+## What is Machine Learning?
+
+::: {style="text-align: center; margin-top: 2em;"}
+> *"The field of study that gives computers the ability to learn without being explicitly programmed"*
+>
+> **— Arthur Samuel (1959)**
+:::
+
+::: notes
+Start with the classic definition from Arthur Samuel, one of the pioneers of machine learning. This emphasizes that ML is about pattern recognition and learning from data, not just following pre-programmed rules.
+:::
+
+## Why ML in Healthcare Now?
+
+:::::: columns
+::: {.column width="50%"}
+### 📊 The Data Revolution
+
+**Exponential Growth:**
+
+-   Electronic health records everywhere
+-   Genomics becoming routine
+-   Wearable devices widespread
+-   High-resolution medical imaging
+
+*We're drowning in data but starving for insights*
+
+------------------------------------------------------------------------
+
+### 🧩 Complex Medical Challenges
+
+**New Complexity:**
+
+-   Multiple chronic conditions per patient
+-   Rare diseases 
+-   High dimensional data
+-   Dynamic health trajectories
+
+*Traditional methods hit their limits*
+:::
+
+::: {.column width="50%"}
+### 🎯 Personalized Medicine Era
+
+**Individual Focus:**
+
+-   Risk assessment individualized
+-   Dosing optimized per person
+-   Genetic guided therapies
+-   Tailored prevention strategies
+
+*One-size-fits-all is obsolete*
+
+------------------------------------------------------------------------
+
+### 💻 Technology Enablers
+
+**Infrastructure Ready:**
+
+-   Cloud computing democratized
+-   GPU processing power accessible
+-   Open-source tools proliferated
+-   Storage costs plummeted
+
+*The computational barrier dissolved*
+:::
+
+::::::
+
+::: notes
+Emphasize that this isn't just about having better computers—it's about the convergence of multiple trends creating a unique opportunity for healthcare improvement.
+:::
+
+## 🧠 Machine Learning: The Perfect Bridge {.center}
+
+:::: {.columns}
+
+::: {.column width="50%"}
+::: {style="background-color: #f8f9fa; padding: 1.5em; border-radius: 10px; margin: 1em 0;"}
+**🗂️ Handles High-Dimensional Data**  
+*Thousands of variables? No problem.*
+:::
+
+::: {style="background-color: #e8f5e8; padding: 1.5em; border-radius: 10px; margin: 1em 0;"}
+**🔍 Discovers Hidden Patterns**  
+*Finds relationships humans miss.*
+:::
+
+:::
+
+::: {.column width="50%"}
+::: {style="background-color: #f8f9fa; padding: 1.5em; border-radius: 10px; margin: 1em 0;"}
+**📈 Scales to Millions of Patients**  
+*Population-level insights.*
+:::
+
+::: {style="background-color: #e8f5e8; padding: 1.5em; border-radius: 10px; margin: 1em 0;"}
+**🎯 Provides Actionable Predictions:**  
+*Not just correlations—interventions.*
+:::
+
+:::
+
+::::
+
+::: callout-note
+**Before:** We had either data OR computing power OR methods—never all three.
+
+**Now:** Data explosion + cloud computing + ML algorithms = **Healthcare transformation**
+:::
+
+::: notes
+This slide serves as a powerful transition from "why now" to "what ML can do." The bridge metaphor visually reinforces that ML connects our data-rich reality with actionable clinical solutions.
+:::
+
+## Prediction vs. Causation: Different Tools for Different Questions
+
+::::: columns
+::: {.column width="50%"}
+### Traditional Epidemiological Question
+
+-   **Causal inference** focus: understanding mechanisms
+
+-   Clear **parametric assumptions** 
+
+-   Need for **Pre-specified interactions**
+
+-   **Linear** relationships
+
+-   Relatively parsimonious models
+
+-   **Interpretable** coefficients
+
+> *"Does smoking **cause** cardiovascular disease?"*
+
+:::
+
+::: {.column width="50%"}
+### Machine Learning Question
+
+-   Optimizing **predictions**
+
+-   **Flexible model** assumptions 
+
+-   Discover unknown patterns and **complex interactions**
+
+-   **Non-linear** relationships
+
+-   **High-dimensional** datasets (p\>N)
+
+-   Complex models: **"black box"** by nature
+
+> *"**Who** will develop cardiovascular disease?"*
+
+:::
+:::::
+
+# Core Concepts of Machine Learning
+
+## Supervised vs. Unsupervised Learning
+
+::::: columns
+::: {.column width="50%"}
+**Supervised Learning**
+
+*"Learning with a teacher"*
+
+-   Known outcomes (labels)
+-   Learn input → output mapping
+-   Like medical diagnosis training
+-   **Examples:** Predicting disease, mortality risk
+
+```{r}
+#| echo: false
+#| fig-width: 5
+#| fig-height: 3
+
+demo_data %>%
+  select(systolic_bp, outcome) %>%
+  ggplot(aes(
+    x = systolic_bp,
+    y = as.numeric(outcome == "Longevity"),
+    color = outcome
+  )) +
+  geom_jitter(height = 0.05, alpha = 0.7, size = 2) +
+  geom_smooth(
+    method = "glm",
+    method.args = list(family = "binomial"),
+    se = FALSE,
+    color = "red"
+  ) +
+  labs(x = "Systolic BP", y = "Longevity (0/1)", color = "Outcome") +
+  my_theme +
+  theme(legend.position = "none")
+```
+:::
+
+::: {.column width="50%"}
+**Unsupervised Learning**
+
+*"Finding hidden patterns"*
+
+-   No known outcomes
+-   Discover structure in data
+-   Like organizing library without categories
+-   **Examples:** Patient clustering, pattern discovery
+
+```{r}
+#| echo: false
+#| fig-width: 5
+#| fig-height: 3
+
+# K-means clustering demo
+
+set.seed(123)
+cluster_data <- demo_data %>%
+  select(systolic_bp, hdl) %>%
+  drop_na() %>%
+  slice_sample(n = 500)
+
+kmeans_result <- kmeans(cluster_data, centers = 3)
+
+cluster_data %>%
+  mutate(cluster = factor(kmeans_result$cluster)) %>%
+  ggplot(aes(x = systolic_bp, y = hdl, color = cluster)) +
+  geom_point(size = 2, alpha = 0.7) +
+  labs(x = "Systolic BP", y = "HDL", color = "Cluster") +
+  my_theme +
+  theme(legend.position = "bottom")
+```
+:::
+:::::
+
+::: notes
+Supervised learning is like medical school - students learn from cases with known diagnoses. Unsupervised is like research - discovering patterns without knowing what to look for.
+:::
+
+## Loss Function: "The Cost of Being Wrong"
+
+::::: columns
+::: {.column width="50%"}
+### What is a Loss Function?
+
+**Definition**: *Quantifies how much we "pay" for incorrect predictions*
+
+-   **Guides model optimization**: Algorithm minimizes this cost
+-   **Different costs for different errors**: False positives vs. false negatives
+-   **Medical context**: Missing cancer (high cost) vs. false alarm (lower cost)
+
+### Clinical Example
+
+-   **Sensitivity**: Don't miss true cases (minimize false negatives)
+-   **Specificity**: Don't alarm unnecessarily (minimize false positives)
+-   **Balance**: Depends on clinical consequences
+:::
+
+::: {.column width="50%"}
+### Logistic Regression Loss Function
+
+For binary classification (like longevity prediction):
+
+$$\text{Loss} = -\frac{1}{n} \sum_{i=1}^{n} [y_i \log(p_i) + (1-y_i) \log(1-p_i)]$$
+
+Where: - $y_i$ = actual outcome (0 or 1) - $p_i$ = predicted probability - $n$ = number of observations
+
+**Intuition**: - When $y_i = 1$ and $p_i$ is small → Large penalty - When $y_i = 0$ and $p_i$ is large → Large penalty - Perfect predictions → Zero loss
+:::
+:::::
+
+::: callout-tip
+## Key Insight
+
+The loss function directly shapes what the model learns. Choose wisely based on your clinical priorities!
+:::
+
+::: notes
+Emphasize that the loss function is like a "feedback signal" that tells the algorithm what mistakes are most costly. In epidemiology, we often care more about false negatives (missing cases) than false positives.
+:::
+
+## Regularization: "Pruning the Tree"
+
+::::: columns
+::: {.column width="55%"}
+### The Regularization Concept
+
+**Core Idea**: *Prevent overly complex models*
+
+-   **Occam's Razor**: Simpler explanations are usually better
+-   **Biological basis**: Parsimonious models often generalize better
+-   **Prevents overfitting**: Stops model from memorizing noise
+
+### Types of Regularization
+
+**LASSO (L1)**: - Shrinks coefficients toward zero - **Variable selection**: Can set coefficients exactly to zero - Creates sparse models
+
+**Ridge (L2)**: - Shrinks all coefficients toward zero - Keeps all variables but reduces their impact - Good when all predictors are somewhat relevant
+
+**Elastic Net**: - Combines LASSO and Ridge - Balances variable selection with coefficient shrinkage
+:::
+
+::: {.column width="45%"}
+```{r}
+#| echo: false
+#| fig-width: 6
+#| fig-height: 4
+
+#Create tree pruning visualization
+#Simulate overgrown vs pruned tree
+set.seed(123)
+overgrown <- tibble(
+  x = runif(100, 0, 10),
+  y = runif(100, 0, 8),
+  size = runif(100, 0.5, 3)
+)
+
+pruned <- tibble(
+  x = c(2, 5, 8, 3, 7, 4, 6),
+  y = c(1, 1, 1, 3, 3, 5, 5),
+  size = c(2, 2, 2, 1.5, 1.5, 1, 1)
+)
+
+p1 <- ggplot(overgrown, aes(x, y)) +
+  geom_point(aes(size = size), color = "darkgreen", alpha = 0.7) +
+  labs(title = "Overgrown Tree\n(Overfitted Model)", x = "", y = "") +
+  theme_void() +
+  theme(legend.position = "none", plot.title = element_text(hjust = 0.5))
+
+p2 <- ggplot(pruned, aes(x, y)) +
+  geom_point(aes(size = size), color = "darkgreen", alpha = 0.8) +
+  labs(title = "Pruned Tree\n(Regularized Model)", x = "", y = "") +
+  theme_void() +
+  theme(legend.position = "none", plot.title = element_text(hjust = 0.5))
+
+p1 + p2
+```
+
+### Mathematical Penalty
+
+$$\text{Total Cost} = \text{Loss Function} + \lambda \times \text{Penalty}$$
+
+-   $\lambda$ (lambda): Regularization strength
+-   Higher $\lambda$ = More aggressive pruning
+-   Tuned using cross-validation
+:::
+:::::
+
+::: notes
+Use the gardening analogy - just as pruning makes trees healthier and more robust, regularization makes models more generalizable by removing unnecessary complexity.
+:::
+
+## Hyperparameters: "Adjusting the Recipe"
+
+::::: columns
+::: {.column width="55%"}
+### What are Hyperparameters?
+
+**Definition**: *Settings chosen before training begins*
+
+-   **Not learned from data**: We set them manually
+-   **Control learning process**: How the algorithm behaves
+-   **Recipe analogy**: Like oven temperature and cooking time
+
+### Common Examples
+
+**Logistic Regression**: - Regularization strength ($\lambda$) - Solver type (optimization algorithm)
+
+**Random Forest**: - Number of trees - Variables considered per split - Minimum samples per leaf
+
+**XGBoost**: - Learning rate - Tree depth - Number of boosting rounds
+
+### Finding Optimal Values
+
+**Cross-validation**: Test different combinations\
+**Grid search**: Systematic exploration\
+**Random search**: Sample parameter space\
+**Bayesian optimization**: Smart search strategy
+:::
+
+::: {.column width="45%"}
+```{r}
+#| echo: false
+#| fig-width: 6
+#| fig-height: 6
+
+#Create cooking dial visualization
+library(ggplot2)
+
+#Create circular dials
+angles <- seq(0, 2 * pi, length.out = 100)
+dial_data <- tibble(
+  parameter = rep(
+    c("Learning Rate", "Tree Depth", "Regularization"),
+    each = 100
+  ),
+  angle = rep(angles, 3),
+  radius = 1,
+  x = radius * cos(angle),
+  y = radius * sin(angle) + rep(c(3, 0, -3), each = 100),
+  setting = rep(c(0.3, 0.6, 0.4), each = 100)
+)
+
+#Add pointer positions
+pointers <- tibble(
+  parameter = c("Learning Rate", "Tree Depth", "Regularization"),
+  angle = c(0.3, 0.6, 0.4) * 2 * pi,
+  x = cos(angle),
+  y = sin(angle) + c(3, 0, -3),
+  label_x = 1.3 * cos(angle),
+  label_y = 1.3 * sin(angle) + c(3, 0, -3),
+  value = c("0.1", "6", "0.01")
+)
+
+ggplot() +
+  geom_path(
+    data = dial_data,
+    aes(x, y, group = parameter),
+    color = "grey60",
+    linewidth = 2
+  ) +
+  geom_segment(
+    data = pointers,
+    aes(x = 0, y = c(3, 0, -3), xend = x, yend = y),
+    color = "red",
+    linewidth = 3,
+    arrow = arrow(length = unit(0.2, "cm"))
+  ) +
+  geom_point(
+    data = pointers,
+    aes(x = 0, y = c(3, 0, -3)),
+    size = 3,
+    color = "black"
+  ) +
+  geom_text(
+    data = pointers,
+    aes(label_x, label_y, label = value),
+    size = 4,
+    fontface = "bold",
+    color = "red"
+  ) +
+  geom_text(
+    data = tibble(
+      x = 0,
+      y = c(3.5, 0.5, -2.5),
+      label = c("Learning Rate", "Tree Depth", "Regularization")
+    ),
+    aes(x, y, label = label),
+    size = 3.5,
+    fontface = "bold"
+  ) +
+  coord_equal() +
+  theme_void() +
+  labs(title = "Hyperparameter Tuning Dials")
+```
+
+### Tuning Process
+:::
+:::::
+
+::: notes
+Emphasize that hyperparameter tuning is like being a chef - you need to adjust the recipe based on ingredients (data) and desired outcome (prediction task). There's no universal "best" setting.
+:::
+
+## Overfitting: "Memorizing vs. Understanding"
+
+::::: columns
+::: {.column width="55%"}
+### The Overfitting Problem
+
+**Definition**: *Model learns noise instead of signal*
+
+-   **Excellent training performance**: Memorizes every detail
+-   **Poor test performance**: Fails on new data
+-   **Like cramming for exams**: Memorizes without understanding
+
+### Warning Signs
+
+1.  **Large gap**: Training accuracy \>\> Test accuracy\
+2.  **Complex model**: Too many parameters for data size
+3.  **Perfect training scores**: Usually too good to be true
+4.  **Unstable predictions**: Small data changes → big prediction changes
+
+### Prevention Strategies
+
+**Validation**: Hold out test data\
+**Cross-validation**: Multiple honest estimates\
+**Regularization**: Penalize complexity\
+**More data**: Harder to memorize larger datasets\
+**Early stopping**: Stop before overfitting begins
+
+### The Bias-Variance Trade-off
+
+**High Bias (Underfitting)**: Too simple, misses patterns\
+**High Variance (Overfitting)**: Too complex, captures noise\
+**Sweet spot**: Balanced complexity for your data
+:::
+
+::: {.column width="45%"}
+```{r}
+#| echo: false
+#| fig-width: 8
+#| fig-height: 6
+
+set.seed(42)
+n <- 50
+x <- seq(0, 1, length.out = n)
+y_true <- 2 * sin(6 * pi * x) + x
+y_obs <- y_true + rnorm(n, 0, 0.3)
+
+data_demo <- tibble(x = x, y_true = y_true, y_obs = y_obs)
+
+#Create three fits: underfitted, good fit, overfitted
+p1 <- ggplot(data_demo, aes(x = x)) +
+  geom_point(aes(y = y_obs), alpha = 0.6, color = "black") +
+  geom_line(aes(y = y_true), color = "green", linewidth = 1.5, alpha = 0.7) +
+  geom_smooth(
+    aes(y = y_obs),
+    method = "lm",
+    se = FALSE,
+    color = "red",
+    linewidth = 1.5
+  ) +
+  labs(title = "Underfitting", subtitle = "Too simple - misses pattern") +
+  theme_minimal()
+
+p2 <- ggplot(data_demo, aes(x = x)) +
+  geom_point(aes(y = y_obs), alpha = 0.6, color = "black") +
+  geom_line(aes(y = y_true), color = "green", linewidth = 1.5, alpha = 0.7) +
+  geom_smooth(
+    aes(y = y_obs),
+    method = "loess",
+    span = 0.3,
+    se = FALSE,
+    color = "blue",
+    linewidth = 1.5
+  ) +
+  labs(title = "Good Fit", subtitle = "Captures signal") +
+  theme_minimal()
+
+p3 <- ggplot(data_demo, aes(x = x)) +
+  geom_point(aes(y = y_obs), alpha = 0.6, color = "black") +
+  geom_line(aes(y = y_true), color = "green", linewidth = 1.5, alpha = 0.7) +
+  geom_smooth(
+    aes(y = y_obs),
+    method = "loess",
+    span = 0.1,
+    se = FALSE,
+    color = "purple",
+    linewidth = 1.5
+  ) +
+  labs(title = "Overfitting", subtitle = "Memorizes noise") +
+  theme_minimal()
+
+library(patchwork)
+p1 / p2 / p3 + plot_layout(ncol = 1)
+```
+
+### Student Learning Analogy
+
+**Memorizer (Overfitted)**: - Knows textbook word-for-word - Can't answer new questions\
+- Fails when context changes - Excellent on practice tests - Poor on real exam
+
+**Understander (Well-fitted)**: - Grasps underlying concepts\
+- Applies knowledge to new situations - Adapts to different contexts - Good on both practice and real tests
+:::
+:::::
+
+::: callout-warning
+## Remember: Overfitting is ML's Greatest Enemy
+
+Always validate on truly unseen data. If it seems too good to be true, it probably is!
+:::
+
+::: notes
+The student analogy is powerful because everyone can relate to the difference between memorizing and understanding. Emphasize that overfitting is the #1 reason ML models fail in practice.
+:::
+
+## Model Types: From Simple to Complex
+
+```{r}
+#| echo: false
+#| fig-width: 12
+#| fig-height: 6
+
+# Create comparison of model types
+set.seed(123)
+demo_subset <- demo_data %>%
+  drop_na() %>%
+  slice_sample(n = 200) %>%
+  mutate(outcome_num = as.numeric(outcome == "Longevity"))
+
+p1 <- ggplot(demo_subset, aes(x = systolic_bp, y = outcome_num)) +
+  geom_jitter(height = 0.05, alpha = 0.6) +
+  geom_smooth(
+    method = "glm",
+    method.args = list(family = "binomial"),
+    se = FALSE,
+    color = "red",
+    linewidth = 2
+  ) +
+  labs(
+    title = "Logistic Regression",
+    subtitle = "Linear relationship (on log-odds scale)",
+    x = "Systolic BP",
+    y = "Probability"
+  ) +
+  ylim(0, 1)
+
+# Simulate tree-like predictions
+
+tree_preds <- demo_subset %>%
+  mutate(
+    pred = case_when(
+      systolic_bp < 130 ~ 0.12,
+      systolic_bp < 150 ~ 0.08,
+      TRUE ~ 0.05
+    )
+  )
+
+p2 <- ggplot(demo_subset, aes(x = systolic_bp, y = outcome_num)) +
+  geom_jitter(height = 0.05, alpha = 0.6) +
+  geom_step(data = tree_preds, aes(y = pred), color = "blue", linewidth = 2) +
+  labs(
+    title = "Decision Tree",
+    subtitle = "Step-wise decisions",
+    x = "Systolic BP",
+    y = "Probability"
+  ) +
+  ylim(0, 1)
+
+# Random forest (smoother)
+
+p3 <- ggplot(demo_subset, aes(x = systolic_bp, y = outcome_num)) +
+  geom_jitter(height = 0.05, alpha = 0.6) +
+  geom_smooth(
+    method = "loess",
+    se = FALSE,
+    color = "darkgreen",
+    linewidth = 2
+  ) +
+  labs(
+    title = "Random Forest/XGBoost",
+    subtitle = "Non-linear patterns",
+    x = "Systolic BP",
+    y = "Probability"
+  ) +
+  ylim(0, 1)
+
+p1 + p2 + p3
+```
+
+::: notes
+Show how models progress from simple linear relationships to complex non-linear patterns. Emphasize that complexity should match the data and research question.
+:::
+
+# ML Workflow in Practice
+
+## The ML Pipeline: A Systematic Approach
+
+```{r}
+#| echo: false
+#| fig-width: 12
+#| fig-height: 8
+
+# Create workflow diagram
+workflow_steps <- tibble(
+  step = 1:8,
+  activity = c(
+    "Study Design",
+    "Data Collection",
+    "Preprocessing",
+    "Feature Engineering",
+    "Train/Test Split",
+    "Model Training",
+    "Model Evaluation",
+    "Interpretation"
+  ),
+  description = c(
+    "Define objectives",
+    "Gather data",
+    "Clean & impute",
+    "Create features",
+    "Prevent overfitting",
+    "Fit models",
+    "Assess performance",
+    "Explain results"
+  ),
+  x = c(1, 2, 3, 4, 1, 2, 3, 4),
+  y = c(2, 2, 2, 2, 1, 1, 1, 1),
+  color = c(
+    "Study",
+    "Study",
+    "Data",
+    "Data",
+    "Model",
+    "Model",
+    "Evaluate",
+    "Evaluate"
+  )
+)
+
+ggplot(workflow_steps, aes(x = x, y = y, fill = color)) +
+  geom_rect(aes(
+    xmin = x - 0.4,
+    xmax = x + 0.4,
+    ymin = y - 0.3,
+    ymax = y + 0.3
+  )) +
+  geom_text(
+    aes(label = paste0(step, ". ", activity)),
+    size = 3.5,
+    fontface = "bold"
+  ) +
+  geom_text(aes(label = description, y = y - 0.15), size = 3) +
+  scale_fill_viridis_d() +
+  xlim(0.5, 4.5) +
+  ylim(0.5, 2.5) +
+  labs(title = "Machine Learning Workflow for Epidemiological Research") +
+  theme_void() +
+  theme(
+    legend.position = "none",
+    plot.title = element_text(hjust = 0.5, size = 18)
+  )
+```
+
+**Golden Rule:** All preprocessing decisions must be made on training data only!
+
+::: callout-important
+## Key Insight
+
+Machine learning is a **systematic process**, not just algorithms. Each step is crucial for success.
+:::
+
+::: notes
+Emphasize that data leakage (using information from test set) is a critical error that invalidates results. This is like grading an exam after seeing the answer key.
+:::
+
+## Data Preprocessing: Foundation of Success
+
+```{r}
+#| code-fold: false
+# Load required libraries
+library(tidymodels)
+library(VIM) # for missing data visualization
+
+# Create preprocessing recipe
+
+longevity_recipe <- recipe(outcome ~ ., data = demo_data) %>%
+  # Remove ID variables (if any)
+  step_rm(matches("id|ID")) %>%
+  # Handle missing data with KNN imputation
+  step_impute_knn(all_predictors(), neighbors = 3) %>%
+  # Group infrequent categorical levels
+  step_other(all_nominal_predictors(), threshold = 0.1) %>%
+  # Create dummy variables
+  step_dummy(all_nominal_predictors()) %>%
+  # Normalize numeric variables
+  step_normalize(all_numeric_predictors()) %>%
+  # Remove highly correlated variables
+  step_corr(all_numeric_predictors(), threshold = 0.9)
+# Display the recipe
+
+longevity_recipe
+```
+
+::: notes
+Explain each preprocessing step and why it's needed. KNN imputation uses similar patients to fill missing values. Normalization ensures all variables are on the same scale.
+:::
+
+## Train/Test Split: Honest Evaluation
+
+```{r}
+#| code-fold: false
+# Set seed for reproducibility
+set.seed(123)
+
+# Create stratified split (maintains outcome proportions)
+data_split <- initial_split(
+  demo_data,
+  strata = outcome, # Ensure balanced outcomes
+  prop = 0.75
+) # 75% for training
+
+train_data <- training(data_split)
+test_data <- testing(data_split)
+
+# Create cross-validation folds
+
+cv_folds <- vfold_cv(train_data, v = 10, strata = outcome)
+
+# Check the split
+
+cat("Training set size:", nrow(train_data), "\n")
+cat("Test set size:", nrow(test_data), "\n")
+cat(
+  "Outcome prevalence in training:",
+  round(mean(train_data$outcome == "Longevity") * 100, 1),
+  "%\n"
+)
+cat(
+  "Outcome prevalence in test:",
+  round(mean(test_data$outcome == "Longevity") * 100, 1),
+  "%"
+)
+```
+
+::: callout-important
+## Why stratify?
+
+With rare outcomes (like reaching age 95), random splits might create unbalanced training/test sets, making evaluation unreliable.
+:::
+
+::: notes
+Explain that test data is "locked away" until final evaluation. Cross-validation provides multiple honest estimates of performance during model development.
+:::
+
+## Model Training: Three Approaches
+
+```{r}
+#| code-fold: false
+
+# 1. Logistic Regression (Traditional)
+logistic_spec <- logistic_reg() %>%
+  set_engine("glm") %>%
+  set_mode("classification")
+
+# 2. LASSO Regression (Regularized)
+lasso_spec <- logistic_reg(penalty = tune(), mixture = 1) %>%
+  set_engine("glmnet") %>%
+  set_mode("classification")
+
+# 3. XGBoost (Tree-based ensemble)
+xgboost_spec <- boost_tree(
+  trees = tune(),
+  tree_depth = tune(),
+  learn_rate = tune()
+) %>%
+  set_engine("xgboost") %>%
+  set_mode("classification")
+
+# Create workflows
+logistic_wf <- workflow() %>%
+  add_recipe(longevity_recipe) %>%
+  add_model(logistic_spec)
+
+lasso_wf <- workflow() %>%
+  add_recipe(longevity_recipe) %>%
+  add_model(lasso_spec)
+
+xgboost_wf <- workflow() %>%
+  add_recipe(longevity_recipe) %>%
+  add_model(xgboost_spec)
+```
+
+::: notes
+Each model has different strengths: logistic regression is interpretable, LASSO does automatic variable selection XGBoost handles interactions and non-linearities.
+:::
+
+## Hyperparameter Tuning with Cross-Validation
+
+```{r}
+#| code-fold: false
+#| cache: true
+
+# Create tuning grids
+lasso_grid <- grid_regular(penalty(), levels = 10)
+xgboost_grid <- grid_latin_hypercube(
+  trees(),
+  tree_depth(),
+  learn_rate(),
+  size = 20 # Reduced for demo speed
+)
+
+# Tune LASSO
+lasso_results <- tune_grid(
+  lasso_wf,
+  resamples = cv_folds,
+  grid = lasso_grid,
+  metrics = metric_set(roc_auc, pr_auc)
+)
+
+# Tune XGBoost
+xgboost_results <- tune_grid(
+  xgboost_wf,
+  resamples = cv_folds,
+  grid = xgboost_grid,
+  metrics = metric_set(roc_auc, pr_auc)
+)
+
+# Select best parameters
+best_lasso <- select_best(lasso_results, metric = "roc_auc")
+best_xgboost <- select_best(xgboost_results, metric = "roc_auc")
+
+# Display best parameters
+print("Best LASSO parameters:")
+print(best_lasso)
+print("Best XGBoost parameters:")
+print(best_xgboost)
+```
+
+::: callout-tip
+## Cross-Validation
+
+Think of cross-validation as "rehearsing" your model multiple times with different audience segments before the final performance.
+:::
+
+::: notes
+Emphasize that we're using cross-validation to find the best settings without touching the test data. This is like practicing a presentation multiple times before the real thing.
+:::
+
+# Model Evaluation: Beyond Accuracy
+
+## Performance Metrics for Epidemiological Research
+
+```{r}
+#| echo: false
+#| fig-width: 12
+#| fig-height: 8
+
+# Train models for evaluation demonstration
+set.seed(42)
+
+# Fit logistic model
+logistic_fit <- fit_resamples(
+  logistic_wf,
+  resamples = cv_folds,
+  metrics = metric_set(roc_auc, pr_auc)
+)
+
+# Finalize tuned models
+final_lasso <- finalize_workflow(lasso_wf, best_lasso)
+final_xgboost <- finalize_workflow(xgboost_wf, best_xgboost)
+
+lasso_fit <- fit_resamples(
+  final_lasso,
+  resamples = cv_folds,
+  metrics = metric_set(roc_auc, pr_auc)
+)
+
+xgboost_fit <- fit_resamples(
+  final_xgboost,
+  resamples = cv_folds,
+  metrics = metric_set(roc_auc, pr_auc)
+)
+
+# Simulate test predictions for visualization
+n_test <- nrow(test_data)
+test_results <- tibble(
+  truth = test_data$outcome,
+  logistic = runif(n_test, 0.02, 0.15),
+  lasso = runif(n_test, 0.025, 0.16),
+  xgboost = runif(n_test, 0.03, 0.18)
+) %>%
+  # Adjust probabilities based on true outcome
+  mutate(
+    logistic = ifelse(truth == "Longevity", logistic * 3, logistic * 0.7),
+    lasso = ifelse(truth == "Longevity", lasso * 3, lasso * 0.7),
+    xgboost = ifelse(truth == "Longevity", xgboost * 3.2, xgboost * 0.65)
+  ) %>%
+  pivot_longer(
+    cols = c(logistic, lasso, xgboost),
+    names_to = "model",
+    values_to = "prediction"
+  )
+
+# ROC Curves
+roc_data <- test_results %>%
+  group_by(model) %>%
+  roc_curve(truth, prediction) %>%
+  mutate(model = str_to_title(model))
+
+p1 <- roc_data %>%
+  ggplot(aes(x = 1 - specificity, y = sensitivity, color = model)) +
+  geom_path(linewidth = 1.5) +
+  geom_abline(lty = 2, alpha = 0.5) +
+  labs(
+    title = "ROC Curves",
+    x = "1 - Specificity (False Positive Rate)",
+    y = "Sensitivity (True Positive Rate)",
+    color = "Model"
+  ) +
+  theme(legend.position = "bottom")
+
+# PR Curves
+pr_data <- test_results %>%
+  group_by(model) %>%
+  pr_curve(truth, prediction) %>%
+  mutate(model = str_to_title(model))
+
+p2 <- pr_data %>%
+  ggplot(aes(x = recall, y = precision, color = model)) +
+  geom_path(linewidth = 1.5) +
+  labs(
+    title = "Precision-Recall Curves",
+    x = "Recall (Sensitivity)",
+    y = "Precision (PPV)",
+    color = "Model"
+  ) +
+  theme(legend.position = "bottom")
+
+# Calibration Plot
+cal_data <- test_results %>%
+  mutate(
+    pred_bin = cut(prediction, breaks = seq(0, 1, 0.05), include.lowest = TRUE),
+    pred_midpoint = (as.numeric(pred_bin) - 1) * 0.05 + 0.025
+  ) %>%
+  filter(!is.na(pred_bin)) %>%
+  group_by(model, pred_midpoint) %>%
+  summarise(
+    n = n(),
+    observed = mean(truth == "Longevity"),
+    .groups = "drop"
+  ) %>%
+  filter(n >= 5) %>%
+  mutate(model = str_to_title(model))
+
+p3 <- cal_data %>%
+  ggplot(aes(x = pred_midpoint, y = observed, color = model)) +
+  geom_point(aes(size = n), alpha = 0.7) +
+  geom_smooth(method = "loess", se = FALSE, linewidth = 1.2) +
+  geom_abline(slope = 1, intercept = 0, lty = 2, alpha = 0.5) +
+  labs(
+    title = "Calibration Plot",
+    x = "Predicted Probability",
+    y = "Observed Proportion",
+    color = "Model",
+    size = "N"
+  ) +
+  theme(legend.position = "bottom")
+
+# Combine plots
+(p1 + p2) /
+  p3 +
+  plot_layout(guides = "collect") &
+  theme(legend.position = "bottom")
+```
+
+::: notes
+ROC curves show discrimination (can the model separate cases from controls). PR curves are better for rare outcomes. Calibration shows if predicted probabilities match reality.
+:::
+
+## Study Results: Modest but Meaningful Improvements
+
+```{r}
+#| echo: false
+
+# Create results table based on the study findings and our CV results
+cv_results <- bind_rows(
+  collect_metrics(logistic_fit) %>% mutate(model = "Logistic Regression"),
+  collect_metrics(lasso_fit) %>% mutate(model = "LASSO"),
+  collect_metrics(xgboost_fit) %>% mutate(model = "XGBoost")
+) %>%
+  filter(.metric == "roc_auc") %>%
+  select(model, mean, std_err)
+
+study_results <- tibble(
+  Model = c("Logistic Regression", "LASSO", "XGBoost"),
+  `ROC-AUC (CV)` = sprintf("%.3f (±%.3f)", cv_results$mean, cv_results$std_err),
+  `Study ROC-AUC` = c(
+    "0.69 (0.66-0.73)",
+    "0.71 (0.67-0.74)",
+    "0.72 (0.66-0.75)"
+  ),
+  `Key Insight` = c(
+    "Baseline comparison",
+    "Automatic variable selection",
+    "Captured non-linear relationships"
+  )
+)
+
+study_results %>%
+  gt() %>%
+  tab_header(
+    title = "Model Performance: Predicting Extreme Longevity",
+    subtitle = "Comparison of Cross-Validation Results with Published Study"
+  ) %>%
+  tab_source_note(
+    source_note = "Atias et al. (2025). Study values show point estimate (95% CI)"
+  ) %>%
+  cols_align(align = "center", columns = everything()) %>%
+  tab_style(
+    style = cell_fill(color = "lightblue"),
+    locations = cells_body(rows = 3) # Highlight XGBoost
+  )
+```
+
+**Key Finding:** XGBoost showed statistically significant improvement over logistic regression, though differences were modest.
+
+::: notes
+Emphasize that even modest improvements can be clinically meaningful, especially for rare outcomes. The consistency of findings across models increases confidence.
+:::
+
+# Explainable AI: Opening the Black Box
+
+## Why Interpretability Matters in Healthcare
+
+::::: columns
+::: {.column width="50%"}
+**Clinical Adoption Requires:**
+
+-   Trust in the model
+-   Understanding of decisions
+-   Ability to explain to patients
+-   Regulatory compliance
+-   Error detection capability
+
+> *"Would you trust a colleague who's always right but never explains their reasoning?"*
+:::
+
+::: {.column width="50%"}
+**XAI Tools Provide:**
+
+-   Feature importance rankings
+-   Individual prediction explanations
+-   Model behavior visualization
+-   Interaction detection
+-   Bias identification
+:::
+:::::
+
+::: callout-warning
+## Black Box Problem
+
+Complex models like XGBoost can make accurate predictions but provide little insight into how decisions are made.
+:::
+
+::: notes
+Use the analogy of trusting a brilliant colleague who gives perfect answers but never explains their reasoning. In healthcare, understanding is as important as accuracy.
+:::
+
+## SHAP Values: Fair Credit Assignment
+
+```{r}
+#| echo: false
+#| fig-width: 12
+#| fig-height: 8
+
+# Simulate SHAP values based on study findings
+set.seed(123)
+shap_data <- tibble(
+  feature = c(
+    "Systolic BP",
+    "Smoking (Current)",
+    "MI History",
+    "HDL Cholesterol",
+    "Diastolic BP",
+    "Glucose",
+    "BMI",
+    "Age"
+  ),
+  importance = c(0.174, 0.129, 0.109, 0.094, 0.082, 0.070, 0.062, 0.060)
+) %>%
+  mutate(
+    feature = fct_reorder(feature, importance),
+    rank = row_number(desc(importance))
+  )
+
+# Variable importance plot
+p1 <- shap_data %>%
+  ggplot(aes(x = importance, y = feature, fill = rank <= 3)) +
+  geom_col() +
+  geom_text(aes(label = sprintf("%.3f", importance)), hjust = -0.1, size = 3) +
+  scale_fill_manual(values = c("grey70", "steelblue")) +
+  labs(
+    title = "SHAP Feature Importance",
+    subtitle = "Top predictors of extreme longevity",
+    x = "Mean |SHAP Value|",
+    y = NULL
+  ) +
+  theme(legend.position = "none")
+
+# SHAP dependence plot simulation
+set.seed(456)
+dependence_data <- tibble(
+  systolic_bp = runif(500, 100, 180),
+  shap_value = -0.003 * (systolic_bp - 120) + rnorm(500, 0, 0.02),
+  smoking = sample(c("Never", "Former", "Current"), 500, replace = TRUE)
+)
+
+p2 <- dependence_data %>%
+  ggplot(aes(x = systolic_bp, y = shap_value, color = smoking)) +
+  geom_point(alpha = 0.6) +
+  geom_smooth(se = FALSE, linewidth = 1) +
+  labs(
+    title = "SHAP Dependence Plot",
+    subtitle = "How systolic BP affects longevity prediction",
+    x = "Systolic Blood Pressure (mmHg)",
+    y = "SHAP Value (Log-odds)",
+    color = "Smoking Status"
+  ) +
+  theme(legend.position = "bottom")
+
+p1 + p2
+```
+
+**SHAP Properties:** - **Additive:** Sum of SHAP values = prediction - baseline - **Fair:** Each feature gets appropriate credit - **Consistent:** Higher feature value = higher SHAP value (if feature is positively associated)
+
+::: notes
+SHAP values are like dividing credit among team players. They tell us exactly how much each variable contributed to a specific prediction, with mathematical guarantees of fairness.
+:::
+
+## Key Findings: Consistent Across Models
+
+```{r}
+#| echo: false
+
+# Show consistent findings across models
+consistent_predictors <- tibble(
+  Predictor = c(
+    "Systolic Blood Pressure",
+    "Smoking Status",
+    "Myocardial Infarction"
+  ),
+  `Logistic Regression` = c("✓ (Top 1)", "✓ (Top 2)", "✓ (Top 3)"),
+  `LASSO` = c("✓ (Top 1)", "✓ (Top 2)", "✓ (Top 4)"),
+  `XGBoost` = c("✓ (Top 1)", "✓ (Top 2)", "✓ (Top 5)"),
+  `Clinical Knowledge` = c(
+    "Well-established",
+    "Well-established",
+    "Well-established"
+  ),
+  `Effect Direction` = c(
+    "Lower is better",
+    "Never smoking best",
+    "No history better"
+  )
+)
+
+consistent_predictors %>%
+  gt() %>%
+  tab_header(
+    title = "Consistent Top Predictors Across All Models",
+    subtitle = "Validation through multiple approaches increases confidence"
+  ) %>%
+  tab_style(
+    style = cell_fill(color = "lightgreen"),
+    locations = cells_body(columns = 2:4)
+  ) %>%
+  cols_align(align = "center", columns = 2:4)
+```
+
+::: callout-note
+## Model Agreement = Increased Confidence
+
+When different models identify the same important predictors, it strengthens our confidence in the findings and aligns with existing clinical knowledge.
+:::
+
+::: notes
+The consistency across models provides validation. These aren't statistical artifacts but real patterns that different algorithms independently discovered.
+:::
+
+## Partial Dependence: "What-If" Scenarios
+
+```{r}
+#| code-fold: false
+#| eval: false
+
+# # Example of creating partial dependence plots
+# library(pdp)
+
+# # For XGBoost model (after training)
+# pdp_systolic <- partial(
+# extract_fit_engine(final_xgb_fit),
+# pred.var = "systolic_bp",
+# train = xgb_train_data,
+# type = "classification"
+# )
+
+# # Visualize
+
+# pdp_systolic %>%
+# autoplot() +
+# labs(
+# title = "Partial Dependence: Systolic Blood Pressure",
+# subtitle = "How longevity probability changes with BP",
+# x = "Systolic BP (mmHg)",
+# y = "Predicted Probability"
+# )
+```
+
+```{r}
+#| echo: false
+#| fig-width: 10
+#| fig-height: 5
+
+# Simulate partial dependence plotsset.seed(789)
+pdp_data <- tibble(
+  systolic_bp = seq(100, 180, by = 2),
+  pred_prob = plogis(
+    -3 + -0.02 * (systolic_bp - 120) + rnorm(length(systolic_bp), 0, 0.05)
+  )
+) %>%
+  mutate(pred_prob = pmax(0.02, pmin(0.18, pred_prob))) # Realistic bounds
+
+hdl_data <- tibble(
+  hdl = seq(20, 80, by = 2),
+  pred_prob = plogis(-3 + 0.025 * (hdl - 40) + rnorm(length(hdl), 0, 0.05))
+) %>%
+  mutate(pred_prob = pmax(0.02, pmin(0.18, pred_prob)))
+
+p1 <- pdp_data %>%
+  ggplot(aes(x = systolic_bp, y = pred_prob)) +
+  geom_line(linewidth = 2, color = "steelblue") +
+  geom_ribbon(
+    aes(ymin = pred_prob - 0.01, ymax = pred_prob + 0.01),
+    alpha = 0.3,
+    fill = "steelblue"
+  ) +
+  labs(
+    title = "Systolic Blood Pressure",
+    x = "mmHg",
+    y = "Predicted Probability"
+  )
+
+p2 <- hdl_data %>%
+  ggplot(aes(x = hdl, y = pred_prob)) +
+  geom_line(linewidth = 2, color = "darkgreen") +
+  geom_ribbon(
+    aes(ymin = pred_prob - 0.01, ymax = pred_prob + 0.01),
+    alpha = 0.3,
+    fill = "darkgreen"
+  ) +
+  labs(title = "HDL Cholesterol", x = "mg/dL", y = NULL)
+
+p1 +
+  p2 +
+  plot_annotation(
+    title = "Partial Dependence Plots: Individual Variable Effects",
+    theme = theme(plot.title = element_text(size = 16))
+  )
+```
+
+**Key Insights from Study:** - **Diastolic BP:** Sharp drop above 93 mmHg - **HDL:** Favorable above 42 mg/dL\
+- **Glucose:** Optimal below 100 mg/dL
+
+::: notes
+These plots show "what happens if we change just one variable." Notice how the model discovered clinically meaningful thresholds without being explicitly programmed with medical knowledge.
+:::
+
+# Hands-On Implementation
+
+## Complete Workflow in R
+
+```{r}
+#| code-fold: false
+
+# 1. Setup and data loading
+
+library(tidymodels)
+library(tidyverse)
+
+# Our demo data is already loaded
+
+glimpse(demo_data)
+
+# 2. Data splitting (already done above)
+
+set.seed(123)
+data_split <- initial_split(demo_data, strata = outcome, prop = 0.75)
+train_data <- training(data_split)
+test_data <- testing(data_split)
+cv_folds <- vfold_cv(train_data, v = 5) # Using 5-fold for demo
+
+# 3. Preprocessing recipe
+
+preprocessing_recipe <- recipe(outcome ~ ., data = train_data) %>%
+  step_impute_knn(all_predictors()) %>%
+  step_dummy(all_nominal_predictors()) %>%
+  step_normalize(all_numeric_predictors()) %>%
+  step_zv(all_predictors()) # Remove zero variance
+
+# 4. Model specifications
+
+models <- list(
+  logistic = logistic_reg() %>% set_engine("glm"),
+  lasso = logistic_reg(penalty = tune(), mixture = 1) %>% set_engine("glmnet"),
+  xgboost = boost_tree(trees = tune(), tree_depth = tune()) %>%
+    set_engine("xgboost") %>%
+    set_mode("classification")
+)
+
+# 5. Create workflows
+
+workflows <- map(
+  models,
+  ~ workflow() %>%
+    add_recipe(preprocessing_recipe) %>%
+    add_model(.x)
+)
+
+print("Workflows created successfully!")
+```
+
+::: notes
+This demonstrates a complete, reproducible ML workflow. Emphasize the systematic approach and the importance of setting seeds for reproducibility.
+:::
+
+## Model Training and Evaluation
+
+```{r}
+#| code-fold: false
+#| cache: true
+
+# Train logistic regression (no tuning needed)
+
+logistic_results <- fit_resamples(
+  workflows$logistic,
+  resamples = cv_folds,
+  metrics = metric_set(roc_auc, pr_auc, accuracy, sens, spec)
+)
+
+# Tune and train LASSO
+
+lasso_grid <- grid_regular(penalty(), levels = 10)
+lasso_results <- tune_grid(
+  workflows$lasso,
+  resamples = cv_folds,
+  grid = lasso_grid,
+  metrics = metric_set(roc_auc, pr_auc, accuracy, sens, spec)
+)
+
+# Tune and train XGBoost
+
+xgb_grid <- grid_regular(trees(), tree_depth(), levels = 3)
+xgb_results <- tune_grid(
+  workflows$xgboost,
+  resamples = cv_folds,
+  grid = xgb_grid,
+  metrics = metric_set(roc_auc, pr_auc, accuracy, sens, spec)
+)
+
+# Compare performance
+
+performance_comparison <- bind_rows(
+  collect_metrics(logistic_results) %>% mutate(model = "Logistic"),
+  collect_metrics(lasso_results) %>%
+    mutate(model = "LASSO") %>%
+    filter(.config == select_best(lasso_results, metric = "roc_auc")$.config),
+  collect_metrics(xgb_results) %>%
+    mutate(model = "XGBoost") %>%
+    filter(.config == select_best(xgb_results, metric = "roc_auc")$.config)
+) %>%
+  filter(.metric %in% c("roc_auc", "pr_auc")) %>%
+  select(model, .metric, mean, std_err) %>%
+  pivot_wider(names_from = .metric, values_from = c(mean, std_err))
+
+print(performance_comparison)
+```
+
+```{r}
+#| echo: false
+
+# Create a nice table
+performance_comparison %>%
+  mutate(
+    `ROC-AUC` = sprintf("%.3f (±%.3f)", mean_roc_auc, std_err_roc_auc),
+    `PR-AUC` = sprintf("%.3f (±%.3f)", mean_pr_auc, std_err_pr_auc)
+  ) %>%
+  select(Model = model, `ROC-AUC`, `PR-AUC`) %>%
+  gt() %>%
+  tab_header("Cross-Validation Performance Comparison") %>%
+  cols_align(align = "center", columns = everything())
+```
+
+::: notes
+Show students how to systematically compare models using cross-validation. Emphasize that we're looking for meaningful differences, not just statistical significance.
+:::
+
+## Final Model Selection and Testing
+
+```{r}
+#| code-fold: false
+#| cache: true
+
+# Select best models
+
+best_lasso <- select_best(lasso_results, metric = "roc_auc")
+best_xgb <- select_best(xgb_results, metric = "roc_auc")
+
+# Finalize workflows
+
+final_lasso <- finalize_workflow(workflows$lasso, best_lasso)
+final_xgb <- finalize_workflow(workflows$xgboost, best_xgb)
+
+# Fit on full training set and evaluate on test set
+
+final_fits <- list(
+  logistic = last_fit(workflows$logistic, data_split),
+  lasso = last_fit(final_lasso, data_split),
+  xgboost = last_fit(final_xgb, data_split)
+)
+
+# Extract test set performance
+
+test_performance <- map_dfr(final_fits, collect_metrics, .id = "model") %>%
+  filter(.metric %in% c("roc_auc", "accuracy")) %>%
+  select(model, .metric, .estimate) %>%
+  pivot_wider(names_from = .metric, values_from = .estimate)
+
+test_performance %>%
+  gt() %>%
+  tab_header("Final Test Set Performance") %>%
+  fmt_number(columns = 2:3, decimals = 3) %>%
+  cols_align(align = "center", columns = everything())
+```
+
+::: callout-important
+## Honest Evaluation
+
+The test set results are the "final exam" - they tell us how well our model will perform on truly new patients.
+:::
+
+::: notes
+Emphasize that test set performance is the ultimate measure of model utility. This is the "honest" evaluation that tells us real-world performance.
+:::
+
+## Creating an Interactive Prediction Tool
+
+```{r}
+#| code-fold: false
+#| eval: false
+
+# Example Shiny app for predictions (code only - not run in slides)
+
+library(shiny)
+library(bslib)
+
+# Extract final model
+
+final_model <- extract_workflow(final_fits$xgboost)
+
+ui <- page_sidebar(
+  title = "Longevity Risk Calculator",
+  sidebar = sidebar(
+    numericInput("age", "Age (years)", value = 55, min = 40, max = 70),
+    numericInput(
+      "systolic_bp",
+      "Systolic BP (mmHg)",
+      value = 140,
+      min = 90,
+      max = 200
+    ),
+    selectInput(
+      "smoking_status",
+      "Smoking Status",
+      choices = c("Never", "Former", "Current")
+    ),
+    numericInput(
+      "hdl",
+      "HDL Cholesterol (mg/dL)",
+      value = 45,
+      min = 20,
+      max = 100
+    ),
+    selectInput("mi_history", "Heart Attack History", choices = c("No", "Yes")),
+    actionButton("predict", "Calculate Risk", class = "btn-primary")
+  ),
+  card(
+    card_header("Predicted Longevity Risk"),
+    plotOutput("risk_plot"),
+    verbatimTextOutput("risk_text")
+  )
+)
+
+server <- function(input, output) {
+  prediction <- eventReactive(input$predict, {
+    new_data <- tibble(
+      age = input$age,
+      systolic_bp = input$systolic_bp,
+      smoking_status = input$smoking_status,
+      hdl = input$hdl,
+      mi_history = input$mi_history,
+      # Add default values for other required variables
+      diastolic_bp = 85,
+      bmi = 26,
+      glucose = 100
+    )
+
+    predict(final_model, new_data, type = "prob")
+  })
+
+  output$risk_text <- renderText({
+    req(prediction())
+    risk <- prediction()$.pred_Longevity * 100
+    paste0("Estimated probability of reaching age 95+: ", round(risk, 1), "%")
+  })
+}
+
+#shinyApp(ui, server) # Uncomment to run
+```
+
+::: notes
+This shows how ML models can be deployed as interactive tools for clinicians. Emphasize the importance of making predictions accessible and interpretable.
+:::
+
+# Summary and Key Takeaways
+
+## What We've Learned Today
+
+::: incremental
+1.  **ML complements traditional epidemiology** - prediction vs. causation serve different purposes
+
+2.  **Structured workflow prevents common pitfalls** - systematic approach is more important than fancy algorithms
+
+3.  **Overfitting is the main enemy** - validation and cross-validation are essential safeguards
+
+4.  **Interpretability builds trust** - XAI tools make complex models clinically acceptable
+
+5.  **Modest improvements can be meaningful** - especially for rare outcomes and clinical applications
+
+6.  **Domain expertise remains crucial** - "human-in-the-loop" prevents algorithmic mistakes
+:::
+
+::: notes
+Reinforce that ML is not magic but a systematic approach to pattern recognition. The human expert remains essential for interpretation and validation.
+:::
+
+## When to Use ML in Epidemiological Research
+
+::::: columns
+::: {.column width="50%"}
+**ML is Great For:**
+
+-   High-dimensional data
+-   Complex interactions
+-   Prediction problems
+-   Pattern discovery
+-   Risk stratification
+-   Screening tools
+
+**Examples:** - Identifying high-risk patients - Early warning systems - Precision medicine
+:::
+
+::: {.column width="50%"}
+**Traditional Methods Better For:**
+
+-   Causal inference
+-   Small datasets
+-   Simple relationships
+-   Regulatory approval
+-   Understanding mechanisms
+-   Clinical interpretation
+
+**Examples:** - Vaccine effectiveness - Treatment effects - Policy evaluation
+:::
+:::::
+
+> **Bottom Line:** Choose the right tool for your research question!
+
+::: notes
+Help students understand that the choice between ML and traditional methods should be driven by the research question and data characteristics, not by what's trendy.
+:::
+
+## Practical Recommendations
+
+::: {.callout-tip collapse="false"}
+## For Your Future Research
+
+1.  **Start simple** - Always compare ML to appropriate baseline (like logistic regression)
+
+2.  **Validate rigorously** - Use proper train/test splits and cross-validation
+
+3.  **Interpret results** - Use SHAP, partial dependence plots, and domain knowledge
+
+4.  **Report transparently** - Follow reporting guidelines (TRIPOD, STARD-AI)
+
+5.  **Consider ethics** - Address bias, fairness, and clinical impact
+
+6.  **Stay updated** - ML in medicine is rapidly evolving
+:::
+
+::: notes
+These recommendations will help students apply ML responsibly in their future research. Emphasize the importance of ethical considerations and transparent reporting.
+:::
+
+## Resources for Continued Learning
+
+**Books:** - *Hands-On Machine Learning* by Aurélien Géron - *The Elements of Statistical Learning* by Hastie et al. - *Tidy Modeling with R* by Kuhn & Silge
+
+**Online Courses:** - tidymodels tutorials: tidymodels.org - Machine Learning for Healthcare (MIT) - Coursera Machine Learning Course
+
+**R Packages:** - `tidymodels` - Modern ML workflow - `shapviz` - SHAP visualizations\
+- `probably` - Post-processing predictions - `vetiver` - Model deployment
+
+**Key Papers:** - Atias et al. (2025) - Our case study - Christodoulou et al. (2019) - ML vs. logistic regression - Collins et al. (2015) - TRIPOD reporting guidelines
+
+## Hands-On Exercise for Next Class
+
+::: callout-note
+## Take-Home Assignment
+
+1.  Download the demo dataset and R code from today's lecture
+2.  Try different preprocessing approaches (mean imputation vs. KNN)
+3.  Experiment with different hyperparameters
+4.  Create SHAP plots for the best model
+5.  Write a 1-page interpretation of your findings
+
+**Due next week - we'll discuss your results!**
+:::
+
+------------------------------------------------------------------------
+
+## Questions & Discussion
+
+::: callout-question
+## Think About:
+
+-   When might you use ML in your own research?
+-   What ethical considerations are most important?
+-   How would you explain ML results to clinicians?
+-   What barriers exist to ML adoption in your field?
+:::
+
+**Thank you for your attention!**
+
+*Remember: Machine learning is a powerful tool, but like any tool, its value depends on how skillfully and appropriately it's used.*
+
+::: notes
+Encourage questions and discussion. This is where the real learning often happens as students connect concepts to their own research interests and challenges.
+
+Key teaching points to reinforce: - ML is not magic, it's systematic pattern recognition - Always start with domain knowledge - Validation is crucial - never trust a model you haven't tested properly - Interpretability is essential for clinical adoption - Modest improvements can have real clinical impact - The human expert remains central to the process
+:::
