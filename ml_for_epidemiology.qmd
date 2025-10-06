@@ -11,7 +11,7 @@ format:
     slide-number: true
     chalkboard: true
     preview-links: auto
-    logo: "logo.png"
+    logo: "images/logo.png"
     footer: "ML in Epidemiology | Advanced statistical methods"
     transition: slide
     background-transition: fade
@@ -31,20 +31,33 @@ execute:
 
 ```{r}
 #| include: false 
+
+# Load required libraries
 library(tidyverse)
 library(tidymodels)
-library(knitr)
-library(gt)
-library(ggplot2)
 library(patchwork)
-library(VIM)
+library(future)
+library(furrr)
+
+
+# Define Model-Specific Parameters and Functions 
+thresh_other <- 0.1 # Threshold for grouping infrequent levels to "other_combined"
+thresh_corr <- 0.9 # Correlation threshold for removing highly correlated predictors
+
+# new_sep_names: Custom function for dummy variable naming
+new_sep_names <- function(var, lvl, ordinal) {
+  dummy_names(var = var, lvl = lvl, ordinal = ordinal, sep = "_@_")
+}
 
 # Set theme for all plots
-#theme_set(theme_minimal(base_size = 14))
-# Define your custom theme once
-my_theme <- theme_minimal(base_size = 14) + 
+my_theme <- theme_minimal(base_size = 14) +
   theme(
-    plot.title = element_text(face = "bold", size = 16, hjust = 0.5, color = "#2c3e50"),
+    plot.title = element_text(
+      face = "bold",
+      size = 16,
+      hjust = 0.5,
+      color = "#2c3e50"
+    ),
     plot.subtitle = element_text(size = 14, hjust = 0.5, color = "#4f5d75"),
     axis.title = element_text(size = 12, face = "bold", color = "#2c3e50"),
     axis.text = element_text(color = "#666666"),
@@ -54,66 +67,24 @@ my_theme <- theme_minimal(base_size = 14) +
     panel.grid.minor = element_blank()
   )
 
-# Create simulated demo data based on the longevity study
-set.seed(42)
-n_patients <- 10000
-demo_data <- tibble(
-  # Demographics
-  age = rnorm(n_patients, 55, 8),
-  # Cardiovascular measures
-  systolic_bp = rnorm(n_patients, 140, 20),
-  diastolic_bp = rnorm(n_patients, 85, 12),
-  hdl = rnorm(n_patients, 45, 15),
-  # Lifestyle factors
-  smoking_status = sample(
-    c("Never", "Former", "Current"),
-    n_patients,
-    prob = c(0.4, 0.35, 0.25),
-    replace = TRUE
-  ),
-  bmi = rnorm(n_patients, 26, 4),
-  # Medical history
-  mi_history = sample(
-    c(0, 1),
-    n_patients,
-    prob = c(0.85, 0.15),
-    replace = TRUE
-  ),
-  glucose = rnorm(n_patients, 100, 25),
-  # Create outcome based on realistic relationships
-  outcome_prob = plogis(
-    -4.5 +
-      -0.1 * (systolic_bp - 140) +
-      -0.8 * (smoking_status == "Current") +
-      -0.4 * (smoking_status == "Former") +
-      0.02 * (hdl - 45) +
-      -1.2 * mi_history +
-      -0.05 * (glucose - 100) +
-      -0.05 * (bmi - 26) +
-      -0.03 * (age - 55)
-  ),
-  outcome = rbinom(n_patients, 1, outcome_prob)
-) %>%
-  mutate(
-    # Convert to factors
-    outcome = factor(
-      outcome,
-      levels = c(0, 1),
-      labels = c("Normal", "Longevity")
-    ),
-    smoking_status = factor(
-      smoking_status,
-      levels = c("Never", "Former", "Current")
-    ),
-    mi_history = factor(mi_history, levels = c(0, 1), labels = c("No", "Yes")),
-    # Add some missing values for realism
-    hdl = ifelse(runif(n_patients) < 0.05, NA, hdl),
-    glucose = ifelse(runif(n_patients) < 0.03, NA, glucose)
-  ) %>%
-  select(-outcome_prob)
+# Standardize parallel processing
+options(future.globals.maxSize = 4 * 1024^3) # 4GB in bytes
+all_cores <- parallel::detectCores()
+plan(multisession, workers = all_cores - 2)
+ctl_grid <- control_resamples(
+  save_pred = TRUE,
+  save_workflow = TRUE,
+  parallel_over = 'everything'
+)
 
-# Save demo data for students
-write_csv(demo_data, "longevity_demo_data.csv")
+# Load synthetic data and prepare for modeling
+load("data/syn_data.RData")
+ml_df <- syn %>%
+  mutate(id = row_number(), .before = dmg_admission_age) %>% # Add ID column for realism
+  mutate_if(is.logical, as.factor) # Convert logicals to factors for modeling
+
+# Load pre-prepared modeling dataset
+load("data/model_fits.RData")
 ```
 
 ## Learning Objectives
@@ -150,7 +121,7 @@ Start with the classic definition from Arthur Samuel, one of the pioneers of mac
 
 ## Why ML in Healthcare Now?
 
-:::::: columns
+::::: columns
 ::: {.column width="50%"}
 ### 📊 The Data Revolution
 
@@ -170,7 +141,7 @@ Start with the classic definition from Arthur Samuel, one of the pioneers of mac
 **New Complexity:**
 
 -   Multiple chronic conditions per patient
--   Rare diseases 
+-   Rare diseases
 -   High dimensional data
 -   Dynamic health trajectories
 
@@ -202,8 +173,7 @@ Start with the classic definition from Arthur Samuel, one of the pioneers of mac
 
 *The computational barrier dissolved*
 :::
-
-::::::
+:::::
 
 ::: notes
 Emphasize that this isn't just about having better computers—it's about the convergence of multiple trends creating a unique opportunity for healthcare improvement.
@@ -211,35 +181,27 @@ Emphasize that this isn't just about having better computers—it's about the co
 
 ## 🧠 Machine Learning: The Perfect Bridge {.center}
 
-:::: {.columns}
-
-::: {.column width="50%"}
+::::::::: columns
+::::: {.column width="50%"}
 ::: {style="background-color: #f8f9fa; padding: 1.5em; border-radius: 10px; margin: 1em 0;"}
-**🗂️ Handles High-Dimensional Data**  
-*Thousands of variables? No problem.*
+**🗂️ Handles High-Dimensional Data** *Thousands of variables? No problem.*
 :::
 
 ::: {style="background-color: #e8f5e8; padding: 1.5em; border-radius: 10px; margin: 1em 0;"}
-**🔍 Discovers Hidden Patterns**  
-*Finds relationships humans miss.*
+**🔍 Discovers Hidden Patterns** *Finds relationships humans miss.*
 :::
+:::::
 
-:::
-
-::: {.column width="50%"}
+::::: {.column width="50%"}
 ::: {style="background-color: #f8f9fa; padding: 1.5em; border-radius: 10px; margin: 1em 0;"}
-**📈 Scales to Millions of Patients**  
-*Population-level insights.*
+**📈 Scales to Millions of Patients** *Population-level insights.*
 :::
 
 ::: {style="background-color: #e8f5e8; padding: 1.5em; border-radius: 10px; margin: 1em 0;"}
-**🎯 Provides Actionable Predictions:**  
-*Not just correlations—interventions.*
+**🎯 Provides Actionable Predictions:** *Not just correlations—interventions.*
 :::
-
-:::
-
-::::
+:::::
+:::::::::
 
 ::: callout-note
 **Before:** We had either data OR computing power OR methods—never all three.
@@ -259,7 +221,7 @@ This slide serves as a powerful transition from "why now" to "what ML can do." T
 
 -   **Causal inference** focus: understanding mechanisms
 
--   Clear **parametric assumptions** 
+-   Clear **parametric assumptions**
 
 -   Need for **Pre-specified interactions**
 
@@ -270,7 +232,6 @@ This slide serves as a powerful transition from "why now" to "what ML can do." T
 -   **Interpretable** coefficients
 
 > *"Does smoking **cause** cardiovascular disease?"*
-
 :::
 
 ::: {.column width="50%"}
@@ -278,7 +239,7 @@ This slide serves as a powerful transition from "why now" to "what ML can do." T
 
 -   Optimizing **predictions**
 
--   **Flexible model** assumptions 
+-   **Flexible model** assumptions
 
 -   Discover unknown patterns and **complex interactions**
 
@@ -289,7 +250,6 @@ This slide serves as a powerful transition from "why now" to "what ML can do." T
 -   Complex models: **"black box"** by nature
 
 > *"**Who** will develop cardiovascular disease?"*
-
 :::
 :::::
 
@@ -313,11 +273,11 @@ This slide serves as a powerful transition from "why now" to "what ML can do." T
 #| fig-width: 5
 #| fig-height: 3
 
-demo_data %>%
-  select(systolic_bp, outcome) %>%
+ml_df %>%
+  select(med_sbp_mean, outcome) %>%
   ggplot(aes(
-    x = systolic_bp,
-    y = as.numeric(outcome == "Longevity"),
+    x = med_sbp_mean,
+    y = as.numeric(outcome == "centenarian"),
     color = outcome
   )) +
   geom_jitter(height = 0.05, alpha = 0.7, size = 2) +
@@ -349,18 +309,17 @@ demo_data %>%
 #| fig-height: 3
 
 # K-means clustering demo
-
 set.seed(123)
-cluster_data <- demo_data %>%
-  select(systolic_bp, hdl) %>%
+cluster_data <- ml_df %>%
+  select(med_sbp_mean, med_weight_mean) %>%
   drop_na() %>%
-  slice_sample(n = 500)
+  slice_sample(n = 2500)
 
-kmeans_result <- kmeans(cluster_data, centers = 3)
+kmeans_result <- kmeans(cluster_data, centers = 5)
 
 cluster_data %>%
   mutate(cluster = factor(kmeans_result$cluster)) %>%
-  ggplot(aes(x = systolic_bp, y = hdl, color = cluster)) +
+  ggplot(aes(x = med_sbp_mean, y = med_weight_mean, color = cluster)) +
   geom_point(size = 2, alpha = 0.7) +
   labs(x = "Systolic BP", y = "HDL", color = "Cluster") +
   my_theme +
@@ -521,8 +480,6 @@ Use the gardening analogy - just as pruning makes trees healthier and more robus
 #| fig-height: 6
 
 #Create cooking dial visualization
-library(ggplot2)
-
 #Create circular dials
 angles <- seq(0, 2 * pi, length.out = 100)
 dial_data <- tibble(
@@ -721,12 +678,12 @@ The student analogy is powerful because everyone can relate to the difference be
 
 # Create comparison of model types
 set.seed(123)
-demo_subset <- demo_data %>%
+demo_subset <- ml_df %>%
   drop_na() %>%
-  slice_sample(n = 200) %>%
-  mutate(outcome_num = as.numeric(outcome == "Longevity"))
+  #slice_sample(n = 2500) %>%
+  mutate(outcome_num = as.numeric(outcome == "centenarian"))
 
-p1 <- ggplot(demo_subset, aes(x = systolic_bp, y = outcome_num)) +
+p1 <- ggplot(demo_subset, aes(x = med_sbp_mean, y = outcome_num)) +
   geom_jitter(height = 0.05, alpha = 0.6) +
   geom_smooth(
     method = "glm",
@@ -748,13 +705,13 @@ p1 <- ggplot(demo_subset, aes(x = systolic_bp, y = outcome_num)) +
 tree_preds <- demo_subset %>%
   mutate(
     pred = case_when(
-      systolic_bp < 130 ~ 0.12,
-      systolic_bp < 150 ~ 0.08,
+      med_sbp_mean < 130 ~ 0.12,
+      med_sbp_mean < 150 ~ 0.08,
       TRUE ~ 0.05
     )
   )
 
-p2 <- ggplot(demo_subset, aes(x = systolic_bp, y = outcome_num)) +
+p2 <- ggplot(demo_subset, aes(x = med_sbp_mean, y = outcome_num)) +
   geom_jitter(height = 0.05, alpha = 0.6) +
   geom_step(data = tree_preds, aes(y = pred), color = "blue", linewidth = 2) +
   labs(
@@ -767,7 +724,7 @@ p2 <- ggplot(demo_subset, aes(x = systolic_bp, y = outcome_num)) +
 
 # Random forest (smoother)
 
-p3 <- ggplot(demo_subset, aes(x = systolic_bp, y = outcome_num)) +
+p3 <- ggplot(demo_subset, aes(x = med_sbp_mean, y = outcome_num)) +
   geom_jitter(height = 0.05, alpha = 0.6) +
   geom_smooth(
     method = "loess",
@@ -876,9 +833,6 @@ Emphasize that data leakage (using information from test set) is a critical erro
 
 ```{r}
 #| code-fold: false
-# Load required libraries
-library(tidymodels)
-library(VIM) # for missing data visualization
 
 # Create preprocessing recipe
 
