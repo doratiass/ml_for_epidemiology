@@ -225,12 +225,6 @@
       "Source": "Repository",
       "Repository": "CRAN"
     },
-    "MASS": {
-      "Package": "MASS",
-      "Version": "7.3-61",
-      "Source": "Repository",
-      "Repository": "CRAN"
-    },
     "Matrix": {
       "Package": "Matrix",
       "Version": "1.7-1",
