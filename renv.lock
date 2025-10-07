@@ -1058,7 +1058,7 @@
       "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
       "Repository": "CRAN"
     },
-        "curl": {
+    "curl": {
       "Package": "curl",
       "Version": "7.0.0",
       "Source": "Repository",
