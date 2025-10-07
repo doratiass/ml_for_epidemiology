@@ -75,7 +75,7 @@ my_theme <- list(
 # Standardize parallel processing
 options(future.globals.maxSize = 4 * 1024^3) # 4GB in bytes
 all_cores <- parallel::detectCores()
-plan(multisession, workers = all_cores - 2)
+#plan(multisession, workers = all_cores - 2)
 ctl_grid <- control_resamples(
   save_pred = TRUE,
   save_workflow = TRUE,
