@@ -1,0 +1,13 @@
+product_type = 'connect_cloud'
+'$schema' = 'https://cdn.posit.co/publisher/schemas/posit-publishing-schema-v3.json'
+type = 'html'
+entrypoint = 'ml_for_epidemiology.html'
+source = 'ml_for_epidemiology.qmd'
+validate = true
+files = [
+  '/ml_for_epidemiology.html',
+  '/ml_for_epidemiology_files',
+  '/.posit/publish/Machine Learning in Epidemiolo-6468.toml',
+  '/.posit/publish/deployments/deployment-NI7P.toml'
+]
+title = 'Machine Learning in Epidemiology'

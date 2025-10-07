@@ -1,0 +1,41 @@
+project:
+  type: website
+  output-dir: _site
+
+website:
+  title: "Machine Learning in Epidemiology"
+  description: "An Introduction with Case Study of Predicting Extreme Centenarianism"
+  
+  navbar:
+    title: "ML in Epidemiology"
+    left:
+      - href: index.qmd
+        text: Home
+      - href: ml_for_epidemiology.qmd
+        text: Presentation
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true
+    toc-depth: 2
+    code-fold: false
+    code-tools: true
+    fig-width: 10
+    fig-height: 6
+    fontsize: 1.2em
+    embed-resources: false
+
+execute:
+  echo: false
+  warning: false
+  message: false
+  cache: true
+  freeze: auto
+
+# GitHub Pages specific settings
+website:
+  site-url: "https://doratiass.github.io/ml_for_epidemiology/"
+  repo-url: "https://github.com/doratiass/ml_for_epidemiology"
+  repo-actions: [edit, issue]
