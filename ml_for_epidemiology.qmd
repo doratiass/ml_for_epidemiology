@@ -872,10 +872,10 @@ panels <- list(
         face = "italic",
         margin = margin(t = 15)
       ),
-      plot.background = element_rect(fill = "#fefefe", color = NA)
+      plot.background = element_rect(fill = "#fefefe", color = NA),
+      plot.margin = margin(20, 20, 20, 20)
     )
-  ) &
-  theme(plot.margin = margin(20, 20, 20, 20))
+  )
 ```
 :::
 
@@ -988,7 +988,7 @@ p3 <- ggplot(data_demo, aes(x = x)) +
   labs(title = "Overfitting", subtitle = "Memorizes noise") +
   theme_minimal()
 
-library(patchwork)
+
 p1 / p2 / p3 + plot_layout(ncol = 1)
 ```
 :::
