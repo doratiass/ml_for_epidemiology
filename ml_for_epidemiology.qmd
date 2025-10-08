@@ -156,7 +156,7 @@ Start with the classic definition from Arthur Samuel, one of the pioneers of mac
 
 -   **Non-linear** relationships
 
--   **High-dimensional** datasets (p\>N)
+-   **High-dimensional** datasets (Large p, p\>N)
 
 -   Complex models: **"black box"** by nature
 
@@ -340,6 +340,42 @@ When using machine learning it is not just algorithms, it's a **systematic proce
 Emphasize that the overall process is similar to traditional epidemiological studies. We will dive deeper into each step in the following slides.
 :::
 
+## Train/Test Split: The Foundation
+
+::::: columns
+::: {.column width="50%"}
+### Why Do We Split Our Data?
+
+#### The Fundamental Problem
+
+-   **Goal**: Build models that work on *new, unseen* patients
+-   **Challenge**: We only have the data we collected
+-   **Solution**: Simulate "unseen" data by holding some back
+
+#### What Happens Without Proper Splitting?
+
+-   **Overly optimistic performance**: Model appears better than it really is
+-   **Overfitting detection**: Can't tell if model learned noise vs. signal
+-   **Poor generalization**: Model fails when deployed in practice
+:::
+
+::: {.column width="50%"}
+### How to Split: The 75/25 Rule (and variations)
+
+#### Common Split Ratios:
+
+-   **75/25**: Good balance for moderate sample sizes (n \> 1,000)
+-   **80/20**: When you have large datasets and need more training data
+-   **70/30**: When you have smaller datasets and need robust testing
+
+### Special Considerations for Epidemiological Data
+
+-   **Class Imbalance**: Stratify splits to maintain outcome proportions
+-   **Temporal Data**: Use time-based splits to mimic real-world prediction
+-   **Clustered Data**: Split by site or cluster to avoid leakage
+:::
+:::::
+
 ## Supervised vs. Unsupervised Learning
 
 ::::: columns
@@ -398,7 +434,7 @@ ml_df %>%
 -   No known outcomes
 -   Discover structure in data
 -   Like organizing library without categories
--   **Examples:** Patient clustering, pattern discovery
+-   **Examples:** Patient clustering, pattern discovery, disease subtyping
 
 ```{r}
 #| fig-width: 5
@@ -424,8 +460,11 @@ cluster_data %>%
 :::
 :::::
 
-::: callout-note
-In this lecture we will focus on supervised learning models.
+::: {.callout-tip title="Machine Learning Beyond LLMs"}
+**Machine learning and AI are not limited to the large language models (LLMs)** everyone hears about today.\
+These methods have been part of science for decades and **share many core ideas** — optimization, loss functions, generalization.
+
+In this lecture, **we focus on supervised learning models**, which use labeled data to predict outcomes and form the foundation of most predictive tools in epidemiology and public health.
 :::
 
 ::: notes
@@ -440,7 +479,7 @@ Supervised learning is like medical school - students learn from cases with know
 
 Maximizes the likelihood function:
 
-$$\text{Likelihood}(y, \hat{y}) = -\frac{1}{m} \sum_{i=1}^{m} [y^{(i)} \log(\hat{y}^{(i)}) + (1 - y^{(i)}) \log(1 - \hat{y}^{(i)})]$$
+$$\text{Likelihood}(\theta) = -\frac{1}{m} \sum_{i=1}^{m} [y^{(i)} \log(\hat{y}^{(i)}) + (1 - y^{(i)}) \log(1 - \hat{y}^{(i)})]$$
 
 ### Key Characteristics
 
@@ -1084,6 +1123,38 @@ $L$ = number of leaf nodes in the tree; $N_j$ = number of samples in leaf node $
 
 -   **Larger leaves** contribute more to the total impurity due to weighting by $\frac{N_j}{N}$
 
+## Random Forest: Wisdom of the Crowd {.center}
+
+::::: columns
+::: {.column width="50%"}
+### Key Characteristics
+
+**Bootstrap Aggregating (Bagging):** - Create many bootstrap samples from training data - Train decision tree on each sample - Use random subset of features at each split - Average predictions across all trees
+
+**Feature Randomness:** At each split, consider only $\sqrt{p}$ randomly selected features (where $p$ = total features)
+
+**Key Innovation:** Combines **variance reduction** (bagging) with **feature randomness**
+:::
+
+::: {.column width="50%"}
+### Mathematical Foundation
+
+**Ensemble Prediction:** $$\hat{y} = \frac{1}{B} \sum_{b=1}^{B} \hat{f}_b(x)$$
+
+Where $\hat{f}_b$ is the $b$-th tree trained on bootstrap sample
+
+**Variance Reduction:** $$\text{Var}(\bar{X}) = \frac{\sigma^2}{n} \text{ (if trees independent)}$$
+:::
+:::::
+
+::: notes
+-   Random Forest is like having a committee of doctors each looking at different aspects of a patient
+-   Each "doctor" (tree) sees different patients (bootstrap samples) and focuses on different symptoms (random features)
+-   The final diagnosis comes from majority vote - more reliable than any single opinion
+-   Great stepping stone between interpretable single trees and complex ensemble methods like XGBoost
+-   Emphasize that this introduces the key concept of ensemble learning that XGBoost will build upon
+:::
+
 ## eXtreme Gradient Boosting (XGBoost)
 
 ::::: columns
@@ -1325,47 +1396,6 @@ p3 <- plot_data %>%
   )  
 ```
 
-------------------------------------------------------------------------
-
-## Hyperparameters: "Adjusting the Recipe"
-
-::::: columns
-::: {.column width="50%"}
-### What are Hyperparameters?
-
-**Definition**: *Settings chosen before training begins*
-
--   **Not learned from data**: We set them manually
--   **Control learning process**: How the algorithm behaves
--   **Recipe analogy**: Like oven temperature and cooking time
-
-**Seen so far** - **Logistic regression:** regularization strength *(λ)* or *C = 1/λ*; solver/optimizer\
-- **LASSO:** the **penalty λ** that shrinks/zeros coefficients (sparsity control)\
-- **XGBoost (gradient-boosted trees):** learning rate *(eta)*, tree depth, number of boosting rounds, subsampling, etc.
-:::
-
-::: {.column width="50%"}
-### How to Determine Hyperparameters
-
--   **Define evaluation plan first** *(prevent leakage)*
-    -   Prefer **temporal/site splits** over random splits when data are time/site-structured\
-    -   Use **nested cross-validation** for honest performance when tuning is heavy\
--   **Search strategies**
-    -   **Grid search:** small spaces, few params\
-    -   **Random search:** better coverage when spaces are wide\
-    -   **Bayesian optimization:** sample efficiently near promising regions\
-    -   **Early stopping:** stop boosting when validation loss stops improving\
--   **Choose using fit-for-use metrics**
-    -   Discrimination *(AUC)* **and** **calibration** (reliability curves/Brier)\
-    -   **Decision Curve Analysis** to align thresholds with clinical utility\
-    -   Check **fairness** & subgroup stability
-:::
-:::::
-
-::: notes
-Emphasize that hyperparameter tuning is like being a chef - you need to adjust the recipe based on ingredients (data) and desired outcome (prediction task). There's no universal "best" setting.
-:::
-
 ## Common XGBoost Hyperparameter
 
 ```{r}
@@ -1495,7 +1525,250 @@ ggplot() +
   )
 ```
 
-------------------------------------------------------------------------
+## Hyperparameters: "Adjusting the Recipe"
+
+### What are Hyperparameters?
+
+**Hyperparameters** are configuration settings that we must specify **before** training a machine learning model begins. "recipe settings" - like oven temperature and cooking time - that control how your algorithm learns from data.
+
+### Key Characteristics:
+
+-   **Not learned from data**: We set them manually based on experience or systematic testing
+-   **Control the learning process**: They determine how the algorithm behaves during training
+-   **Model-specific**: Different algorithms have different hyperparameters
+-   **Critical for performance**: Poor hyperparameter choices can lead to suboptimal models
+
+### Examples in Epidemiology:
+
+-   **LASSO regression**: The penalty parameter (λ) that controls how much we shrink coefficients
+-   **Random Forest**: Number of trees, maximum tree depth, minimum samples per leaf
+-   **XGBoost**: Learning rate, tree depth, number of boosting rounds
+
+::: notes
+Emphasize that hyperparameter tuning is like being a chef - you need to adjust the recipe based on ingredients (data) and desired outcome (prediction task). There's no universal "best" setting.
+:::
+
+## How Hyperparameters Affect Model Behavior
+
+::::: columns
+::: {.column width="50%"}
+### Impact on Model Performance
+
+Hyperparameters directly influence critical aspects of your model:
+
+capacity, , bias–variance tradeoff, and
+
+#### **Bias-Variance Trade-off**
+
+#### **Risk of overfitting**
+
+#### **Speed of learning**
+
+#### **Computational Requirements**
+:::
+
+::: {.column width="50%"}
+PALCEHOLDER FOR IMAGE - how cariables shrink with LASSO
+:::
+:::::
+
+## Hyperparameters: How to Tune Them?
+
+### Step 1: Define the Search Space
+
+-   **Grid Search**: Test specific combinations systematically
+    -   Good for: Few hyperparameters, small search spaces
+    -   Example: Testing λ values \[0.001, 0.01, 0.1, 1.0, 10.0\]
+-   **Random Search**: Sample randomly from the hyperparameter space
+    -   Good for: High-dimensional spaces, when some hyperparameters matter more than others
+    -   Often outperforms grid search with same computational budget
+-   **Bayesian Optimization**: Use previous results to guide next choices
+    -   Good for: Expensive model training, when each evaluation takes significant time
+    -   Efficiently samples near promising regions
+
+## Hyperparameters: How to Tune Them?
+
+### Step 2: Choose Evaluation Strategy
+
+-   **Cross-validation**: Most robust for estimating performance
+-   **Hold-out validation**: Simpler but less reliable
+
+### Step 3: Select Optimization Metric
+
+Choose based on your epidemiological context:
+
+-   **Screening tools**: Prioritize sensitivity (catch all cases)
+
+-   **Confirmatory tests**: Prioritize specificity (avoid false alarms)
+
+-   **Rare diseases**: Use Precision-Recall AUC instead of ROC-AUC
+
+-   **Risk prediction**: Consider calibration alongside discrimination
+
+## How to Choose Hyperparameter Ranges
+
+PLACEHOLDER: Discuss domain knowledge, prior studies, and practical considerations in setting realistic ranges for hyperparameters.
+
+## Cross-Validation: Beyond Simple Splitting
+
+::::: columns
+::: {.column width="50%"}
+### What Is Cross-Validation?
+
+Cross-validation (CV) divides your **training data** into multiple folds to get more robust estimates of model performance during hyperparameter tuning.
+
+### How K-Fold Cross-Validation Works
+
+1.  **Divide training data** into k equal parts (typically k=5 or k=10)
+2.  **For each hyperparameter combination:**
+    -   Train model on k-1 folds
+    -   Test on the remaining fold
+    -   Repeat k times (each fold serves as validation once)
+    -   Average performance across all k tests
+:::
+
+::: {.column width="50%"}
+![](images/cv_test_train.png)
+:::
+:::::
+
+## Why Cross-Validation Helps
+
+::::: columns
+::: {.column width="50%"}
+### 1. **Reduces Overfitting to Validation Set**
+
+-   Single train/validation split might be lucky/unlucky
+-   CV averages across multiple validation sets
+-   More robust hyperparameter selection
+
+### 2. **Better Use of Limited Data**
+
+-   Every observation serves as both training and validation data
+-   Particularly important in epidemiology where data collection is expensive
+
+### 3. **Provides Uncertainty Estimates**
+:::
+
+::: {.column width="50%"}
+PALCEHOLDER FOR IMAGE
+:::
+:::::
+
+## Performance Metrics: Choosing the Right Measure
+
+### Understanding Your Epidemiological Context
+
+The choice of performance metric should align with your **clinical goals** and the **characteristics of your outcome**.
+
+### Types of Metrics
+
+-   **Discrimination**: Can the model rank patients by risk?
+-   **Classification**: At a specific threshold, how well do we classify patients?
+-   **Calibration**: Are the predicted probabilities accurate?
+
+## Discrimination Metrics: "Can the model rank patients by risk?"
+
+::::: columns
+::: {.column width="50%"}
+### **ROC-AUC (Area Under Receiver Operating Characteristic Curve)**
+
+-   **Range**: 0.5 (random guessing) to 1.0 (perfect discrimination)
+-   **Interpretation**: Probability that model ranks a random case higher than a random control
+-   **Good for**: Balanced outcomes, general screening tools
+-   **Clinical use**: Risk stratification, identifying high-risk patients
+-   **Ranges**: \<0.6 poor, 0.6-0.7 fair, 0.7-0.8 good, 0.8-0.9 very good, \>0.9 excellent
+:::
+
+::: {.column width="50%"}
+PALCEHOLDER FOR IMAGE - ROC curve
+:::
+:::::
+
+## Discrimination Metrics: "Can the model rank patients by risk?"
+
+::::: columns
+::: {.column width="50%"}
+### **Precision-Recall AUC**
+
+-   **Better than ROC-AUC** when outcome is rare (\< 10% prevalence)
+-   **Precision**: Of those flagged as high-risk, how many truly are? (PPV)
+-   **Recall**: Of all true cases, how many did we catch? (Sensitivity)
+-   **Clinical use**: Rare disease screening, adverse event prediction
+-   **Ranges**: Higher is better; Cutoffs depend on outcome prevalence
+:::
+
+::: {.column width="50%"}
+PALCEHOLDER FOR IMAGE - PR curve
+:::
+:::::
+
+## Classification Metrics: "At a specific threshold, how well do we classify?"
+
+:::: columns
+::: {.column width="50%"}
+### 1. **Sensitivity (Recall, True Positive Rate)**
+
+-   **Formula**: TP / (TP + FN)
+-   **Clinical question**: "Of all people with the disease, how many did we correctly identify?"
+-   **Priority when**: Missing cases is very costly (cancer screening, infectious disease outbreaks)
+
+### 2. **Specificity (True Negative Rate)**
+
+-   **Formula**: TN / (TN + FP)
+-   **Clinical question**: "Of all healthy people, how many did we correctly identify as healthy?"
+-   **Priority when**: False alarms are costly (invasive procedures, patient anxiety)
+:::
+::: {.column width="50%"}
+### 3. **Positive Predictive Value (Precision)**
+
+-   **Formula**: TP / (TP + FP)
+-   **Clinical question**: "Of those we flagged as positive, how many actually have the disease?"
+-   **Affected by**: Disease prevalence in population
+-   **Clinical use**: Informing patients about test results
+
+### 4. **Accuracy**
+
+-   **Formula**: (TP + TN) / (TP + TN + FP + FN)
+-   **Clinical question**: "Overall, how many did we classify correctly?"
+-   **Limitation**: Can be misleading with imbalanced outcomes
+-   **Use with caution**: Prefer sensitivity, specificity, PPV in clinical contexts
+:::
+:::::
+
+## Calibration Metrics: "Are the predicted probabilities accurate?"
+
+### Why Calibration Matters
+
+If your model predicts 20% risk, do 20% of those patients actually develop the outcome? This matters for:
+
+-   **Shared decision-making** with patients
+
+-   **Treatment thresholds** based on risk levels
+
+-   **Resource allocation** based on predicted burden
+
+### **Brier Score**
+
+-   **Formula**: Mean squared difference between predicted probabilities and actual outcomes
+-   **Range**: 0 (perfect) to 1 (worst)
+-   **Interpretation**: Overall prediction accuracy including confidence levels
+
+## Calibration Metrics: "Are the predicted probabilities accurate?"
+
+::::: columns
+::: {.column width="50%"}
+### **Calibration Intercept and Slope**
+
+-   **Perfect calibration**: Intercept = 0, Slope = 1
+-   **Slope \> 1**: Overconfident predictions (too extreme)
+-   **Slope \< 1**: Underconfident predictions (too conservative)
+:::
+
+::: {.column width="50%"}
+PALCEHOLDER FOR IMAGE - Calibration plot
+:::
+:::::
 
 ## Model Comparison Summary
 
@@ -1514,34 +1787,3 @@ ggplot() +
 | **Large number of variables** | Inefficient when *p \> N*. | Handles high-dimensional data (*p \> N*). | Handles high-dimensional and complex data well. |
 | **Large number of samples** | Computationally efficient. | Moderate computational cost. | Computationally intensive. |
 :::
-
-------------------------------------------------------------------------
-
-## Train/Test Split and Cross-Validation for Hyperparameter Tuning
-
-::::: columns
-::: {.column width="50%"}
-### Train/Test Split
-
--   Divide data into training and testing sets to evaluate model performance on unseen data.
--   Common splits: 70/30, 75/25, 80/20.
--   Can be random or based on time/site to prevent leakage.
-
-### K-Fold Cross-Validation
-
--   Further splits training data into k-folds (e.g., 5 or 10) to tune hyperparameters and assess model stability.
--   Each fold used once as validation while the rest form the sub-training set.
--   Average performance across folds estimates generalization error.
--   Choose metrics aligned with clinical goals (e.g., Sensitivity, AUC, calibration).
-
-## Hyperparameter Grid Search
-
--   Define a grid of hyperparameter combinations to evaluate.
--   Use cross-validation to assess each combination.
--   Select combination with best average performance on validation folds.
-:::
-
-::: {.column width="50%"}
-![](images/cv_test_train.png)
-:::
-:::::

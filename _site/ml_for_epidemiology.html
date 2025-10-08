@@ -1,22 +1,22 @@
 <!DOCTYPE html>
 <html lang="en"><head>
-<script src="ml_for_epidemiology_files/libs/clipboard/clipboard.min.js"></script>
-<script src="ml_for_epidemiology_files/libs/quarto-html/tabby.min.js"></script>
-<script src="ml_for_epidemiology_files/libs/quarto-html/popper.min.js"></script>
-<script src="ml_for_epidemiology_files/libs/quarto-html/tippy.umd.min.js"></script>
-<link href="ml_for_epidemiology_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="ml_for_epidemiology_files/libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="ml_for_epidemiology_files/libs/quarto-html/quarto-syntax-highlighting-29e2c20b02301cfff04dc8050bf30c7e.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-html/tabby.min.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-29e2c20b02301cfff04dc8050bf30c7e.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.6.37">
 
   <meta name="author" content="Dr.&nbsp;Dor Atias, MD-MPH">
-  <meta name="dcterms.date" content="2025-10-07">
+  <meta name="dcterms.date" content="2025-10-08">
   <title>Machine Learning in Epidemiology</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
-  <link rel="stylesheet" href="ml_for_epidemiology_files/libs/revealjs/dist/reset.css">
-  <link rel="stylesheet" href="ml_for_epidemiology_files/libs/revealjs/dist/reveal.css">
+  <link rel="stylesheet" href="site_libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="site_libs/revealjs/dist/reveal.css">
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
@@ -30,13 +30,13 @@
       vertical-align: middle;
     }
   </style>
-  <link rel="stylesheet" href="ml_for_epidemiology_files/libs/revealjs/dist/theme/quarto-bc7e05c7defaa91bc869f1c8a0961e24.css">
-  <link href="ml_for_epidemiology_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
-  <link href="ml_for_epidemiology_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
-  <link href="ml_for_epidemiology_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
-  <link href="ml_for_epidemiology_files/libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
-  <link href="ml_for_epidemiology_files/libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
-  <link href="ml_for_epidemiology_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <link rel="stylesheet" href="site_libs/revealjs/dist/theme/quarto-bc7e05c7defaa91bc869f1c8a0961e24.css">
+  <link href="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
   <style type="text/css">
     .reveal div.sourceCode {
       margin: 0;
@@ -124,8 +124,8 @@
       margin-right: 0; 
     }
   </style>
-  <script src="ml_for_epidemiology_files/libs/kePrint-0.0.1/kePrint.js"></script>
-  <link href="ml_for_epidemiology_files/libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+  <script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+  <link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
 </head>
 <body class="quarto-light">
   <div class="reveal">
@@ -146,7 +146,7 @@ Dr.&nbsp;Dor Atias, MD-MPH
     </div>
 </div>
 
-  <p class="date">2025-10-07</p>
+  <p class="date">2025-10-08</p>
 </section>
 <section id="learning-objectives" class="slide level2">
 <h2>Learning Objectives</h2>
@@ -226,7 +226,7 @@ Dr.&nbsp;Dor Atias, MD-MPH
 <li><p><strong>Flexible model</strong> assumptions</p></li>
 <li><p>Discover unknown patterns and <strong>complex interactions</strong></p></li>
 <li><p><strong>Non-linear</strong> relationships</p></li>
-<li><p><strong>High-dimensional</strong> datasets (p&gt;N)</p></li>
+<li><p><strong>High-dimensional</strong> datasets (Large p, p&gt;N)</p></li>
 <li><p>Complex models: <strong>“black box”</strong> by nature</p></li>
 </ul>
 <blockquote>
@@ -386,6 +386,39 @@ Dr.&nbsp;Dor Atias, MD-MPH
           display:block!important;
       }</style></aside>
 </section>
+<section id="traintest-split-the-foundation" class="slide level2">
+<h2>Train/Test Split: The Foundation</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<h3 id="why-do-we-split-our-data">Why Do We Split Our Data?</h3>
+<h4 id="the-fundamental-problem">The Fundamental Problem</h4>
+<ul>
+<li><strong>Goal</strong>: Build models that work on <em>new, unseen</em> patients</li>
+<li><strong>Challenge</strong>: We only have the data we collected</li>
+<li><strong>Solution</strong>: Simulate “unseen” data by holding some back</li>
+</ul>
+<h4 id="what-happens-without-proper-splitting">What Happens Without Proper Splitting?</h4>
+<ul>
+<li><strong>Overly optimistic performance</strong>: Model appears better than it really is</li>
+<li><strong>Overfitting detection</strong>: Can’t tell if model learned noise vs.&nbsp;signal</li>
+<li><strong>Poor generalization</strong>: Model fails when deployed in practice</li>
+</ul>
+</div><div class="column" style="width:50%;">
+<h3 id="how-to-split-the-7525-rule-and-variations">How to Split: The 75/25 Rule (and variations)</h3>
+<h4 id="common-split-ratios">Common Split Ratios:</h4>
+<ul>
+<li><strong>75/25</strong>: Good balance for moderate sample sizes (n &gt; 1,000)</li>
+<li><strong>80/20</strong>: When you have large datasets and need more training data</li>
+<li><strong>70/30</strong>: When you have smaller datasets and need robust testing</li>
+</ul>
+<h3 id="special-considerations-for-epidemiological-data">Special Considerations for Epidemiological Data</h3>
+<ul>
+<li><strong>Class Imbalance</strong>: Stratify splits to maintain outcome proportions</li>
+<li><strong>Temporal Data</strong>: Use time-based splits to mimic real-world prediction</li>
+<li><strong>Clustered Data</strong>: Split by site or cluster to avoid leakage</li>
+</ul>
+</div></div>
+</section>
 <section id="supervised-vs.-unsupervised-learning" class="slide level2">
 <h2>Supervised vs.&nbsp;Unsupervised Learning</h2>
 <div class="columns">
@@ -414,7 +447,7 @@ Dr.&nbsp;Dor Atias, MD-MPH
 <li>No known outcomes</li>
 <li>Discover structure in data</li>
 <li>Like organizing library without categories</li>
-<li><strong>Examples:</strong> Patient clustering, pattern discovery</li>
+<li><strong>Examples:</strong> Patient clustering, pattern discovery, disease subtyping</li>
 </ul>
 <div class="cell">
 <div class="cell-output-display">
@@ -426,16 +459,20 @@ Dr.&nbsp;Dor Atias, MD-MPH
 </div>
 </div>
 </div></div>
-<div class="callout callout-note callout-titled callout-style-default">
+<div title="Machine Learning Beyond LLMs">
+<div class="callout callout-tip callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<p><strong>Note</strong></p>
+<p><strong>Machine Learning Beyond LLMs</strong></p>
 </div>
 <div class="callout-content">
-<p>In this lecture we will focus on supervised learning models.</p>
+<p><strong>Machine learning and AI are not limited to the large language models (LLMs)</strong> everyone hears about today.<br>
+These methods have been part of science for decades and <strong>share many core ideas</strong> — optimization, loss functions, generalization.</p>
+<p>In this lecture, <strong>we focus on supervised learning models</strong>, which use labeled data to predict outcomes and form the foundation of most predictive tools in epidemiology and public health.</p>
+</div>
 </div>
 </div>
 </div>
@@ -459,7 +496,7 @@ Dr.&nbsp;Dor Atias, MD-MPH
 <div class="column" style="width:50%;">
 <h3 id="mathematical-foundation">Mathematical Foundation</h3>
 <p>Maximizes the likelihood function:</p>
-<p><span class="math display">\[\text{Likelihood}(y, \hat{y}) = -\frac{1}{m} \sum_{i=1}^{m} [y^{(i)} \log(\hat{y}^{(i)}) + (1 - y^{(i)}) \log(1 - \hat{y}^{(i)})]\]</span></p>
+<p><span class="math display">\[\text{Likelihood}(\theta) = -\frac{1}{m} \sum_{i=1}^{m} [y^{(i)} \log(\hat{y}^{(i)}) + (1 - y^{(i)}) \log(1 - \hat{y}^{(i)})]\]</span></p>
 <h3 id="key-characteristics">Key Characteristics</h3>
 <ul>
 <li><strong>Linear assumption</strong>: Assumes linear relationship between predictors and log-odds</li>
@@ -810,6 +847,40 @@ Dr.&nbsp;Dor Atias, MD-MPH
 <li><p><strong>Larger leaves</strong> contribute more to the total impurity due to weighting by <span class="math inline">\(\frac{N_j}{N}\)</span></p></li>
 </ul>
 </section>
+<section id="random-forest-wisdom-of-the-crowd" class="slide level2 center">
+<h2>Random Forest: Wisdom of the Crowd</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<h3 id="key-characteristics-3">Key Characteristics</h3>
+<p><strong>Bootstrap Aggregating (Bagging):</strong> - Create many bootstrap samples from training data - Train decision tree on each sample - Use random subset of features at each split - Average predictions across all trees</p>
+<p><strong>Feature Randomness:</strong> At each split, consider only <span class="math inline">\(\sqrt{p}\)</span> randomly selected features (where <span class="math inline">\(p\)</span> = total features)</p>
+<p><strong>Key Innovation:</strong> Combines <strong>variance reduction</strong> (bagging) with <strong>feature randomness</strong></p>
+</div><div class="column" style="width:50%;">
+<h3 id="mathematical-foundation-3">Mathematical Foundation</h3>
+<p><strong>Ensemble Prediction:</strong> <span class="math display">\[\hat{y} = \frac{1}{B} \sum_{b=1}^{B} \hat{f}_b(x)\]</span></p>
+<p>Where <span class="math inline">\(\hat{f}_b\)</span> is the <span class="math inline">\(b\)</span>-th tree trained on bootstrap sample</p>
+<p><strong>Variance Reduction:</strong> <span class="math display">\[\text{Var}(\bar{X}) = \frac{\sigma^2}{n} \text{ (if trees independent)}\]</span></p>
+</div></div>
+<aside class="notes">
+<ul>
+<li>Random Forest is like having a committee of doctors each looking at different aspects of a patient</li>
+<li>Each “doctor” (tree) sees different patients (bootstrap samples) and focuses on different symptoms (random features)</li>
+<li>The final diagnosis comes from majority vote - more reliable than any single opinion</li>
+<li>Great stepping stone between interpretable single trees and complex ensemble methods like XGBoost</li>
+<li>Emphasize that this introduces the key concept of ensemble learning that XGBoost will build upon</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
 <section id="extreme-gradient-boosting-xgboost" class="slide level2">
 <h2>eXtreme Gradient Boosting (XGBoost)</h2>
 <div class="columns">
@@ -818,7 +889,7 @@ Dr.&nbsp;Dor Atias, MD-MPH
 <p>XGBoost employs <strong>sequential ensemble learning</strong> where each tree corrects errors from previous learners, building weak decision trees that collectively form a powerful predictor.</p>
 <p><strong>Key Innovation:</strong> Unlike simple decision trees that make single predictions, <strong>gradient boosting</strong> sequentially trains multiple trees where each corrects errors from previous ones, while XGBoost enhances this with <strong>similarity scores</strong> and built-in <strong>regularization</strong>.</p>
 </div><div class="column" style="width:50%;">
-<h3 id="key-characteristics-3">Key Characteristics</h3>
+<h3 id="key-characteristics-4">Key Characteristics</h3>
 <ul>
 <li><strong>Ensemble method</strong>: Combines multiple weak learners sequentially</li>
 <li><strong>Gradient boosting</strong>: Each tree learns from previous trees’ errors</li>
@@ -877,51 +948,27 @@ Dr.&nbsp;Dor Atias, MD-MPH
 <h2>XGBoost - under the hood</h2>
 
 <img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-10-1.png" width="960" class="r-stretch"></section>
+<section id="common-xgboost-hyperparameter" class="slide level2">
+<h2>Common XGBoost Hyperparameter</h2>
+
+<img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-11-1.png" width="1152" class="r-stretch"></section>
 <section id="hyperparameters-adjusting-the-recipe" class="slide level2">
 <h2>Hyperparameters: “Adjusting the Recipe”</h2>
-<div class="columns">
-<div class="column" style="width:50%;">
 <h3 id="what-are-hyperparameters">What are Hyperparameters?</h3>
-<p><strong>Definition</strong>: <em>Settings chosen before training begins</em></p>
+<p><strong>Hyperparameters</strong> are configuration settings that we must specify <strong>before</strong> training a machine learning model begins. “recipe settings” - like oven temperature and cooking time - that control how your algorithm learns from data.</p>
+<h3 id="key-characteristics-5">Key Characteristics:</h3>
 <ul>
-<li><strong>Not learned from data</strong>: We set them manually</li>
-<li><strong>Control learning process</strong>: How the algorithm behaves</li>
-<li><strong>Recipe analogy</strong>: Like oven temperature and cooking time</li>
+<li><strong>Not learned from data</strong>: We set them manually based on experience or systematic testing</li>
+<li><strong>Control the learning process</strong>: They determine how the algorithm behaves during training</li>
+<li><strong>Model-specific</strong>: Different algorithms have different hyperparameters</li>
+<li><strong>Critical for performance</strong>: Poor hyperparameter choices can lead to suboptimal models</li>
 </ul>
-<p><strong>Seen so far</strong> - <strong>Logistic regression:</strong> regularization strength <em>(λ)</em> or <em>C = 1/λ</em>; solver/optimizer<br>
-- <strong>LASSO:</strong> the <strong>penalty λ</strong> that shrinks/zeros coefficients (sparsity control)<br>
-- <strong>XGBoost (gradient-boosted trees):</strong> learning rate <em>(eta)</em>, tree depth, number of boosting rounds, subsampling, etc.</p>
-</div><div class="column" style="width:50%;">
-<h3 id="how-to-determine-hyperparameters">How to Determine Hyperparameters</h3>
+<h3 id="examples-in-epidemiology">Examples in Epidemiology:</h3>
 <ul>
-<li><strong>Define evaluation plan first</strong> <em>(prevent leakage)</em>
-<ul>
-<li>Prefer <strong>temporal/site splits</strong> over random splits when data are time/site-structured<br>
-</li>
-<li>Use <strong>nested cross-validation</strong> for honest performance when tuning is heavy<br>
-</li>
-</ul></li>
-<li><strong>Search strategies</strong>
-<ul>
-<li><strong>Grid search:</strong> small spaces, few params<br>
-</li>
-<li><strong>Random search:</strong> better coverage when spaces are wide<br>
-</li>
-<li><strong>Bayesian optimization:</strong> sample efficiently near promising regions<br>
-</li>
-<li><strong>Early stopping:</strong> stop boosting when validation loss stops improving<br>
-</li>
-</ul></li>
-<li><strong>Choose using fit-for-use metrics</strong>
-<ul>
-<li>Discrimination <em>(AUC)</em> <strong>and</strong> <strong>calibration</strong> (reliability curves/Brier)<br>
-</li>
-<li><strong>Decision Curve Analysis</strong> to align thresholds with clinical utility<br>
-</li>
-<li>Check <strong>fairness</strong> &amp; subgroup stability</li>
-</ul></li>
+<li><strong>LASSO regression</strong>: The penalty parameter (λ) that controls how much we shrink coefficients</li>
+<li><strong>Random Forest</strong>: Number of trees, maximum tree depth, minimum samples per leaf</li>
+<li><strong>XGBoost</strong>: Learning rate, tree depth, number of boosting rounds</li>
 </ul>
-</div></div>
 <aside class="notes">
 <p>Emphasize that hyperparameter tuning is like being a chef - you need to adjust the recipe based on ingredients (data) and desired outcome (prediction task). There’s no universal “best” setting.</p>
 <style type="text/css">
@@ -936,10 +983,209 @@ Dr.&nbsp;Dor Atias, MD-MPH
           display:block!important;
       }</style></aside>
 </section>
-<section id="common-xgboost-hyperparameter" class="slide level2">
-<h2>Common XGBoost Hyperparameter</h2>
-
-<img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-11-1.png" width="1152" class="r-stretch"></section>
+<section id="how-hyperparameters-affect-model-behavior" class="slide level2">
+<h2>How Hyperparameters Affect Model Behavior</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<h3 id="impact-on-model-performance">Impact on Model Performance</h3>
+<p>Hyperparameters directly influence critical aspects of your model:</p>
+<p>capacity, , bias–variance tradeoff, and</p>
+<h4 id="bias-variance-trade-off"><strong>Bias-Variance Trade-off</strong></h4>
+<h4 id="risk-of-overfitting"><strong>Risk of overfitting</strong></h4>
+<h4 id="speed-of-learning"><strong>Speed of learning</strong></h4>
+<h4 id="computational-requirements"><strong>Computational Requirements</strong></h4>
+</div><div class="column" style="width:50%;">
+<p>PALCEHOLDER FOR IMAGE - how cariables shrink with LASSO</p>
+</div></div>
+</section>
+<section id="hyperparameters-how-to-tune-them" class="slide level2">
+<h2>Hyperparameters: How to Tune Them?</h2>
+<h3 id="step-1-define-the-search-space">Step 1: Define the Search Space</h3>
+<ul>
+<li><strong>Grid Search</strong>: Test specific combinations systematically
+<ul>
+<li>Good for: Few hyperparameters, small search spaces</li>
+<li>Example: Testing λ values [0.001, 0.01, 0.1, 1.0, 10.0]</li>
+</ul></li>
+<li><strong>Random Search</strong>: Sample randomly from the hyperparameter space
+<ul>
+<li>Good for: High-dimensional spaces, when some hyperparameters matter more than others</li>
+<li>Often outperforms grid search with same computational budget</li>
+</ul></li>
+<li><strong>Bayesian Optimization</strong>: Use previous results to guide next choices
+<ul>
+<li>Good for: Expensive model training, when each evaluation takes significant time</li>
+<li>Efficiently samples near promising regions</li>
+</ul></li>
+</ul>
+</section>
+<section id="hyperparameters-how-to-tune-them-1" class="slide level2">
+<h2>Hyperparameters: How to Tune Them?</h2>
+<h3 id="step-2-choose-evaluation-strategy">Step 2: Choose Evaluation Strategy</h3>
+<ul>
+<li><strong>Cross-validation</strong>: Most robust for estimating performance</li>
+<li><strong>Hold-out validation</strong>: Simpler but less reliable</li>
+</ul>
+<h3 id="step-3-select-optimization-metric">Step 3: Select Optimization Metric</h3>
+<p>Choose based on your epidemiological context:</p>
+<ul>
+<li><p><strong>Screening tools</strong>: Prioritize sensitivity (catch all cases)</p></li>
+<li><p><strong>Confirmatory tests</strong>: Prioritize specificity (avoid false alarms)</p></li>
+<li><p><strong>Rare diseases</strong>: Use Precision-Recall AUC instead of ROC-AUC</p></li>
+<li><p><strong>Risk prediction</strong>: Consider calibration alongside discrimination</p></li>
+</ul>
+</section>
+<section id="how-to-choose-hyperparameter-ranges" class="slide level2">
+<h2>How to Choose Hyperparameter Ranges</h2>
+<p>PLACEHOLDER: Discuss domain knowledge, prior studies, and practical considerations in setting realistic ranges for hyperparameters.</p>
+</section>
+<section id="cross-validation-beyond-simple-splitting" class="slide level2">
+<h2>Cross-Validation: Beyond Simple Splitting</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<h3 id="what-is-cross-validation">What Is Cross-Validation?</h3>
+<p>Cross-validation (CV) divides your <strong>training data</strong> into multiple folds to get more robust estimates of model performance during hyperparameter tuning.</p>
+<h3 id="how-k-fold-cross-validation-works">How K-Fold Cross-Validation Works</h3>
+<ol type="1">
+<li><strong>Divide training data</strong> into k equal parts (typically k=5 or k=10)</li>
+<li><strong>For each hyperparameter combination:</strong>
+<ul>
+<li>Train model on k-1 folds</li>
+<li>Test on the remaining fold</li>
+<li>Repeat k times (each fold serves as validation once)</li>
+<li>Average performance across all k tests</li>
+</ul></li>
+</ol>
+</div><div class="column" style="width:50%;">
+<p><img data-src="images/cv_test_train.png"></p>
+</div></div>
+</section>
+<section id="why-cross-validation-helps" class="slide level2">
+<h2>Why Cross-Validation Helps</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<h3 id="reduces-overfitting-to-validation-set">1. <strong>Reduces Overfitting to Validation Set</strong></h3>
+<ul>
+<li>Single train/validation split might be lucky/unlucky</li>
+<li>CV averages across multiple validation sets</li>
+<li>More robust hyperparameter selection</li>
+</ul>
+<h3 id="better-use-of-limited-data">2. <strong>Better Use of Limited Data</strong></h3>
+<ul>
+<li>Every observation serves as both training and validation data</li>
+<li>Particularly important in epidemiology where data collection is expensive</li>
+</ul>
+<h3 id="provides-uncertainty-estimates">3. <strong>Provides Uncertainty Estimates</strong></h3>
+</div><div class="column" style="width:50%;">
+<p>PALCEHOLDER FOR IMAGE</p>
+</div></div>
+</section>
+<section id="performance-metrics-choosing-the-right-measure" class="slide level2">
+<h2>Performance Metrics: Choosing the Right Measure</h2>
+<h3 id="understanding-your-epidemiological-context">Understanding Your Epidemiological Context</h3>
+<p>The choice of performance metric should align with your <strong>clinical goals</strong> and the <strong>characteristics of your outcome</strong>.</p>
+<h3 id="types-of-metrics">Types of Metrics</h3>
+<ul>
+<li><strong>Discrimination</strong>: Can the model rank patients by risk?</li>
+<li><strong>Classification</strong>: At a specific threshold, how well do we classify patients?</li>
+<li><strong>Calibration</strong>: Are the predicted probabilities accurate?</li>
+</ul>
+</section>
+<section id="discrimination-metrics-can-the-model-rank-patients-by-risk" class="slide level2">
+<h2>Discrimination Metrics: “Can the model rank patients by risk?”</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<h3 id="roc-auc-area-under-receiver-operating-characteristic-curve"><strong>ROC-AUC (Area Under Receiver Operating Characteristic Curve)</strong></h3>
+<ul>
+<li><strong>Range</strong>: 0.5 (random guessing) to 1.0 (perfect discrimination)</li>
+<li><strong>Interpretation</strong>: Probability that model ranks a random case higher than a random control</li>
+<li><strong>Good for</strong>: Balanced outcomes, general screening tools</li>
+<li><strong>Clinical use</strong>: Risk stratification, identifying high-risk patients</li>
+<li><strong>Ranges</strong>: &lt;0.6 poor, 0.6-0.7 fair, 0.7-0.8 good, 0.8-0.9 very good, &gt;0.9 excellent</li>
+</ul>
+</div><div class="column" style="width:50%;">
+<p>PALCEHOLDER FOR IMAGE - ROC curve</p>
+</div></div>
+</section>
+<section id="discrimination-metrics-can-the-model-rank-patients-by-risk-1" class="slide level2">
+<h2>Discrimination Metrics: “Can the model rank patients by risk?”</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<h3 id="precision-recall-auc"><strong>Precision-Recall AUC</strong></h3>
+<ul>
+<li><strong>Better than ROC-AUC</strong> when outcome is rare (&lt; 10% prevalence)</li>
+<li><strong>Precision</strong>: Of those flagged as high-risk, how many truly are? (PPV)</li>
+<li><strong>Recall</strong>: Of all true cases, how many did we catch? (Sensitivity)</li>
+<li><strong>Clinical use</strong>: Rare disease screening, adverse event prediction</li>
+<li><strong>Ranges</strong>: Higher is better; Cutoffs depend on outcome prevalence</li>
+</ul>
+</div><div class="column" style="width:50%;">
+<p>PALCEHOLDER FOR IMAGE - PR curve</p>
+</div></div>
+</section>
+<section id="classification-metrics-at-a-specific-threshold-how-well-do-we-classify" class="slide level2">
+<h2>Classification Metrics: “At a specific threshold, how well do we classify?”</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<h3 id="sensitivity-recall-true-positive-rate">1. <strong>Sensitivity (Recall, True Positive Rate)</strong></h3>
+<ul>
+<li><strong>Formula</strong>: TP / (TP + FN)</li>
+<li><strong>Clinical question</strong>: “Of all people with the disease, how many did we correctly identify?”</li>
+<li><strong>Priority when</strong>: Missing cases is very costly (cancer screening, infectious disease outbreaks)</li>
+</ul>
+<h3 id="specificity-true-negative-rate">2. <strong>Specificity (True Negative Rate)</strong></h3>
+<ul>
+<li><strong>Formula</strong>: TN / (TN + FP)</li>
+<li><strong>Clinical question</strong>: “Of all healthy people, how many did we correctly identify as healthy?”</li>
+<li><strong>Priority when</strong>: False alarms are costly (invasive procedures, patient anxiety)</li>
+</ul>
+</div><div class="column" style="width:50%;">
+<h3 id="positive-predictive-value-precision">3. <strong>Positive Predictive Value (Precision)</strong></h3>
+<ul>
+<li><strong>Formula</strong>: TP / (TP + FP)</li>
+<li><strong>Clinical question</strong>: “Of those we flagged as positive, how many actually have the disease?”</li>
+<li><strong>Affected by</strong>: Disease prevalence in population</li>
+<li><strong>Clinical use</strong>: Informing patients about test results</li>
+</ul>
+<h3 id="accuracy">4. <strong>Accuracy</strong></h3>
+<ul>
+<li><strong>Formula</strong>: (TP + TN) / (TP + TN + FP + FN)</li>
+<li><strong>Clinical question</strong>: “Overall, how many did we classify correctly?”</li>
+<li><strong>Limitation</strong>: Can be misleading with imbalanced outcomes</li>
+<li><strong>Use with caution</strong>: Prefer sensitivity, specificity, PPV in clinical contexts</li>
+</ul>
+</div></div>
+</section>
+<section id="calibration-metrics-are-the-predicted-probabilities-accurate" class="slide level2">
+<h2>Calibration Metrics: “Are the predicted probabilities accurate?”</h2>
+<h3 id="why-calibration-matters">Why Calibration Matters</h3>
+<p>If your model predicts 20% risk, do 20% of those patients actually develop the outcome? This matters for:</p>
+<ul>
+<li><p><strong>Shared decision-making</strong> with patients</p></li>
+<li><p><strong>Treatment thresholds</strong> based on risk levels</p></li>
+<li><p><strong>Resource allocation</strong> based on predicted burden</p></li>
+</ul>
+<h3 id="brier-score"><strong>Brier Score</strong></h3>
+<ul>
+<li><strong>Formula</strong>: Mean squared difference between predicted probabilities and actual outcomes</li>
+<li><strong>Range</strong>: 0 (perfect) to 1 (worst)</li>
+<li><strong>Interpretation</strong>: Overall prediction accuracy including confidence levels</li>
+</ul>
+</section>
+<section id="calibration-metrics-are-the-predicted-probabilities-accurate-1" class="slide level2">
+<h2>Calibration Metrics: “Are the predicted probabilities accurate?”</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<h3 id="calibration-intercept-and-slope"><strong>Calibration Intercept and Slope</strong></h3>
+<ul>
+<li><strong>Perfect calibration</strong>: Intercept = 0, Slope = 1</li>
+<li><strong>Slope &gt; 1</strong>: Overconfident predictions (too extreme)</li>
+<li><strong>Slope &lt; 1</strong>: Underconfident predictions (too conservative)</li>
+</ul>
+</div><div class="column" style="width:50%;">
+<p>PALCEHOLDER FOR IMAGE - Calibration plot</p>
+</div></div>
+</section>
 <section id="model-comparison-summary" class="slide level2">
 <h2>Model Comparison Summary</h2>
 <div id="tbl-compare" class="tbl-cap">
@@ -1017,35 +1263,7 @@ Dr.&nbsp;Dor Atias, MD-MPH
 </tbody>
 </table>
 </div>
-</section>
-<section id="traintest-split-and-cross-validation-for-hyperparameter-tuning" class="slide level2">
-<h2>Train/Test Split and Cross-Validation for Hyperparameter Tuning</h2>
-<div class="columns">
-<div class="column" style="width:50%;">
-<h3 id="traintest-split">Train/Test Split</h3>
-<ul>
-<li>Divide data into training and testing sets to evaluate model performance on unseen data.</li>
-<li>Common splits: 70/30, 75/25, 80/20.</li>
-<li>Can be random or based on time/site to prevent leakage.</li>
-</ul>
-<h3 id="k-fold-cross-validation">K-Fold Cross-Validation</h3>
-<ul>
-<li>Further splits training data into k-folds (e.g., 5 or 10) to tune hyperparameters and assess model stability.</li>
-<li>Each fold used once as validation while the rest form the sub-training set.</li>
-<li>Average performance across folds estimates generalization error.</li>
-<li>Choose metrics aligned with clinical goals (e.g., Sensitivity, AUC, calibration).</li>
-</ul>
-<section id="hyperparameter-grid-search" class="slide level2">
-<h2>Hyperparameter Grid Search</h2>
-<ul>
-<li>Define a grid of hyperparameter combinations to evaluate.</li>
-<li>Use cross-validation to assess each combination.</li>
-<li>Select combination with best average performance on validation folds.</li>
-</ul>
-</section>
-</div><div class="column" style="width:50%;">
-<p><img data-src="images/cv_test_train.png"></p>
-</div></div>
+
 
 </section></section>
     </div>
@@ -1057,20 +1275,20 @@ Dr.&nbsp;Dor Atias, MD-MPH
 </div></div>
 
   <script>window.backupDefine = window.define; window.define = undefined;</script>
-  <script src="ml_for_epidemiology_files/libs/revealjs/dist/reveal.js"></script>
+  <script src="site_libs/revealjs/dist/reveal.js"></script>
   <!-- reveal.js plugins -->
-  <script src="ml_for_epidemiology_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
-  <script src="ml_for_epidemiology_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
-  <script src="ml_for_epidemiology_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
-  <script src="ml_for_epidemiology_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
-  <script src="ml_for_epidemiology_files/libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
-  <script src="ml_for_epidemiology_files/libs/revealjs/plugin/quarto-support/support.js"></script>
+  <script src="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="site_libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
+  <script src="site_libs/revealjs/plugin/quarto-support/support.js"></script>
   
 
-  <script src="ml_for_epidemiology_files/libs/revealjs/plugin/notes/notes.js"></script>
-  <script src="ml_for_epidemiology_files/libs/revealjs/plugin/search/search.js"></script>
-  <script src="ml_for_epidemiology_files/libs/revealjs/plugin/zoom/zoom.js"></script>
-  <script src="ml_for_epidemiology_files/libs/revealjs/plugin/math/math.js"></script>
+  <script src="site_libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="site_libs/revealjs/plugin/search/search.js"></script>
+  <script src="site_libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="site_libs/revealjs/plugin/math/math.js"></script>
   <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
 
   <script>
@@ -1391,7 +1609,7 @@ Dr.&nbsp;Dor Atias, MD-MPH
       }
         var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
         var mailtoRegex = new RegExp(/^mailto:/);
-          var filterRegex = new RegExp('/' + window.location.host + '/');
+          var filterRegex = new RegExp("https:\/\/doratiass\.github\.io\/ml_for_epidemiology\/");
         var isInternal = (href) => {
             return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
         }
