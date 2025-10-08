@@ -39,7 +39,7 @@ library(patchwork)
 library(future)
 library(furrr)
 library(ggplot2)
-
+library(glmnet)
 
 # Define Model-Specific Parameters and Functions 
 thresh_other <- 0.1 # Threshold for grouping infrequent levels to "other_combined"
