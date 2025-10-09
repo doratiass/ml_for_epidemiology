@@ -626,8 +626,7 @@ logistic_fit <- logistic_spec %>%
   fit(outcome ~ med_sbp_mean + med_smoke_status + 
       med_mi + med_dm + med_bmi_mean, 
       data = ml_df %>%
-        mutate(outcome = factor(outcome, levels = c("not_centenarian", "centenarian")),
-        med_sbp_mean = med_sbp_mean / 10)) # Scale for interpretability
+        mutate(med_sbp_mean = med_sbp_mean / 10)) # Scale for interpretability
 
 # Extract coefficients
 # Extract and format model coefficients
@@ -733,11 +732,11 @@ Where:
 
 -   Perfect predictions → Zero loss
 
-::: callout-note
-Can we predict too well? Yes! Overfitting occurs when a model learns noise instead of signal, leading to poor performance on new data.
+::: {.callout-note title="Can we predict too well?"}
+Yes! Overfitting occurs when a model learns noise instead of signal, leading to poor performance on new data.
 :::
 
-## The Bias-Variance Trade-off
+## The Bias-Variance Trade-off {.center}
 
 ::::: columns
 ::: {.column width="50%"}
@@ -754,31 +753,31 @@ Can we predict too well? Yes! Overfitting occurs when a model learns noise inste
 
 ::: {.column width="50%"}
 ```{r}
+#| fig-height: 8
 create_bullseye <- function() {
   tibble(
     x = 0,
     y = 0,
-    radius = c(1.0, 0.75, 0.5, 0.25),
+    radius = c(0.25, 0.5, 0.75, 1.0), # smallest first
     fill_color = c("#f8f9fa", "#2563eb", "#f8f9fa", "#dc2626"),
-    ring_order = 4:1 # For proper layering
+    ring_order = 4:1 # biggest first
   ) |>
-    arrange(desc(radius)) |> # Draw largest circles first
+    arrange(desc(radius)) |>
     ggplot(aes(x = x, y = y)) +
     ggforce::geom_circle(
-      aes(x0 = x, y0 = y, r = radius, fill = fill_color),
+      aes(x0 = x, y0 = y, r = radius, fill = fill_color, group = ring_order), # <- ensure separate groups
       color = "#374151",
       show.legend = FALSE
     ) +
     scale_fill_identity() +
-    coord_fixed(
-      xlim = c(-1.1, 1.1),
-      ylim = c(-1.1, 1.1),
-      expand = FALSE
-    ) +
+    coord_fixed(xlim = c(-1.1, 1.1), ylim = c(-1.1, 1.1), expand = FALSE) +
     theme_void() +
     theme(
-      plot.background = element_rect(fill = "white", color = NA),
-      panel.background = element_rect(fill = "white", color = NA)
+      plot.background = element_rect(fill = "transparent", colour = NA),
+      panel.background = element_rect(fill = NA, colour = NA),
+      legend.background = element_blank(),
+      legend.key = element_rect(fill = NA, colour = NA),
+      strip.background = element_blank()
     )
 }
 
@@ -842,7 +841,6 @@ create_panel <- function(points_data, main_title = "", sub_title = "") {
       title = main_title,
       subtitle = sub_title
     ) +
-      my_theme +
     theme(
       plot.title = element_text(
         size = 14,
@@ -852,12 +850,17 @@ create_panel <- function(points_data, main_title = "", sub_title = "") {
         margin = margin(b = 5)
       ),
       plot.subtitle = element_text(
-        size = 12,
+        size = 14,
+        face = "bold",
         hjust = 0.5,
         color = "#6b7280",
         margin = margin(b = 10)
       ),
-      plot.margin = margin(15, 15, 15, 15)
+              plot.background = element_rect(fill = "transparent", colour = NA),
+      panel.background = element_rect(fill = NA, colour = NA),
+      legend.background = element_blank(),
+      legend.key = element_rect(fill = NA, colour = NA),
+      strip.background = element_blank()
     )
 }
 
@@ -886,39 +889,26 @@ panels <- list(
 )
 
 # Create the final composed visualization
-(panels$p1 + panels$p2) /
-  (panels$p3 + panels$p4) +
-  plot_annotation(
-    caption = "Bias = systematic error | Variance = prediction inconsistency",
-    theme = theme(
-      plot.title = element_text(
-        size = 18,
-        face = "bold",
-        hjust = 0.5,
-        color = "#1f2937",
-        margin = margin(b = 10)
-      ),
-      plot.subtitle = element_text(
-        size = 13,
-        hjust = 0.5,
-        color = "#4b5563",
-        lineheight = 1.2,
-        margin = margin(b = 15)
-      ),
-      plot.caption = element_text(
-        size = 11,
-        hjust = 0.5,
-        color = "#6b7280",
-        face = "italic",
-        margin = margin(t = 15)
-      ),
-      plot.background = element_rect(fill = "#fefefe", color = NA),
-      plot.margin = margin(20, 20, 20, 20)
-    )
-  )
+theme_transparent <- theme(
+  plot.background  = element_rect(fill = "transparent", colour = NA),
+  panel.background = element_rect(fill = "transparent", colour = NA),
+  legend.background = element_blank(),
+  legend.key        = element_rect(fill = "transparent", colour = NA),
+  plot.margin       = margin(0, 0, 0, 0)
+)
+
+# 2) Combine with patchwork, apply to ALL subplots with `&`,
+#    and make the patchwork canvas transparent with plot_annotation(theme=...)
+((panels$p1 + panels$p2) /
+          (panels$p3 + panels$p4)) &
+  plot_annotation(theme = theme_transparent)
 ```
 :::
 :::::
+
+::: callout-important
+Bias = systematic error \| Variance = prediction inconsistency
+:::
 
 ## The Overfitting Problem (Student Learning Analogy)
 
@@ -972,7 +962,7 @@ p1 <- ggplot(data_demo, aes(x = x)) +
     color = "red",
     linewidth = 1.5
   ) +
-  labs(title = "Underfitting", subtitle = "Too simple - misses pattern") +
+  labs(title = "Underfitting", subtitle = "Too simple - misses pattern", x = "", y = "") +
   my_theme
 
 p2 <- ggplot(data_demo, aes(x = x)) +
@@ -986,7 +976,7 @@ p2 <- ggplot(data_demo, aes(x = x)) +
     color = "blue",
     linewidth = 1.5
   ) +
-  labs(title = "Good Fit", subtitle = "Captures signal") +
+  labs(title = "Good Fit", subtitle = "Captures signal", x = "", y = "") +
   my_theme
 
 p3 <- ggplot(data_demo, aes(x = x)) +
@@ -1000,11 +990,12 @@ p3 <- ggplot(data_demo, aes(x = x)) +
     color = "purple",
     linewidth = 1.5
   ) +
-  labs(title = "Overfitting", subtitle = "Memorizes noise") +
+  labs(title = "Overfitting", subtitle = "Memorizes noise", x = "", y = "") +
   my_theme
 
 
-p1 / p2 / p3 + plot_layout(ncol = 1)
+p1 / p2 / p3 + plot_layout(ncol = 1) &
+  plot_annotation(theme = theme_transparent)
 ```
 :::
 :::::
@@ -1013,15 +1004,18 @@ p1 / p2 / p3 + plot_layout(ncol = 1)
 The student analogy is powerful because everyone can relate to the difference between memorizing and understanding. Emphasize that overfitting is the #1 reason ML models fail in practice.
 :::
 
-## Overfitting: "Memorizing vs. Understanding"
+## Overfitting: "Memorizing vs. Understanding" {.center}
 
+::::: columns
+::: {.column width="50%"}
 ### Warning Signs
 
 1.  **Perfect training scores**: Usually too good to be true
 2.  **Large gap**: Training accuracy \>\> Test accuracy
 3.  **Complex model**: Too many parameters for data size
 4.  **Unstable predictions**: Small data changes → big prediction changes
-
+:::
+::: {.column width="50%"}
 ### Prevention Strategies
 
 -   **Validation**: Hold out test data
@@ -1031,7 +1025,8 @@ The student analogy is powerful because everyone can relate to the difference be
 -   **Regularization**: Penalize complexity
 
 -   **Early stopping**: Stop before overfitting begins
-
+:::
+:::::
 ::: callout-warning
 ## Remember: Overfitting is ML's Greatest Enemy
 
@@ -1062,6 +1057,7 @@ Always validate on truly unseen data. If it seems too good to be true, it probab
 
 ### Special Considerations for Epidemiological Data
 
+-   **Well-balanced outcomes**: Random splits usually suffice
 -   **Class Imbalance**: Stratify splits to maintain outcome proportions
 -   **Temporal Data**: Use time-based splits to mimic real-world prediction
 -   **Clustered Data**: Split by site or cluster to avoid leakage
@@ -1080,31 +1076,37 @@ Always validate on truly unseen data. If it seems too good to be true, it probab
 
 :::::: columns
 ::: {.column width="33%"}
-**LASSO (L1)**:
+**L1**:
 
--   Shrinks coefficients toward zero
+-   Based on absolute values of coefficients
 
 -   **Variable selection**: Can set coefficients exactly to zero
 
 -   Creates sparse models
+
+-   e.g., LASSO regression 
 :::
 
 ::: {.column width="33%"}
-**Ridge (L2)**:
+**L2**:
 
--   Shrinks all coefficients toward zero
+-   Based on squared values of coefficients
 
--   Keeps all variables but reduces their impact
+-   Shrinks coefficients toward zero (but none to zero)
 
 -   Good when all predictors are somewhat relevant
+
+-   e.g., Ridge regression 
 :::
 
 ::: {.column width="33%"}
-**Elastic Net**:
+**Mix**:
 
 -   Combines LASSO and Ridge
 
 -   Balances variable selection with coefficient shrinkage
+
+-   e.g., Elastic Net 
 :::
 ::::::
 
@@ -1132,11 +1134,12 @@ A regularized version of logistic regression that adds a penalty to the loss fun
 :::
 :::::
 
-::: callout-note
-LASSO is still a form of logistic regression, just with added regularization. It still assumes linear relationships and requires careful preprocessing.
+::: callout-warning
+## Remember: LASSO is still a form of logistic regression
+Just with added regularization. It still assumes linear relationships and requires careful preprocessing.
 :::
 
-## LASSO under the Hood
+## LASSO under the Hood {.center}
 
 ### Mathematical Foundation
 
@@ -1222,6 +1225,137 @@ scale_x_discrete(labels = vars_label) +
   my_theme
 ```
 
+## Hyperparameters: "Adjusting the Recipe"
+
+### What are Hyperparameters?
+
+**Hyperparameters** are configuration settings that we must specify **before** training a machine learning model begins. "recipe settings" - like oven temperature and cooking time - that control how your algorithm learns from data.
+
+### Key Characteristics:
+
+-   **Not learned from data**: We set them manually based on systematic testing
+-   **Control the learning process**: They determine how the algorithm behaves during training
+-   **Model-specific**: Different algorithms have different hyperparameters
+-   **Critical for performance**: Poor hyperparameter choices can lead to suboptimal models
+
+### Examples in Epidemiology:
+
+-   **LASSO regression**: The penalty parameter (λ) that controls how much we shrink coefficients
+-   **Random Forest**: Number of trees, maximum tree depth, minimum samples per leaf
+-   **XGBoost**: Learning rate, tree depth, number of boosting rounds
+
+::: notes
+Emphasize that hyperparameter tuning is like being a chef - you need to adjust the recipe based on ingredients (data) and desired outcome (prediction task). There's no universal "best" setting.
+:::
+
+## How Hyperparameters Affect Model Behavior
+
+::::: columns
+::: {.column width="50%"}
+### Impact on Model Performance
+
+Hyperparameters directly influence critical aspects of your model:
+
+capacity, , bias–variance tradeoff, and
+
+#### **Bias-Variance Trade-off**
+
+#### **Risk of overfitting**
+
+#### **Speed of learning**
+
+#### **Computational Requirements**
+:::
+
+::: {.column width="50%"}
+PALCEHOLDER FOR IMAGE - how cariables shrink with LASSO
+:::
+:::::
+
+## Hyperparameters: How to Tune Them?
+
+### Step 1: Define the Search Space
+
+-   **Grid Search**: Test specific combinations systematically
+    -   Good for: Few hyperparameters, small search spaces
+    -   Example: Testing λ values \[0.001, 0.01, 0.1, 1.0, 10.0\]
+-   **Random Search**: Sample randomly from the hyperparameter space
+    -   Good for: High-dimensional spaces, when some hyperparameters matter more than others
+    -   Often outperforms grid search with same computational budget
+-   **Bayesian Optimization**: Use previous results to guide next choices
+    -   Good for: Expensive model training, when each evaluation takes significant time
+    -   Efficiently samples near promising regions
+
+## Hyperparameters: How to Tune Them?
+
+### Step 2: Choose Evaluation Strategy
+
+-   **Hold-out validation**: Simpler but less reliable
+
+-   **Cross-validation**: Most robust for estimating performance
+
+### Step 3: Select Optimization Metric
+
+Choose based on your epidemiological context:
+
+-   **Screening tools**: Prioritize sensitivity (catch all cases)
+
+-   **Confirmatory tests**: Prioritize specificity (avoid false alarms)
+
+-   **Rare diseases**: Use Precision-Recall AUC instead of ROC-AUC
+
+-   **Risk prediction**: Consider calibration alongside discrimination
+
+## How to Choose Hyperparameter Ranges
+
+PLACEHOLDER: Discuss domain knowledge, prior studies, and practical considerations in setting realistic ranges for hyperparameters.
+
+## Cross-Validation: Beyond Simple Splitting
+
+::::: columns
+::: {.column width="50%"}
+### What Is Cross-Validation?
+
+Cross-validation (CV) divides your **training data** into multiple folds to get more robust estimates of model performance during hyperparameter tuning.
+
+### How K-Fold Cross-Validation Works
+
+1.  **Divide training data** into k equal parts (typically k=5 or k=10)
+2.  **For each hyperparameter combination:**
+    -   Train model on k-1 folds
+    -   Test on the remaining fold
+    -   Repeat k times (each fold serves as validation once)
+    -   Average performance across all k tests
+:::
+
+::: {.column width="50%"}
+![](images/cv_test_train.png)
+:::
+:::::
+
+## Why Cross-Validation Helps
+
+::::: columns
+::: {.column width="50%"}
+### 1. **Reduces Overfitting to Validation Set**
+
+-   Single train/validation split might be lucky/unlucky
+-   CV averages across multiple validation sets
+-   More robust hyperparameter selection
+
+### 2. **Better Use of Limited Data**
+
+-   Every observation serves as both training and validation data
+-   Particularly important in epidemiology where data collection is expensive
+
+### 3. **Provides Uncertainty Estimates**
+:::
+
+::: {.column width="50%"}
+PALCEHOLDER FOR IMAGE
+:::
+:::::
+
 ## Decision Trees
 
 ::::: columns
@@ -1234,7 +1368,6 @@ scale_x_discrete(labels = vars_label) +
 -   **Handles mixed data types**: Works with both continuous and categorical predictors natively
 -   **Automatic interaction detection**: Naturally captures variable interactions through hierarchical splits
 -   **Interpretable**: Easy to understand and explain to clinicians
--   **Prone to overfitting**: Thus, rarely used alone for prediction
 :::
 
 ::: {.column width="50%"}
@@ -1305,6 +1438,10 @@ $L$ = number of leaf nodes in the tree; $N_j$ = number of samples in leaf node $
 -   **No splits**: Total Gini = original root Gini
 
 -   **Larger leaves** contribute more to the total impurity due to weighting by $\frac{N_j}{N}$
+
+::: callout-warning
+Decision trees are intuitive but prone to overfitting and thus rarely used alone. They serve as the building blocks for more robust ensemble methods like Random Forest and XGBoost.
+:::
 
 ## Random Forest: Wisdom of the Crowd {.center}
 
@@ -1707,137 +1844,6 @@ ggplot() +
     plot.margin = margin(8, 12, 8, 12)
   )
 ```
-
-## Hyperparameters: "Adjusting the Recipe"
-
-### What are Hyperparameters?
-
-**Hyperparameters** are configuration settings that we must specify **before** training a machine learning model begins. "recipe settings" - like oven temperature and cooking time - that control how your algorithm learns from data.
-
-### Key Characteristics:
-
--   **Not learned from data**: We set them manually based on experience or systematic testing
--   **Control the learning process**: They determine how the algorithm behaves during training
--   **Model-specific**: Different algorithms have different hyperparameters
--   **Critical for performance**: Poor hyperparameter choices can lead to suboptimal models
-
-### Examples in Epidemiology:
-
--   **LASSO regression**: The penalty parameter (λ) that controls how much we shrink coefficients
--   **Random Forest**: Number of trees, maximum tree depth, minimum samples per leaf
--   **XGBoost**: Learning rate, tree depth, number of boosting rounds
-
-::: notes
-Emphasize that hyperparameter tuning is like being a chef - you need to adjust the recipe based on ingredients (data) and desired outcome (prediction task). There's no universal "best" setting.
-:::
-
-## How Hyperparameters Affect Model Behavior
-
-::::: columns
-::: {.column width="50%"}
-### Impact on Model Performance
-
-Hyperparameters directly influence critical aspects of your model:
-
-capacity, , bias–variance tradeoff, and
-
-#### **Bias-Variance Trade-off**
-
-#### **Risk of overfitting**
-
-#### **Speed of learning**
-
-#### **Computational Requirements**
-:::
-
-::: {.column width="50%"}
-PALCEHOLDER FOR IMAGE - how cariables shrink with LASSO
-:::
-:::::
-
-## Hyperparameters: How to Tune Them?
-
-### Step 1: Define the Search Space
-
--   **Grid Search**: Test specific combinations systematically
-    -   Good for: Few hyperparameters, small search spaces
-    -   Example: Testing λ values \[0.001, 0.01, 0.1, 1.0, 10.0\]
--   **Random Search**: Sample randomly from the hyperparameter space
-    -   Good for: High-dimensional spaces, when some hyperparameters matter more than others
-    -   Often outperforms grid search with same computational budget
--   **Bayesian Optimization**: Use previous results to guide next choices
-    -   Good for: Expensive model training, when each evaluation takes significant time
-    -   Efficiently samples near promising regions
-
-## Hyperparameters: How to Tune Them?
-
-### Step 2: Choose Evaluation Strategy
-
--   **Cross-validation**: Most robust for estimating performance
--   **Hold-out validation**: Simpler but less reliable
-
-### Step 3: Select Optimization Metric
-
-Choose based on your epidemiological context:
-
--   **Screening tools**: Prioritize sensitivity (catch all cases)
-
--   **Confirmatory tests**: Prioritize specificity (avoid false alarms)
-
--   **Rare diseases**: Use Precision-Recall AUC instead of ROC-AUC
-
--   **Risk prediction**: Consider calibration alongside discrimination
-
-## How to Choose Hyperparameter Ranges
-
-PLACEHOLDER: Discuss domain knowledge, prior studies, and practical considerations in setting realistic ranges for hyperparameters.
-
-## Cross-Validation: Beyond Simple Splitting
-
-::::: columns
-::: {.column width="50%"}
-### What Is Cross-Validation?
-
-Cross-validation (CV) divides your **training data** into multiple folds to get more robust estimates of model performance during hyperparameter tuning.
-
-### How K-Fold Cross-Validation Works
-
-1.  **Divide training data** into k equal parts (typically k=5 or k=10)
-2.  **For each hyperparameter combination:**
-    -   Train model on k-1 folds
-    -   Test on the remaining fold
-    -   Repeat k times (each fold serves as validation once)
-    -   Average performance across all k tests
-:::
-
-::: {.column width="50%"}
-![](images/cv_test_train.png)
-:::
-:::::
-
-## Why Cross-Validation Helps
-
-::::: columns
-::: {.column width="50%"}
-### 1. **Reduces Overfitting to Validation Set**
-
--   Single train/validation split might be lucky/unlucky
--   CV averages across multiple validation sets
--   More robust hyperparameter selection
-
-### 2. **Better Use of Limited Data**
-
--   Every observation serves as both training and validation data
--   Particularly important in epidemiology where data collection is expensive
-
-### 3. **Provides Uncertainty Estimates**
-:::
-
-::: {.column width="50%"}
-PALCEHOLDER FOR IMAGE
-:::
-:::::
-
 ## Performance Metrics: Choosing the Right Measure
 
 ### Understanding Your Epidemiological Context
