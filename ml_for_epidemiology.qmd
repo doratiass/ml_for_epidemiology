@@ -97,7 +97,7 @@ ctl_grid <- control_resamples(
 ```{r}
 #| include: false 
 # Load synthetic data and prepare for modeling
-source("ml_scripts/00 - funcs.R")
+source("scripts/00 - funcs.R")
 load("data/syn_data.RData")
 ml_df <- syn %>%
   mutate(id = row_number(), .before = dmg_admission_age) %>% # Add ID column for realism
