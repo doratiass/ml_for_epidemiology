@@ -1,0 +1,146 @@
+﻿var,name
+id_nivdaki,Participant ID
+dmg_admission_age,Age at Admission (years)
+dmg_ethnic,Ethnicity
+dmg_immigration_year,Year of Immigration
+dmg_martial_status,Marital Status
+dmg_num_children,Number of Children
+dmg_num_pp_living_together,Number of Occupants in the Household
+dmg_num_room,Number of Rooms at Household
+dmg_work_grade,Work grade
+dmg_salary,Salary
+dmg_education,Education level
+dmg_wife_education,Wife's Education
+dmg_wife_occupation,Wife's Occupation
+dmg_wife_work_outside,Wife’s work duration outside home (hours)
+dmg_origin,Country of Origin
+dmg_rlgeduc,Religious education
+dmg_rlgself,Self-reported Religious Level
+dmg_income_inx_source_salary,Main source of income (salary)
+dmg_income_inx_source_extra_work,Main source of income (extra work)
+dmg_income_inx_source_additional,Main source of income (additional)
+dmg_income_inx_source_wife,Main source of income (Wife)
+dmg_income_inx_source_other,Main source of income (other)
+dmg_income_inx_total,Total household income
+dmg_father_birth_country,Father Birth Country
+dmg_residenses_num_after_start_work,Number of residency places after starting work
+dmg_countries_num_after_start_work,Number of residency countries after starting work
+dmg_parent_class_discrepancy,Intergenerational Class Discrepancy
+dmg_birth_order,Birth order
+dmg_crisis_father_death,Crisis at death of father
+dmg_crisis_mother_death,Crisis at death of mother
+dmg_concentration_camp,Survived a concentration camp
+dmg_success_marriage,Self-reported Level of Success in Marriage
+dmg_SES,Socioeconomic Status quartile
+dmg_time_abroad,Time Abroad (years)
+med_right_arm_circum_cm,Right arm circumference (cm)
+med_triceps_thickness_mm,Thickness of triceps skinfold (mm)
+med_subscapular_thickness_mm,Thickness of subscapular skinfold (mm)
+med_puls,Pulse (beats/min)
+med_anxiety,Anxiety
+med_past_insulin_68,Insulin use
+med_sbp_mean,Mean Systolic Blood Pressure across 1963-1968 (mmHg)
+med_sbp_sd,Systolic Blood Pressure (SD)
+med_dbp_mean,Mean Diastolic Blood Pressure across 1963-1968 (mmHg)
+med_dbp_sd,Diastolic Blood Pressure (SD)
+med_weight_mean,Mean Weight across 1963-1968 (kg)
+med_weight_range,Weight (range)
+med_bmi_mean,Mean BMI across 1963-1968 (kg/m2)
+med_bmi_sd,BMI (SD)
+med_height_mean,Height (mean)
+med_smoke_status,Smoking Status
+med_smoke_change,Smoking Status change between 1963 and 1968
+med_dm,Diabetes mellitus
+med_angina,Angina pectoris
+med_mi,Myocardial Infarction
+med_ihd,Ischemic heart disease
+med_peripheral_art_dis,Peripheral artery disease
+med_htn,Hypertension
+med_limbs,Limb pathology
+med_intermittent_claudication,Intermittent claudication
+med_peptic,Peptic ulcer disease
+med_renal,Renal disease
+med_medication,Chronic medication
+diet_pcpoly,Calories from linoleic acid (%)
+med_lung,Lung disease
+lab_mean_cholesterol,Mean Cholesterol across 1963-1968 (g/dl)
+lab_range_cholesterol,Cholesterol (range)
+lab_mean_nonhdl,Non-HDL across 1963-1968 Cholesterol (mean)
+lab_range_nonhdl,Non-HDL Cholesterol (range)
+lab_mean_hdl,Mean HDL across 1963-1968
+lab_range_hdl,HDL Cholesterol (range)
+lab_glucose,Glucose (g/dl)
+lab_hemoglobin,Hemoglobin
+lab_hematocrit,Hematocrit (%)
+lab_uacid,Uric Acid (mg/dl)
+lab_blood_group,Blood type
+physical_activity_work,Physical activity level at work
+physical_activity_after_work,Physical activity level after work
+physical_activity,Physical activity level
+work_past_finance_trouble,Past financial trouble
+work_present_finance_trouble,Present financial trouble
+work_past_work_probs,Past work problems
+work_present_work_probs,Present work problems
+work_try_improve,Trying to improve at work
+work_coworker_like,Coworker shows affection
+work_supervisor_appreciate,Supervisors show appreciation
+work_past_coworker_probs,Past problems with co-workers
+work_present_coworker_probs,Present problems with co-workers
+work_past_superior_probs,Past Problems with Superior at Workplace
+work_present_superior_probs,Present Problems with Superior at Workplace
+work_hurt_by_coworker_forget,Hurt by coworkers (forget or brood)
+work_hurt_by_superior_forget,Hurt by supervisors (forget or brood)
+work_hurt_by_coworker_shout,Hurt by coworkers (shout or hit)
+work_hurt_by_superior_shout,Hurt by supervisors (shout or hit)
+work_hurt_by_coworker_restrain_retaliate,Hurt by coworkers (restrain retaliation)
+work_hurt_by_superior_restrain_retaliate,Hurt by supervisors (restrain retaliation)
+work_closed_person,Socially closed person
+work_satisfaction,Satisfaction from Work
+work_pressure,Work pressure
+work_durable_goods,Durable Goods
+work_family_interested,Family shows interest in work life
+work_station,Working Location
+family_past_trouble,Past family trouble
+family_present_trouble,Present family trouble
+family_hurt_by_wife_child_forget,Hurt by wife or children (forget or brood)
+family_hurt_by_wife_child_retaliate,Hurt by wife or children (retaliate)
+family_hurt_by_wife_child_restrain_retaliate,Hurt by wife or children (restrain retaliation)
+family_wife_shows_love,Wife Shows Love
+family_wife_children_listen,Wife and children listen
+family_affected_by_family_not_listen,Affected by family not listening
+family_prob_reach_living_standart,Problems in reaching living standard desired
+family_fight_injustice,Fight for injustice
+family_private_life_satisfaction,Private life satisfaction
+diet_type,Diet type
+diet_after_main_meal_activity,After Main Meal Activity
+diet_after_second_main_meal_activity,After second meal activity
+diet_food_snacks,Food snacks
+diet_drink_snacks,Drink snacks
+diet_main_meal_work,Main meal at work
+diet_main_meal_home,Main meal at home
+diet_main_meal_elsewhere,Main meal elsewhere
+diet_gms_protein_wk,Protein Intake (g/week)
+diet_gms_animal_protein_wk,Animal-sourced Protein Intake (g/week)
+diet_gms_tot_fat_wk,Total Fat Intake (grams/week)
+diet_gms_tot_sat_fat_wk,Total Saturated Fat Intake (grams/week)
+diet_oleic,Oleic Acid Intake (g)
+diet_linoleic,Linoleic Acid Intake (g)
+diet_tot_cho,Total carbohydrate Intake (g)
+diet_cho_strach,Carbohydrate Intake from starch
+diet_calories_eggs_wk,Caloric Intake of Eggs (kcal/week)
+diet_calories_bread_wk,Caloric Intake of Bread (kcal/week)
+diet_calories_suger_wk,Caloric Intake of Sugar (kcal/week)
+diet_calories_potatoes_wk,Caloric Intake of Potatoes (kcal/week)
+diet_calories_rice_wk,Caloric Intake of Rice (kcal/week)
+diet_calories_cereal_wk,Caloric Intake of Cereal (kcal/week)
+diet_tot_calories_wk,Total Caloric Intake (kcal/week)
+med_vital_capacity_index,Vital capacity index
+med_fev,Forced expiratory volume - 1 sec
+med_shoulder_measure_cm_biacromial,Shoulder measurement - Biacromial (cm)
+med_pelvic_measure_cm_bicristal,Pelvic measurement - Bicristal (cm)
+med_left_eye_pressure,Left eye pressure
+med_right_eye_pressure,Right eye pressure
+med_vital_capacity,Vital capacity 
+med_timed_vital_capacity,
+med_fvc_68,Forced vital capacity
+comp_forced_pv,comp_forced_pv

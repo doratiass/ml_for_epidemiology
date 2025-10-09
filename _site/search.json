@@ -4,7 +4,7 @@
     "href": "ml_for_epidemiology.html#learning-objectives",
     "title": "Machine Learning in Epidemiology",
     "section": "Learning Objectives",
-    "text": "Learning Objectives\nBy the end of this lecture, you will be able to:\n\n\nDistinguish between machine learning and traditional epidemiological approaches\nUnderstand core ML concepts: the ML workflow, models, overfitting, cross-validation\nImplement ML workflows using R and tidymodels\nEvaluate model performance using appropriate metrics\nApply explainable AI tools to interpret complex models\nRecognize when ML is appropriate vs. traditional methods\nCreate reproducible ML pipelines for public health applications\n\n\n\nThis lecture bridges traditional epidemiological training with modern ML methods. We’ll use the Centenarianism prediction study throughout as our practical example."
+    "text": "Learning Objectives\nBy the end of this lecture, you will be able to:\n\nDistinguish between machine learning and traditional epidemiological approaches\nRecognize when ML is appropriate vs. traditional methods\nUnderstand core ML concepts: the ML workflow, models, overfitting, cross-validation\nImplement ML workflows using R and tidymodels\nEvaluate model performance using appropriate metrics\nApply explainable AI tools to interpret complex models\n\n\nThis lecture bridges traditional epidemiological training with modern ML methods. We’ll use the Centenarianism prediction study throughout as our practical example."
   },
   {
     "objectID": "ml_for_epidemiology.html#what-is-machine-learning",
@@ -18,7 +18,7 @@
     "href": "ml_for_epidemiology.html#prediction-vs.-causation-different-tools-for-different-questions",
     "title": "Machine Learning in Epidemiology",
     "section": "Prediction vs. Causation: Different Tools for Different Questions",
-    "text": "Prediction vs. Causation: Different Tools for Different Questions\n\n\nTraditional Epidemiological Methods\n\nCausal inference focus: understanding mechanisms\nClear parametric assumptions\nNeed for Pre-specified interactions\nLinear relationships\nRelatively parsimonious models\nInterpretable coefficients\n\n\n“Does smoking cause cardiovascular disease?”\n\n\nMachine Learning Methods\n\nOptimizing predictions\nFlexible model assumptions\nDiscover unknown patterns and complex interactions\nNon-linear relationships\nHigh-dimensional datasets (Large p, p&gt;N)\nComplex models: “black box” by nature\n\n\n“Who will develop cardiovascular disease?”\n\n\n\n\n\n\n\n\nImportant\n\n\nMachine learning can also be used for causal inference, but this is outside the scope of this lecture"
+    "text": "Prediction vs. Causation: Different Tools for Different Questions\n\n\nTraditional Epidemiological Methods\n\nCausal inference focus: understanding mechanisms\nClear parametric assumptions\nLinear relationships\nNeed for Pre-specified interactions\nRelatively parsimonious models\nInterpretable coefficients\n\n\n“Does smoking cause cardiovascular disease?”\n\n\nMachine Learning Methods\n\nOptimizing predictions\nFlexible model assumptions\nNon-linear relationships\nDiscover unknown patterns and complex interactions\nHigh-dimensional datasets (Large p, p&gt;N)\nComplex models: “black box” by nature\n\n\n“Who will develop cardiovascular disease?”\n\n\n\n\n\n\n\n\nImportant\n\n\nMachine learning can also be used for causal inference, but this is outside the scope of this lecture"
   },
   {
     "objectID": "ml_for_epidemiology.html#why-ml-in-healthcare-now",
@@ -42,60 +42,102 @@
     "text": "Machine Learning Workflow for Epidemiological Research\n\n\n\n\n\n\n\nKey Insight\n\n\nWhen using machine learning it is not just algorithms, it’s a systematic process. Each step is crucial for success.\n\n\n\n\nEmphasize that the overall process is similar to traditional epidemiological studies. We will dive deeper into each step in the following slides."
   },
   {
-    "objectID": "ml_for_epidemiology.html#traintest-split-the-foundation",
-    "href": "ml_for_epidemiology.html#traintest-split-the-foundation",
-    "title": "Machine Learning in Epidemiology",
-    "section": "Train/Test Split: The Foundation",
-    "text": "Train/Test Split: The Foundation\n\n\nWhy Do We Split Our Data?\nThe Fundamental Problem\n\nGoal: Build models that work on new, unseen patients\nChallenge: We only have the data we collected\nSolution: Simulate “unseen” data by holding some back\n\nWhat Happens Without Proper Splitting?\n\nOverly optimistic performance: Model appears better than it really is\nOverfitting detection: Can’t tell if model learned noise vs. signal\nPoor generalization: Model fails when deployed in practice\n\n\nHow to Split: The 75/25 Rule (and variations)\nCommon Split Ratios:\n\n75/25: Good balance for moderate sample sizes (n &gt; 1,000)\n80/20: When you have large datasets and need more training data\n70/30: When you have smaller datasets and need robust testing\n\nSpecial Considerations for Epidemiological Data\n\nClass Imbalance: Stratify splits to maintain outcome proportions\nTemporal Data: Use time-based splits to mimic real-world prediction\nClustered Data: Split by site or cluster to avoid leakage"
-  },
-  {
     "objectID": "ml_for_epidemiology.html#supervised-vs.-unsupervised-learning",
     "href": "ml_for_epidemiology.html#supervised-vs.-unsupervised-learning",
     "title": "Machine Learning in Epidemiology",
     "section": "Supervised vs. Unsupervised Learning",
-    "text": "Supervised vs. Unsupervised Learning\n\n\nSupervised Learning\n“Learning with a teacher”\n\nKnown outcomes (labels)\nLearn input → output mapping\nLike medical diagnosis training\nExamples: Predicting disease, mortality risk\n\n\n\n\n\n\n\n\n\n\n\nUnsupervised Learning\n“Finding hidden patterns”\n\nNo known outcomes\nDiscover structure in data\nLike organizing library without categories\nExamples: Patient clustering, pattern discovery, disease subtyping\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nMachine Learning Beyond LLMs\n\n\nMachine learning and AI are not limited to the large language models (LLMs) everyone hears about today.\nThese methods have been part of science for decades and share many core ideas — optimization, loss functions, generalization.\nIn this lecture, we focus on supervised learning models, which use labeled data to predict outcomes and form the foundation of most predictive tools in epidemiology and public health.\n\n\n\n\n\nSupervised learning is like medical school - students learn from cases with known diagnoses. Unsupervised is like research - discovering patterns without knowing what to look for."
+    "text": "Supervised vs. Unsupervised Learning\n\n\nSupervised Learning\n“Learning with a teacher”\n\nKnown outcomes (labels)\nLearn input → output mapping\nLike medical diagnosis training\nExamples: Predicting disease, mortality risk\n\n\n\n\n\n\n\n\n\n\n\nUnsupervised Learning\n“Finding hidden patterns”\n\nNo known outcomes\nDiscover structure in data\nLike organizing library without categories\nExamples: Patient clustering, pattern discovery, disease subtyping\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nMachine Learning Beyond LLMs\n\n\nMachine learning and AI are not limited to the large language models (LLMs) everyone hears about today. In this lecture, we focus on supervised learning models.\n\n\n\n\n\nSupervised learning is like medical school - students learn from cases with known diagnoses. Unsupervised is like research - discovering patterns without knowing what to look for."
   },
   {
     "objectID": "ml_for_epidemiology.html#logistic-regression",
     "href": "ml_for_epidemiology.html#logistic-regression",
     "title": "Machine Learning in Epidemiology",
     "section": "Logistic Regression",
-    "text": "Logistic Regression\n\n\nMathematical Foundation\nMaximizes the likelihood function:\n\\[\\text{Likelihood}(\\theta) = -\\frac{1}{m} \\sum_{i=1}^{m} [y^{(i)} \\log(\\hat{y}^{(i)}) + (1 - y^{(i)}) \\log(1 - \\hat{y}^{(i)})]\\]\nKey Characteristics\n\nLinear assumption: Assumes linear relationship between predictors and log-odds\nHigh interpretability: Coefficients have direct clinical meaning\nReseachers involvement: Manual variable selection and interactions\nCannot handle missing data: Needs complete cases or imputation\nLimited to p &lt; N scenarios: Not suitable when predictors exceed observations\n\n\n\n\n\nLogistic Regression Results: Predictors of Centenarianism\n\n\nPredictor\nOdds Ratio\n95% CI Lower\n95% CI Upper\nP-value\n\n\n\n\nIntercept\n0.629\n0.283\n1.395\n0.254\n\n\nSystolic Blood Pressure\n1.018\n1.013\n1.023\n&lt; 0.001\n\n\nmed_smoke_statusex-smoker\n1.101\n0.884\n1.371\n0.391\n\n\nmed_smoke_status1-10\n0.931\n0.752\n1.153\n0.512\n\n\nmed_smoke_status11-20\n2.213\n1.703\n2.876\n&lt; 0.001\n\n\nmed_smoke_status20+\n2.071\n1.627\n2.635\n&lt; 0.001\n\n\nMyocardial Infarction\n0.905\n0.683\n1.199\n0.487\n\n\nDiabetes Mellitus\n1.110\n0.825\n1.494\n0.491\n\n\nBody Mass Index\n1.015\n0.990\n1.041\n0.235"
+    "text": "Logistic Regression\nMathematical Foundation\nMaximizes the likelihood function:\n\\[\\text{Likelihood}(\\theta) = \\prod_{i=1}^{m} [\\hat{y}^{(i)}]^{y^{(i)}} [1 - \\hat{y}^{(i)}]^{1-y^{(i)}}\\]\nKey Characteristics\n\nHigh interpretability: Coefficients have direct clinical meaning\nLinear assumption: Assumes linear relationship between predictors and log-odds\nReseachers involvement: Manual variable selection and interactions\nCannot handle missing data: Needs complete cases or imputation\nLimited to p &lt; N scenarios: Not suitable when predictors exceed observations"
+  },
+  {
+    "objectID": "ml_for_epidemiology.html#logistic-regression-results-predictors-of-centenarianism",
+    "href": "ml_for_epidemiology.html#logistic-regression-results-predictors-of-centenarianism",
+    "title": "Machine Learning in Epidemiology",
+    "section": "Logistic Regression Results: Predictors of Centenarianism",
+    "text": "Logistic Regression Results: Predictors of Centenarianism\n\n\n\n\n\nPredictor\nOdds Ratio\n95% CI Lower\n95% CI Upper\nP-value\n\n\n\n\nSystolic Blood Pressure (per 10 mmHg)\n0.837\n0.800\n0.876\n&lt; 0.001\n\n\nEx-Smoker\n0.909\n0.730\n1.131\n0.391\n\n\n1-10 Cigarettes/Day\n1.074\n0.868\n1.330\n0.512\n\n\n11-20 Cigarettes/Day\n0.452\n0.348\n0.587\n&lt; 0.001\n\n\n20+ Cigarettes/Day\n0.483\n0.380\n0.615\n&lt; 0.001\n\n\nMyocardial Infarction\n1.105\n0.834\n1.465\n0.487\n\n\nDiabetes Mellitus\n0.901\n0.669\n1.212\n0.491\n\n\nBody Mass Index\n0.985\n0.961\n1.010\n0.235"
   },
   {
     "objectID": "ml_for_epidemiology.html#loss-function-the-cost-of-being-wrong",
     "href": "ml_for_epidemiology.html#loss-function-the-cost-of-being-wrong",
     "title": "Machine Learning in Epidemiology",
     "section": "Loss Function: “The Cost of Being Wrong”",
-    "text": "Loss Function: “The Cost of Being Wrong”\n\n\nModel training = Optimization. In classical stats we maximize likelihood. In ML we typically minimize a loss.\nWhat is a Loss Function?\nDefinition: Quantifies how much we “pay” for incorrect predictions\n\nLikelihood rewards models that assign high probability to what actually happened\nNegative log converts that into a penalty: smaller is better\nLogistic regression training = minimizing log-loss on training data\nGuides model optimization: Algorithm minimizes this cost\nDifferent costs for different errors: False positives vs. false negatives\nMedical context: Missing cancer (high cost) vs. false alarm (lower cost)\n\n\nLogistic Regression Loss Function\nFor binary classification (like Centenarianism prediction):\n\\[\\text{Loss} = -\\frac{1}{n} \\sum_{i=1}^{n} [y_i \\log(p_i) + (1-y_i) \\log(1-p_i)]\\]\nWhere: - \\(y_i\\) = actual outcome (0 or 1) - \\(p_i\\) = predicted probability - \\(n\\) = number of observations\nIntuition: - When \\(y_i = 1\\) and \\(p_i\\) is small → Large penalty - When \\(y_i = 0\\) and \\(p_i\\) is large → Large penalty - Perfect predictions → Zero loss\n\n\n\n\n\n\n\nKey Insight\n\n\nThe loss function directly shapes what the model learns. Choose wisely based on your clinical priorities!\n\n\n\n\nEmphasize that the loss function is like a “feedback signal” that tells the algorithm what mistakes are most costly. In epidemiology, we often care more about false negatives (missing cases) than false positives."
+    "text": "Loss Function: “The Cost of Being Wrong”\nModel training = Optimization.\nIn classical stats we maximize likelihood. In ML we typically minimize a loss.\nWhat is a Loss Function?\nDefinition: Quantifies how much we “pay” for incorrect predictions\n\nLikelihood rewards models that assign high probability to what actually happened\nNegative log converts that into a penalty: smaller is better\nLogistic regression training = minimizing log-loss on training data\nDifferent loss functions for algorithms: e.g., squared error for regression, log-likelihood etc.\n\n\n\n\n\n\n\nKey Insight\n\n\nThe loss function directly shapes what the model learns. Choose wisely based on your clinical priorities!\n\n\n\n\nEmphasize that the loss function is like a “feedback signal” that tells the algorithm what mistakes are most costly. In epidemiology, we often care more about false negatives (missing cases) than false positives."
   },
   {
-    "objectID": "ml_for_epidemiology.html#lasso-regression-least-absolute-shrinkage-and-selection-operator",
-    "href": "ml_for_epidemiology.html#lasso-regression-least-absolute-shrinkage-and-selection-operator",
+    "objectID": "ml_for_epidemiology.html#logistic-regression-loss-function",
+    "href": "ml_for_epidemiology.html#logistic-regression-loss-function",
     "title": "Machine Learning in Epidemiology",
-    "section": "LASSO Regression (Least Absolute Shrinkage and Selection Operator)",
-    "text": "LASSO Regression (Least Absolute Shrinkage and Selection Operator)\n\n\nMathematical Foundation\nLASSO adds a regularization term to penalize coefficient magnitude:\n\\[\\text{Cost}(y, \\hat{y}) = -\\frac{1}{m} \\sum_{i=1}^{m} [y^{(i)} \\log(\\hat{y}^{(i)}) + (1 - y^{(i)}) \\log(1 - \\hat{y}^{(i)})] + \\lambda \\sum_{j=1}^{n} |\\beta_j|\\]\nKey Characteristics\n\nAutomatic feature selection: Shrinks unimportant coefficients to zero\nRegularization: λ hyperparameter controls shrinkage amount\nHandles high-dimensional data: Can work when p &gt; N\nCross-validation tuning: Uses CV to select optimal λ\nMaintains interpretability: Similar to logistic regression\n\n\nAdvantages Over Standard Logistic Regression\n\nPrevents overfitting through regularization\nAutomatically selects relevant variables\nHandles multicollinearity better\nWorks with high-dimensional datasets\n\nMathematical Penalty\n\\[\\text{Total Cost} = \\text{Loss Function} + \\lambda \\times \\text{Penalty}\\]\n\n\\(\\lambda\\) (lambda): Regularization strength\nHigher \\(\\lambda\\) = More aggressive pruning\nTuned using cross-validation\n\n\n\nUse the gardening analogy - just as pruning makes trees healthier and more robust, regularization makes models more generalizable by removing unnecessary complexity."
-  },
-  {
-    "objectID": "ml_for_epidemiology.html#regularization",
-    "href": "ml_for_epidemiology.html#regularization",
-    "title": "Machine Learning in Epidemiology",
-    "section": "Regularization",
-    "text": "Regularization\n\n\nThe Regularization Concept\nCore Idea: Prevent overly complex models\n\nOccam’s Razor: Simpler explanations are usually better\nBiological basis: Parsimonious models often generalize better\nPrevents overfitting: Stops model from memorizing noise\n\nTypes of Regularization\nLASSO (L1): - Shrinks coefficients toward zero - Variable selection: Can set coefficients exactly to zero - Creates sparse models\nRidge (L2): - Shrinks all coefficients toward zero - Keeps all variables but reduces their impact - Good when all predictors are somewhat relevant\nElastic Net: - Combines LASSO and Ridge - Balances variable selection with coefficient shrinkage"
+    "section": "Logistic Regression Loss Function",
+    "text": "Logistic Regression Loss Function\nFor binary classification (like Centenarianism prediction):\n\\[\\text{Log-Loss} = -\\frac{1}{m} \\sum_{i=1}^{m} [y^{(i)} \\log(\\hat{y}^{(i)}) + (1 - y^{(i)}) \\log(1 - \\hat{y}^{(i)})]\\]\nWhere:\n\n\\(y_i\\) = actual outcome (0 or 1)\n\\(\\hat{y}^{(i)}\\) = predicted probability\n\\(m\\) = number of observations\n\nIntuition:\n\nWhen \\(y_i = 1\\) and \\(\\hat{y}^{(i)}\\) is small → Large penalty\nWhen \\(y_i = 0\\) and \\(\\hat{y}^{(i)}\\) is large → Large penalty\nPerfect predictions → Zero loss\n\n\n\n\n\n\n\nNote\n\n\nCan we predict too well? Yes! Overfitting occurs when a model learns noise instead of signal, leading to poor performance on new data."
   },
   {
     "objectID": "ml_for_epidemiology.html#the-bias-variance-trade-off",
     "href": "ml_for_epidemiology.html#the-bias-variance-trade-off",
     "title": "Machine Learning in Epidemiology",
     "section": "The Bias-Variance Trade-off",
-    "text": "The Bias-Variance Trade-off\n\n\nKey Concepts\nBias: measures how far off, on average, a model’s predictions are from the ground truth values.\nVariance: measures how much a model’s predictions change with different training datasets\nOverfitting occurs when variance is high\nUnderfitting when bias is high Sweet spot: Balanced complexity for your data\n\n\n\n\n\n\n\n\n\n\nThe Overfitting Problem (Student Learning Analogy)\nDefinition: Model learns noise instead of signal\nMemorizer (Overfitted):\n\nKnows textbook word-for-word\nCan’t answer new questions\nFails when context changes\nExcellent on practice tests - Poor on real exam\n\nUnderstander (Well-fitted):\n\nGrasps underlying concepts\nApplies knowledge to new situations\nAdapts to different contexts\nGood on both practice and real tests\n\n\n\nThe student analogy is powerful because everyone can relate to the difference between memorizing and understanding. Emphasize that overfitting is the #1 reason ML models fail in practice."
+    "text": "The Bias-Variance Trade-off\n\n\nKey Concepts\nBias: measures how far off, on average, a model’s predictions are from the ground truth values.\nVariance: measures how much a model’s predictions change with different training datasets\nOverfitting occurs when variance is high\nUnderfitting when bias is high Sweet spot: Balanced complexity for your data"
+  },
+  {
+    "objectID": "ml_for_epidemiology.html#the-overfitting-problem-student-learning-analogy",
+    "href": "ml_for_epidemiology.html#the-overfitting-problem-student-learning-analogy",
+    "title": "Machine Learning in Epidemiology",
+    "section": "The Overfitting Problem (Student Learning Analogy)",
+    "text": "The Overfitting Problem (Student Learning Analogy)\n\n\nDefinition: Model learns noise instead of signal\nMemorizer (Overfitted):\n\nKnows textbook word-for-word\nCan’t answer new questions\nFails when context changes\nExcellent on practice tests - Poor on real exam\n\nUnderstander (Well-fitted):\n\nGrasps underlying concepts\nApplies knowledge to new situations\nAdapts to different contexts\nGood on both practice and real tests\n\n\n\n\n\n\n\n\n\n\n\n\n\nThe student analogy is powerful because everyone can relate to the difference between memorizing and understanding. Emphasize that overfitting is the #1 reason ML models fail in practice."
   },
   {
     "objectID": "ml_for_epidemiology.html#overfitting-memorizing-vs.-understanding",
     "href": "ml_for_epidemiology.html#overfitting-memorizing-vs.-understanding",
     "title": "Machine Learning in Epidemiology",
     "section": "Overfitting: “Memorizing vs. Understanding”",
-    "text": "Overfitting: “Memorizing vs. Understanding”\n\n\nWarning Signs\n\nPerfect training scores: Usually too good to be true\nLarge gap: Training accuracy &gt;&gt; Test accuracy\nComplex model: Too many parameters for data size\nUnstable predictions: Small data changes → big prediction changes\n\nPrevention Strategies\n\nValidation: Hold out test data\nCross-validation: Multiple honest estimates\nRegularization: Penalize complexity\nEarly stopping: Stop before overfitting begins\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nRemember: Overfitting is ML’s Greatest Enemy\n\n\nAlways validate on truly unseen data. If it seems too good to be true, it probably is!"
+    "text": "Overfitting: “Memorizing vs. Understanding”\nWarning Signs\n\nPerfect training scores: Usually too good to be true\nLarge gap: Training accuracy &gt;&gt; Test accuracy\nComplex model: Too many parameters for data size\nUnstable predictions: Small data changes → big prediction changes\n\nPrevention Strategies\n\nValidation: Hold out test data\nCross-validation: Multiple honest estimates\nRegularization: Penalize complexity\nEarly stopping: Stop before overfitting begins\n\n\n\n\n\n\n\nRemember: Overfitting is ML’s Greatest Enemy\n\n\nAlways validate on truly unseen data. If it seems too good to be true, it probably is!"
+  },
+  {
+    "objectID": "ml_for_epidemiology.html#traintest-split-why-do-we-split-our-data",
+    "href": "ml_for_epidemiology.html#traintest-split-why-do-we-split-our-data",
+    "title": "Machine Learning in Epidemiology",
+    "section": "Train/Test Split: Why Do We Split Our Data?",
+    "text": "Train/Test Split: Why Do We Split Our Data?\nThe Fundamental Problem\n\nGoal: Build models that work on new, unseen patients\nChallenge: We only have the data we collected\nSolution: Simulate “unseen” data by holding some back\n\nWhat Happens Without Proper Splitting?\n\nOverly optimistic performance: Model appears better than it really is\nOverfitting detection: Can’t tell if model learned noise vs. signal\nPoor generalization: Model fails when deployed in practice"
+  },
+  {
+    "objectID": "ml_for_epidemiology.html#traintest-split-how-to-split",
+    "href": "ml_for_epidemiology.html#traintest-split-how-to-split",
+    "title": "Machine Learning in Epidemiology",
+    "section": "Train/Test Split: How to Split",
+    "text": "Train/Test Split: How to Split\nCommon Split Ratios:\n\n75/25: Good balance for moderate sample sizes (n &gt; 1,000)\n80/20: When you have large datasets and need more training data\n70/30: When you have smaller datasets and need robust testing\n\nSpecial Considerations for Epidemiological Data\n\nClass Imbalance: Stratify splits to maintain outcome proportions\nTemporal Data: Use time-based splits to mimic real-world prediction\nClustered Data: Split by site or cluster to avoid leakage"
+  },
+  {
+    "objectID": "ml_for_epidemiology.html#regularization",
+    "href": "ml_for_epidemiology.html#regularization",
+    "title": "Machine Learning in Epidemiology",
+    "section": "Regularization",
+    "text": "Regularization\nThe Regularization Concept\nCore Idea: Prevent overly complex models\n\nOccam’s Razor: Simpler explanations are usually better\nBiological basis: Parsimonious models often generalize better\nPrevents overfitting: Stops model from memorizing noise\n\nTypes of Regularization\n\n\nLASSO (L1):\n\nShrinks coefficients toward zero\nVariable selection: Can set coefficients exactly to zero\nCreates sparse models\n\n\nRidge (L2):\n\nShrinks all coefficients toward zero\nKeeps all variables but reduces their impact\nGood when all predictors are somewhat relevant\n\n\nElastic Net:\n\nCombines LASSO and Ridge\nBalances variable selection with coefficient shrinkage"
+  },
+  {
+    "objectID": "ml_for_epidemiology.html#lasso-regression-least-absolute-shrinkage-and-selection-operator",
+    "href": "ml_for_epidemiology.html#lasso-regression-least-absolute-shrinkage-and-selection-operator",
+    "title": "Machine Learning in Epidemiology",
+    "section": "LASSO Regression (Least Absolute Shrinkage and Selection Operator)",
+    "text": "LASSO Regression (Least Absolute Shrinkage and Selection Operator)\nA regularized version of logistic regression that adds a penalty to the loss function to shrink coefficients.\n\n\nKey Characteristics\n\nAutomatic feature selection: Shrinks unimportant coefficients to zero\nRegularization: λ hyperparameter controls shrinkage amount\nHandles high-dimensional data: Can work when p &gt; N\nMaintains interpretability: Similar to logistic regression\n\n\nAdvantages Over Standard Logistic Regression\n\nPrevents overfitting through regularization\nAutomatically selects relevant variables\nHandles multicollinearity better\nWorks with high-dimensional datasets\n\n\n\n\n\n\n\n\nNote\n\n\nLASSO is still a form of logistic regression, just with added regularization. It still assumes linear relationships and requires careful preprocessing."
+  },
+  {
+    "objectID": "ml_for_epidemiology.html#lasso-under-the-hood",
+    "href": "ml_for_epidemiology.html#lasso-under-the-hood",
+    "title": "Machine Learning in Epidemiology",
+    "section": "LASSO under the Hood",
+    "text": "LASSO under the Hood\nMathematical Foundation\nLASSO adds a regularization term to penalize coefficient magnitude:\n\\[\\text{Cost}(y, \\hat{y}) = -\\frac{1}{m} \\sum_{i=1}^{m} [y^{(i)} \\log(\\hat{y}^{(i)}) + (1 - y^{(i)}) \\log(1 - \\hat{y}^{(i)})] + \\lambda \\sum_{j=1}^{n} |\\beta_j|\\]\nMathematical Penalty\n\\[\\text{Total Cost} = \\text{Loss Function} + \\lambda \\times \\text{Penalty}\\]\n\n\\(\\lambda\\) (lambda): Regularization strength\nHigher \\(\\lambda\\) = More aggressive pruning\nTuned using cross-validation\n\n\nUse the gardening analogy - just as pruning makes trees healthier and more robust, regularization makes models more generalizable by removing unnecessary complexity."
+  },
+  {
+    "objectID": "ml_for_epidemiology.html#lasso-coefficient-comparison-different-penalties",
+    "href": "ml_for_epidemiology.html#lasso-coefficient-comparison-different-penalties",
+    "title": "Machine Learning in Epidemiology",
+    "section": "LASSO Coefficient Comparison: Different Penalties",
+    "text": "LASSO Coefficient Comparison: Different Penalties"
   },
   {
     "objectID": "ml_for_epidemiology.html#decision-trees",
@@ -249,6 +291,6 @@
     "href": "ml_for_epidemiology.html#model-comparison-summary",
     "title": "Machine Learning in Epidemiology",
     "section": "Model Comparison Summary",
-    "text": "Model Comparison Summary\n\nTable 1. Comparison of data analysis algorithms\n\n\n\n\n\n\n\n\n\nAspect\nLogistic Regression (LR)\nLASSO\nXGBoost\n\n\n\n\nVariable selection\nManual; relies on researcher’s expertise.\nAutomatically shrinks some coefficients to zero.\nSelects variables by contribution to the loss function during training.\n\n\nInteractions\nMust be prespecified by the researcher.\nSame as LR.\nCaptured automatically within tree structures.\n\n\nLinearity\nAssumes linearity (extendable via polynomials/splines).\nSimilar to LR; allows some non-linearity.\nHandles non-linearity well; invariant to monotonic transformations.\n\n\nMissing data\nRequires imputation or removal before modeling.\nSame as LR.\nHandles missing data natively via optimal split direction.\n\n\nVariable transformation\nContinuous variables may need scaling; categorical require one-hot encoding.\nSame as LR.\nOnly categorical variables require one-hot encoding.\n\n\nOverfitting\nLow risk but no built-in control.\nReduces overfitting via coefficient shrinkage.\nControlled by internal regularization and sequential weak learners.\n\n\nInterpretability\nHigh interpretability.\nHigh interpretability.\nLow; requires explainable AI tools (e.g., SHAP).\n\n\nLarge number of variables\nInefficient when p &gt; N.\nHandles high-dimensional data (p &gt; N).\nHandles high-dimensional and complex data well.\n\n\nLarge number of samples\nComputationally efficient.\nModerate computational cost.\nComputationally intensive."
+    "text": "Model Comparison Summary\n\n\n\nTable 1\n\n\nTable 1. Comparison of data analysis algorithms\n\n\n\n\n\n\n\n\n\nAspect\nLogistic Regression (LR)\nLASSO\nXGBoost\n\n\n\n\nVariable selection\nManual; relies on researcher’s expertise.\nAutomatically shrinks some coefficients to zero.\nSelects variables by contribution to the loss function during training.\n\n\nInteractions\nMust be prespecified by the researcher.\nSame as LR.\nCaptured automatically within tree structures.\n\n\nLinearity\nAssumes linearity (extendable via polynomials/splines).\nSimilar to LR; allows some non-linearity.\nHandles non-linearity well; invariant to monotonic transformations.\n\n\nMissing data\nRequires imputation or removal before modeling.\nSame as LR.\nHandles missing data natively via optimal split direction.\n\n\nVariable transformation\nContinuous variables may need scaling; categorical require one-hot encoding.\nSame as LR.\nOnly categorical variables require one-hot encoding.\n\n\nOverfitting\nLow risk but no built-in control.\nReduces overfitting via coefficient shrinkage.\nControlled by internal regularization and sequential weak learners.\n\n\nInterpretability\nHigh interpretability.\nHigh interpretability.\nLow; requires explainable AI tools (e.g., SHAP).\n\n\nLarge number of variables\nInefficient when p &gt; N.\nHandles high-dimensional data (p &gt; N).\nHandles high-dimensional and complex data well.\n\n\nLarge number of samples\nComputationally efficient.\nModerate computational cost.\nComputationally intensive."
   }
 ]

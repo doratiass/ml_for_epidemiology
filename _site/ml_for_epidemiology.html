@@ -6,11 +6,11 @@
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-29e2c20b02301cfff04dc8050bf30c7e.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.6.37">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.8.25">
 
   <meta name="author" content="Dr.&nbsp;Dor Atias, MD-MPH">
-  <meta name="dcterms.date" content="2025-10-08">
+  <meta name="dcterms.date" content="2025-10-09">
   <title>Machine Learning in Epidemiology</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -30,7 +30,7 @@
       vertical-align: middle;
     }
   </style>
-  <link rel="stylesheet" href="site_libs/revealjs/dist/theme/quarto-bc7e05c7defaa91bc869f1c8a0961e24.css">
+  <link rel="stylesheet" href="site_libs/revealjs/dist/theme/quarto-90e3b8fd6a10ecdc1972d3bbffe56c76.css">
   <link href="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -146,22 +146,19 @@ Dr.&nbsp;Dor Atias, MD-MPH
     </div>
 </div>
 
-  <p class="date">2025-10-08</p>
+  <p class="date">2025-10-09</p>
 </section>
 <section id="learning-objectives" class="slide level2">
 <h2>Learning Objectives</h2>
 <p>By the end of this lecture, you will be able to:</p>
-<div>
 <ul>
 <li class="fragment"><strong>Distinguish</strong> between machine learning and traditional epidemiological approaches</li>
+<li class="fragment"><strong>Recognize</strong> when ML is appropriate vs.&nbsp;traditional methods</li>
 <li class="fragment"><strong>Understand</strong> core ML concepts: the ML workflow, models, overfitting, cross-validation</li>
 <li class="fragment"><strong>Implement</strong> ML workflows using R and tidymodels</li>
 <li class="fragment"><strong>Evaluate</strong> model performance using appropriate metrics</li>
 <li class="fragment"><strong>Apply</strong> explainable AI tools to interpret complex models</li>
-<li class="fragment"><strong>Recognize</strong> when ML is appropriate vs.&nbsp;traditional methods</li>
-<li class="fragment"><strong>Create</strong> reproducible ML pipelines for public health applications</li>
 </ul>
-</div>
 <aside class="notes">
 <p>This lecture bridges traditional epidemiological training with modern ML methods. We’ll use the Centenarianism prediction study throughout as our practical example.</p>
 <style type="text/css">
@@ -211,8 +208,8 @@ Dr.&nbsp;Dor Atias, MD-MPH
 <ul>
 <li><p><strong>Causal inference</strong> focus: understanding mechanisms</p></li>
 <li><p>Clear <strong>parametric assumptions</strong></p></li>
-<li><p>Need for <strong>Pre-specified interactions</strong></p></li>
 <li><p><strong>Linear</strong> relationships</p></li>
+<li><p>Need for <strong>Pre-specified interactions</strong></p></li>
 <li><p>Relatively parsimonious models</p></li>
 <li><p><strong>Interpretable</strong> coefficients</p></li>
 </ul>
@@ -224,8 +221,8 @@ Dr.&nbsp;Dor Atias, MD-MPH
 <ul>
 <li><p>Optimizing <strong>predictions</strong></p></li>
 <li><p><strong>Flexible model</strong> assumptions</p></li>
-<li><p>Discover unknown patterns and <strong>complex interactions</strong></p></li>
 <li><p><strong>Non-linear</strong> relationships</p></li>
+<li><p>Discover unknown patterns and <strong>complex interactions</strong></p></li>
 <li><p><strong>High-dimensional</strong> datasets (Large p, p&gt;N)</p></li>
 <li><p>Complex models: <strong>“black box”</strong> by nature</p></li>
 </ul>
@@ -359,7 +356,7 @@ Dr.&nbsp;Dor Atias, MD-MPH
 <section id="machine-learning-workflow-for-epidemiological-research" class="slide level2">
 <h2>Machine Learning Workflow for Epidemiological Research</h2>
 
-<img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-2-1.png" width="1152" class="r-stretch"><div class="callout callout-important callout-titled callout-style-default">
+<img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-3-1.png" class="quarto-figure quarto-figure-center r-stretch"><div class="callout callout-important callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
 <div class="callout-icon-container">
@@ -386,39 +383,6 @@ Dr.&nbsp;Dor Atias, MD-MPH
           display:block!important;
       }</style></aside>
 </section>
-<section id="traintest-split-the-foundation" class="slide level2">
-<h2>Train/Test Split: The Foundation</h2>
-<div class="columns">
-<div class="column" style="width:50%;">
-<h3 id="why-do-we-split-our-data">Why Do We Split Our Data?</h3>
-<h4 id="the-fundamental-problem">The Fundamental Problem</h4>
-<ul>
-<li><strong>Goal</strong>: Build models that work on <em>new, unseen</em> patients</li>
-<li><strong>Challenge</strong>: We only have the data we collected</li>
-<li><strong>Solution</strong>: Simulate “unseen” data by holding some back</li>
-</ul>
-<h4 id="what-happens-without-proper-splitting">What Happens Without Proper Splitting?</h4>
-<ul>
-<li><strong>Overly optimistic performance</strong>: Model appears better than it really is</li>
-<li><strong>Overfitting detection</strong>: Can’t tell if model learned noise vs.&nbsp;signal</li>
-<li><strong>Poor generalization</strong>: Model fails when deployed in practice</li>
-</ul>
-</div><div class="column" style="width:50%;">
-<h3 id="how-to-split-the-7525-rule-and-variations">How to Split: The 75/25 Rule (and variations)</h3>
-<h4 id="common-split-ratios">Common Split Ratios:</h4>
-<ul>
-<li><strong>75/25</strong>: Good balance for moderate sample sizes (n &gt; 1,000)</li>
-<li><strong>80/20</strong>: When you have large datasets and need more training data</li>
-<li><strong>70/30</strong>: When you have smaller datasets and need robust testing</li>
-</ul>
-<h3 id="special-considerations-for-epidemiological-data">Special Considerations for Epidemiological Data</h3>
-<ul>
-<li><strong>Class Imbalance</strong>: Stratify splits to maintain outcome proportions</li>
-<li><strong>Temporal Data</strong>: Use time-based splits to mimic real-world prediction</li>
-<li><strong>Clustered Data</strong>: Split by site or cluster to avoid leakage</li>
-</ul>
-</div></div>
-</section>
 <section id="supervised-vs.-unsupervised-learning" class="slide level2">
 <h2>Supervised vs.&nbsp;Unsupervised Learning</h2>
 <div class="columns">
@@ -435,7 +399,7 @@ Dr.&nbsp;Dor Atias, MD-MPH
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-3-1.png" width="480"></p>
+<p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-4-1.png"></p>
 </figure>
 </div>
 </div>
@@ -453,7 +417,7 @@ Dr.&nbsp;Dor Atias, MD-MPH
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-4-1.png" width="480"></p>
+<p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-5-1.png"></p>
 </figure>
 </div>
 </div>
@@ -469,9 +433,7 @@ Dr.&nbsp;Dor Atias, MD-MPH
 <p><strong>Machine Learning Beyond LLMs</strong></p>
 </div>
 <div class="callout-content">
-<p><strong>Machine learning and AI are not limited to the large language models (LLMs)</strong> everyone hears about today.<br>
-These methods have been part of science for decades and <strong>share many core ideas</strong> — optimization, loss functions, generalization.</p>
-<p>In this lecture, <strong>we focus on supervised learning models</strong>, which use labeled data to predict outcomes and form the foundation of most predictive tools in epidemiology and public health.</p>
+<p><strong>Machine learning and AI are not limited to the large language models (LLMs)</strong> everyone hears about today. In this lecture, <strong>we focus on supervised learning models</strong>.</p>
 </div>
 </div>
 </div>
@@ -492,24 +454,23 @@ These methods have been part of science for decades and <strong>share many core 
 </section>
 <section id="logistic-regression" class="slide level2">
 <h2>Logistic Regression</h2>
-<div class="columns">
-<div class="column" style="width:50%;">
 <h3 id="mathematical-foundation">Mathematical Foundation</h3>
 <p>Maximizes the likelihood function:</p>
-<p><span class="math display">\[\text{Likelihood}(\theta) = -\frac{1}{m} \sum_{i=1}^{m} [y^{(i)} \log(\hat{y}^{(i)}) + (1 - y^{(i)}) \log(1 - \hat{y}^{(i)})]\]</span></p>
+<p><span class="math display">\[\text{Likelihood}(\theta) = \prod_{i=1}^{m} [\hat{y}^{(i)}]^{y^{(i)}} [1 - \hat{y}^{(i)}]^{1-y^{(i)}}\]</span></p>
 <h3 id="key-characteristics">Key Characteristics</h3>
 <ul>
-<li><strong>Linear assumption</strong>: Assumes linear relationship between predictors and log-odds</li>
 <li><strong>High interpretability</strong>: Coefficients have direct clinical meaning</li>
+<li><strong>Linear assumption</strong>: Assumes linear relationship between predictors and log-odds</li>
 <li><strong>Reseachers involvement:</strong> Manual variable selection and interactions</li>
 <li><strong>Cannot handle missing data</strong>: Needs complete cases or imputation</li>
 <li><strong>Limited to p &lt; N scenarios</strong>: Not suitable when predictors exceed observations</li>
 </ul>
-</div><div class="column" style="width:50%;">
+</section>
+<section id="logistic-regression-results-predictors-of-centenarianism" class="slide level2">
+<h2>Logistic Regression Results: Predictors of Centenarianism</h2>
 <div class="cell">
 <div class="cell-output-display">
-<table class="table table-striped table-hover table-condensed caption-top" data-quarto-postprocess="true" style="width: auto !important; margin-left: auto; margin-right: auto;">
-<caption>Logistic Regression Results: Predictors of Centenarianism</caption>
+<table class="table table-striped table-hover table-condensed caption-top" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
 <tr class="header">
 <th style="text-align: left;" data-quarto-table-cell-role="th">Predictor</th>
@@ -521,98 +482,78 @@ These methods have been part of science for decades and <strong>share many core 
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">Intercept</td>
-<td style="text-align: center;">0.629</td>
-<td style="text-align: center;">0.283</td>
-<td style="text-align: center;">1.395</td>
-<td style="text-align: center;">0.254</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Systolic Blood Pressure</td>
-<td style="text-align: center;">1.018</td>
-<td style="text-align: center;">1.013</td>
-<td style="text-align: center;">1.023</td>
+<td style="text-align: left;">Systolic Blood Pressure (per 10 mmHg)</td>
+<td style="text-align: center;">0.837</td>
+<td style="text-align: center;">0.800</td>
+<td style="text-align: center;">0.876</td>
 <td style="text-align: center;">&lt; 0.001</td>
 </tr>
-<tr class="odd">
-<td style="text-align: left;">med_smoke_statusex-smoker</td>
-<td style="text-align: center;">1.101</td>
-<td style="text-align: center;">0.884</td>
-<td style="text-align: center;">1.371</td>
+<tr class="even">
+<td style="text-align: left;">Ex-Smoker</td>
+<td style="text-align: center;">0.909</td>
+<td style="text-align: center;">0.730</td>
+<td style="text-align: center;">1.131</td>
 <td style="text-align: center;">0.391</td>
 </tr>
-<tr class="even">
-<td style="text-align: left;">med_smoke_status1-10</td>
-<td style="text-align: center;">0.931</td>
-<td style="text-align: center;">0.752</td>
-<td style="text-align: center;">1.153</td>
+<tr class="odd">
+<td style="text-align: left;">1-10 Cigarettes/Day</td>
+<td style="text-align: center;">1.074</td>
+<td style="text-align: center;">0.868</td>
+<td style="text-align: center;">1.330</td>
 <td style="text-align: center;">0.512</td>
 </tr>
+<tr class="even">
+<td style="text-align: left;">11-20 Cigarettes/Day</td>
+<td style="text-align: center;">0.452</td>
+<td style="text-align: center;">0.348</td>
+<td style="text-align: center;">0.587</td>
+<td style="text-align: center;">&lt; 0.001</td>
+</tr>
 <tr class="odd">
-<td style="text-align: left;">med_smoke_status11-20</td>
-<td style="text-align: center;">2.213</td>
-<td style="text-align: center;">1.703</td>
-<td style="text-align: center;">2.876</td>
+<td style="text-align: left;">20+ Cigarettes/Day</td>
+<td style="text-align: center;">0.483</td>
+<td style="text-align: center;">0.380</td>
+<td style="text-align: center;">0.615</td>
 <td style="text-align: center;">&lt; 0.001</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">med_smoke_status20+</td>
-<td style="text-align: center;">2.071</td>
-<td style="text-align: center;">1.627</td>
-<td style="text-align: center;">2.635</td>
-<td style="text-align: center;">&lt; 0.001</td>
-</tr>
-<tr class="odd">
 <td style="text-align: left;">Myocardial Infarction</td>
-<td style="text-align: center;">0.905</td>
-<td style="text-align: center;">0.683</td>
-<td style="text-align: center;">1.199</td>
+<td style="text-align: center;">1.105</td>
+<td style="text-align: center;">0.834</td>
+<td style="text-align: center;">1.465</td>
 <td style="text-align: center;">0.487</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Diabetes Mellitus</td>
-<td style="text-align: center;">1.110</td>
-<td style="text-align: center;">0.825</td>
-<td style="text-align: center;">1.494</td>
+<td style="text-align: center;">0.901</td>
+<td style="text-align: center;">0.669</td>
+<td style="text-align: center;">1.212</td>
 <td style="text-align: center;">0.491</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Body Mass Index</td>
-<td style="text-align: center;">1.015</td>
-<td style="text-align: center;">0.990</td>
-<td style="text-align: center;">1.041</td>
+<td style="text-align: center;">0.985</td>
+<td style="text-align: center;">0.961</td>
+<td style="text-align: center;">1.010</td>
 <td style="text-align: center;">0.235</td>
 </tr>
 </tbody>
 </table>
-
-
 </div>
 </div>
-</div></div>
 </section>
 <section id="loss-function-the-cost-of-being-wrong" class="slide level2">
 <h2>Loss Function: “The Cost of Being Wrong”</h2>
-<div class="columns">
-<div class="column" style="width:50%;">
-<p><strong>Model training = Optimization.</strong> In classical stats we <em>maximize</em> likelihood. In ML we typically <em>minimize</em> a <strong>loss</strong>.</p>
+<p><strong>Model training = Optimization.</strong></p>
+<p>In classical stats we <em>maximize</em> likelihood. In ML we typically <em>minimize</em> a <strong>loss</strong>.</p>
 <h3 id="what-is-a-loss-function">What is a Loss Function?</h3>
 <p><strong>Definition</strong>: <em>Quantifies how much we “pay” for incorrect predictions</em></p>
 <ul>
 <li><p>Likelihood rewards models that assign <strong>high probability to what actually happened</strong></p></li>
 <li><p>Negative log converts that into a <strong>penalty</strong>: smaller is better</p></li>
 <li><p>Logistic regression training = minimizing <strong>log-loss</strong> on training data</p></li>
-<li><p><strong>Guides model optimization</strong>: Algorithm minimizes this cost</p></li>
-<li><p><strong>Different costs for different errors</strong>: False positives vs.&nbsp;false negatives</p></li>
-<li><p><strong>Medical context</strong>: Missing cancer (high cost) vs.&nbsp;false alarm (lower cost)</p></li>
+<li><p><strong>Different loss functions for algorithms</strong>: e.g., squared error for regression, log-likelihood etc.</p></li>
 </ul>
-</div><div class="column" style="width:50%;">
-<h3 id="logistic-regression-loss-function">Logistic Regression Loss Function</h3>
-<p>For binary classification (like Centenarianism prediction):</p>
-<p><span class="math display">\[\text{Loss} = -\frac{1}{n} \sum_{i=1}^{n} [y_i \log(p_i) + (1-y_i) \log(1-p_i)]\]</span></p>
-<p>Where: - <span class="math inline">\(y_i\)</span> = actual outcome (0 or 1) - <span class="math inline">\(p_i\)</span> = predicted probability - <span class="math inline">\(n\)</span> = number of observations</p>
-<p><strong>Intuition</strong>: - When <span class="math inline">\(y_i = 1\)</span> and <span class="math inline">\(p_i\)</span> is small → Large penalty - When <span class="math inline">\(y_i = 0\)</span> and <span class="math inline">\(p_i\)</span> is large → Large penalty - Perfect predictions → Zero loss</p>
-</div></div>
 <div class="callout callout-tip callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
@@ -640,77 +581,35 @@ These methods have been part of science for decades and <strong>share many core 
           display:block!important;
       }</style></aside>
 </section>
-<section id="lasso-regression-least-absolute-shrinkage-and-selection-operator" class="slide level2">
-<h2>LASSO Regression (Least Absolute Shrinkage and Selection Operator)</h2>
-<div class="columns">
-<div class="column" style="width:60%;">
-<h3 id="mathematical-foundation-1">Mathematical Foundation</h3>
-<p>LASSO adds a regularization term to penalize coefficient magnitude:</p>
-<p><span class="math display">\[\text{Cost}(y, \hat{y}) = -\frac{1}{m} \sum_{i=1}^{m} [y^{(i)} \log(\hat{y}^{(i)}) + (1 - y^{(i)}) \log(1 - \hat{y}^{(i)})] + \lambda \sum_{j=1}^{n} |\beta_j|\]</span></p>
-<h3 id="key-characteristics-1">Key Characteristics</h3>
+<section id="logistic-regression-loss-function" class="slide level2">
+<h2>Logistic Regression Loss Function</h2>
+<p>For binary classification (like Centenarianism prediction):</p>
+<p><span class="math display">\[\text{Log-Loss} = -\frac{1}{m} \sum_{i=1}^{m} [y^{(i)} \log(\hat{y}^{(i)}) + (1 - y^{(i)}) \log(1 - \hat{y}^{(i)})]\]</span></p>
+<p>Where:</p>
 <ul>
-<li><strong>Automatic feature selection</strong>: Shrinks unimportant coefficients to zero</li>
-<li><strong>Regularization</strong>: λ hyperparameter controls shrinkage amount</li>
-<li><strong>Handles high-dimensional data</strong>: Can work when p &gt; N</li>
-<li><strong>Cross-validation tuning</strong>: Uses CV to select optimal λ</li>
-<li><strong>Maintains interpretability</strong>: Similar to logistic regression</li>
+<li><p><span class="math inline">\(y_i\)</span> = actual outcome (0 or 1)</p></li>
+<li><p><span class="math inline">\(\hat{y}^{(i)}\)</span> = predicted probability</p></li>
+<li><p><span class="math inline">\(m\)</span> = number of observations</p></li>
 </ul>
-</div><div class="column" style="width:40%;">
-<h3 id="advantages-over-standard-logistic-regression">Advantages Over Standard Logistic Regression</h3>
+<p><strong>Intuition</strong>:</p>
 <ul>
-<li>Prevents overfitting through regularization</li>
-<li>Automatically selects relevant variables</li>
-<li>Handles multicollinearity better</li>
-<li>Works with high-dimensional datasets</li>
+<li><p>When <span class="math inline">\(y_i = 1\)</span> and <span class="math inline">\(\hat{y}^{(i)}\)</span> is small → Large penalty</p></li>
+<li><p>When <span class="math inline">\(y_i = 0\)</span> and <span class="math inline">\(\hat{y}^{(i)}\)</span> is large → Large penalty</p></li>
+<li><p>Perfect predictions → Zero loss</p></li>
 </ul>
-<h3 id="mathematical-penalty">Mathematical Penalty</h3>
-<p><span class="math display">\[\text{Total Cost} = \text{Loss Function} + \lambda \times \text{Penalty}\]</span></p>
-<ul>
-<li><span class="math inline">\(\lambda\)</span> (lambda): Regularization strength</li>
-<li>Higher <span class="math inline">\(\lambda\)</span> = More aggressive pruning</li>
-<li>Tuned using cross-validation</li>
-</ul>
-</div></div>
-<aside class="notes">
-<p>Use the gardening analogy - just as pruning makes trees healthier and more robust, regularization makes models more generalizable by removing unnecessary complexity.</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="regularization" class="slide level2">
-<h2>Regularization</h2>
-<div class="columns">
-<div class="column" style="width:50%;">
-<h3 id="the-regularization-concept">The Regularization Concept</h3>
-<p><strong>Core Idea</strong>: <em>Prevent overly complex models</em></p>
-<ul>
-<li><strong>Occam’s Razor</strong>: Simpler explanations are usually better</li>
-<li><strong>Biological basis</strong>: Parsimonious models often generalize better</li>
-<li><strong>Prevents overfitting</strong>: Stops model from memorizing noise</li>
-</ul>
-<h3 id="types-of-regularization">Types of Regularization</h3>
-<p><strong>LASSO (L1)</strong>: - Shrinks coefficients toward zero - <strong>Variable selection</strong>: Can set coefficients exactly to zero - Creates sparse models</p>
-<p><strong>Ridge (L2)</strong>: - Shrinks all coefficients toward zero - Keeps all variables but reduces their impact - Good when all predictors are somewhat relevant</p>
-<p><strong>Elastic Net</strong>: - Combines LASSO and Ridge - Balances variable selection with coefficient shrinkage</p>
-</div><div class="column" style="width:50%;">
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure>
-<p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-6-1.png" width="960"></p>
-</figure>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Note</strong></p>
+</div>
+<div class="callout-content">
+<p>Can we predict too well? Yes! Overfitting occurs when a model learns noise instead of signal, leading to poor performance on new data.</p>
 </div>
 </div>
 </div>
-</div></div>
 </section>
 <section id="the-bias-variance-trade-off" class="slide level2">
 <h2>The Bias-Variance Trade-off</h2>
@@ -721,17 +620,22 @@ These methods have been part of science for decades and <strong>share many core 
 <p><strong>Variance</strong>: measures how much a model’s predictions change with different training datasets</p>
 <p><strong>Overfitting</strong> occurs when variance is high</p>
 <p><strong>Underfitting</strong> when bias is high <strong>Sweet spot</strong>: Balanced complexity for your data</p>
+</div><div class="column" style="width:50%;">
 <div class="cell">
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-7-1.png" width="960"></p>
+<p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-7-1.png"></p>
 </figure>
 </div>
 </div>
 </div>
-</div><div class="column" style="width:50%;">
-<h3 id="the-overfitting-problem-student-learning-analogy">The Overfitting Problem (Student Learning Analogy)</h3>
+</div></div>
+</section>
+<section id="the-overfitting-problem-student-learning-analogy" class="slide level2">
+<h2>The Overfitting Problem (Student Learning Analogy)</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
 <p><strong>Definition</strong>: <em>Model learns noise instead of signal</em></p>
 <p><strong>Memorizer (Overfitted)</strong>:</p>
 <ul>
@@ -747,6 +651,16 @@ These methods have been part of science for decades and <strong>share many core 
 <li><p>Adapts to different contexts</p></li>
 <li><p>Good on both practice and real tests</p></li>
 </ul>
+</div><div class="column" style="width:50%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-8-1.png"></p>
+</figure>
+</div>
+</div>
+</div>
 </div></div>
 <aside class="notes">
 <p>The student analogy is powerful because everyone can relate to the difference between memorizing and understanding. Emphasize that overfitting is the #1 reason ML models fail in practice.</p>
@@ -764,8 +678,6 @@ These methods have been part of science for decades and <strong>share many core 
 </section>
 <section id="overfitting-memorizing-vs.-understanding" class="slide level2">
 <h2>Overfitting: “Memorizing vs.&nbsp;Understanding”</h2>
-<div class="columns">
-<div class="column" style="width:50%;">
 <h3 id="warning-signs">Warning Signs</h3>
 <ol type="1">
 <li><strong>Perfect training scores</strong>: Usually too good to be true</li>
@@ -780,17 +692,7 @@ These methods have been part of science for decades and <strong>share many core 
 <li><p><strong>Regularization</strong>: Penalize complexity</p></li>
 <li><p><strong>Early stopping</strong>: Stop before overfitting begins</p></li>
 </ul>
-</div><div class="column" style="width:50%;">
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure>
-<p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-8-1.png" width="768"></p>
-</figure>
-</div>
-</div>
-</div>
-</div><div class="callout callout-warning callout-titled callout-style-default">
+<div class="callout callout-warning callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
 <div class="callout-icon-container">
@@ -803,8 +705,135 @@ These methods have been part of science for decades and <strong>share many core 
 </div>
 </div>
 </div>
+</section>
+<section id="traintest-split-why-do-we-split-our-data" class="slide level2">
+<h2>Train/Test Split: Why Do We Split Our Data?</h2>
+<h3 id="the-fundamental-problem">The Fundamental Problem</h3>
+<ul>
+<li><strong>Goal</strong>: Build models that work on <em>new, unseen</em> patients</li>
+<li><strong>Challenge</strong>: We only have the data we collected</li>
+<li><strong>Solution</strong>: Simulate “unseen” data by holding some back</li>
+</ul>
+<h3 id="what-happens-without-proper-splitting">What Happens Without Proper Splitting?</h3>
+<ul>
+<li><strong>Overly optimistic performance</strong>: Model appears better than it really is</li>
+<li><strong>Overfitting detection</strong>: Can’t tell if model learned noise vs.&nbsp;signal</li>
+<li><strong>Poor generalization</strong>: Model fails when deployed in practice</li>
+</ul>
+</section>
+<section id="traintest-split-how-to-split" class="slide level2">
+<h2>Train/Test Split: How to Split</h2>
+<h3 id="common-split-ratios">Common Split Ratios:</h3>
+<ul>
+<li><strong>75/25</strong>: Good balance for moderate sample sizes (n &gt; 1,000)</li>
+<li><strong>80/20</strong>: When you have large datasets and need more training data</li>
+<li><strong>70/30</strong>: When you have smaller datasets and need robust testing</li>
+</ul>
+<h3 id="special-considerations-for-epidemiological-data">Special Considerations for Epidemiological Data</h3>
+<ul>
+<li><strong>Class Imbalance</strong>: Stratify splits to maintain outcome proportions</li>
+<li><strong>Temporal Data</strong>: Use time-based splits to mimic real-world prediction</li>
+<li><strong>Clustered Data</strong>: Split by site or cluster to avoid leakage</li>
+</ul>
+</section>
+<section id="regularization" class="slide level2">
+<h2>Regularization</h2>
+<h3 id="the-regularization-concept">The Regularization Concept</h3>
+<p><strong>Core Idea</strong>: <em>Prevent overly complex models</em></p>
+<ul>
+<li><strong>Occam’s Razor</strong>: Simpler explanations are usually better</li>
+<li><strong>Biological basis</strong>: Parsimonious models often generalize better</li>
+<li><strong>Prevents overfitting</strong>: Stops model from memorizing noise</li>
+</ul>
+<h3 id="types-of-regularization">Types of Regularization</h3>
+<div class="columns">
+<div class="column" style="width:33%;">
+<p><strong>LASSO (L1)</strong>:</p>
+<ul>
+<li><p>Shrinks coefficients toward zero</p></li>
+<li><p><strong>Variable selection</strong>: Can set coefficients exactly to zero</p></li>
+<li><p>Creates sparse models</p></li>
+</ul>
+</div><div class="column" style="width:33%;">
+<p><strong>Ridge (L2)</strong>:</p>
+<ul>
+<li><p>Shrinks all coefficients toward zero</p></li>
+<li><p>Keeps all variables but reduces their impact</p></li>
+<li><p>Good when all predictors are somewhat relevant</p></li>
+</ul>
+</div><div class="column" style="width:33%;">
+<p><strong>Elastic Net</strong>:</p>
+<ul>
+<li><p>Combines LASSO and Ridge</p></li>
+<li><p>Balances variable selection with coefficient shrinkage</p></li>
+</ul>
+</div></div>
+</section>
+<section id="lasso-regression-least-absolute-shrinkage-and-selection-operator" class="slide level2 center">
+<h2>LASSO Regression (Least Absolute Shrinkage and Selection Operator)</h2>
+<p>A regularized version of logistic regression that adds a penalty to the loss function to shrink coefficients.</p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<h3 id="key-characteristics-1">Key Characteristics</h3>
+<ul>
+<li><strong>Automatic feature selection</strong>: Shrinks unimportant coefficients to zero</li>
+<li><strong>Regularization</strong>: λ hyperparameter controls shrinkage amount</li>
+<li><strong>Handles high-dimensional data</strong>: Can work when p &gt; N</li>
+<li><strong>Maintains interpretability</strong>: Similar to logistic regression</li>
+</ul>
+</div><div class="column" style="width:50%;">
+<h3 id="advantages-over-standard-logistic-regression">Advantages Over Standard Logistic Regression</h3>
+<ul>
+<li>Prevents overfitting through regularization</li>
+<li>Automatically selects relevant variables</li>
+<li>Handles multicollinearity better</li>
+<li>Works with high-dimensional datasets</li>
+</ul>
+</div></div>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Note</strong></p>
+</div>
+<div class="callout-content">
+<p>LASSO is still a form of logistic regression, just with added regularization. It still assumes linear relationships and requires careful preprocessing.</p>
+</div>
+</div>
 </div>
 </section>
+<section id="lasso-under-the-hood" class="slide level2">
+<h2>LASSO under the Hood</h2>
+<h3 id="mathematical-foundation-1">Mathematical Foundation</h3>
+<p>LASSO adds a regularization term to penalize coefficient magnitude:</p>
+<p><span class="math display">\[\text{Cost}(y, \hat{y}) = -\frac{1}{m} \sum_{i=1}^{m} [y^{(i)} \log(\hat{y}^{(i)}) + (1 - y^{(i)}) \log(1 - \hat{y}^{(i)})] + \lambda \sum_{j=1}^{n} |\beta_j|\]</span></p>
+<h3 id="mathematical-penalty">Mathematical Penalty</h3>
+<p><span class="math display">\[\text{Total Cost} = \text{Loss Function} + \lambda \times \text{Penalty}\]</span></p>
+<ul>
+<li><span class="math inline">\(\lambda\)</span> (lambda): Regularization strength</li>
+<li>Higher <span class="math inline">\(\lambda\)</span> = More aggressive pruning</li>
+<li>Tuned using cross-validation</li>
+</ul>
+<aside class="notes">
+<p>Use the gardening analogy - just as pruning makes trees healthier and more robust, regularization makes models more generalizable by removing unnecessary complexity.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="lasso-coefficient-comparison-different-penalties" class="slide level2">
+<h2>LASSO Coefficient Comparison: Different Penalties</h2>
+
+<img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-9-1.png" class="r-stretch"></section>
 <section id="decision-trees" class="slide level2">
 <h2>Decision Trees</h2>
 <div class="columns">
@@ -824,7 +853,7 @@ These methods have been part of science for decades and <strong>share many core 
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-9-1.png" width="960"></p>
+<p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-10-1.png"></p>
 </figure>
 </div>
 </div>
@@ -947,11 +976,11 @@ These methods have been part of science for decades and <strong>share many core 
 <section id="xgboost---under-the-hood-1" class="slide level2">
 <h2>XGBoost - under the hood</h2>
 
-<img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-10-1.png" width="960" class="r-stretch"></section>
+<img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-11-1.png" class="r-stretch"></section>
 <section id="common-xgboost-hyperparameter" class="slide level2">
 <h2>Common XGBoost Hyperparameter</h2>
 
-<img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-11-1.png" width="1152" class="r-stretch"></section>
+<img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-12-1.png" class="r-stretch"></section>
 <section id="hyperparameters-adjusting-the-recipe" class="slide level2">
 <h2>Hyperparameters: “Adjusting the Recipe”</h2>
 <h3 id="what-are-hyperparameters">What are Hyperparameters?</h3>
@@ -1188,7 +1217,12 @@ These methods have been part of science for decades and <strong>share many core 
 </section>
 <section id="model-comparison-summary" class="slide level2">
 <h2>Model Comparison Summary</h2>
-<div id="tbl-compare" class="tbl-cap">
+<div id="tbl-compare" class="tbl-cap quarto-float quarto-figure quarto-figure-center">
+<figure class="quarto-float quarto-float-tbl">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl quarto-uncaptioned" id="tbl-compare-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1
+</figcaption>
+<div aria-describedby="tbl-compare-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <p><strong>Table 1. Comparison of data analysis algorithms</strong></p>
 <table class="caption-top">
 <colgroup>
@@ -1262,6 +1296,8 @@ These methods have been part of science for decades and <strong>share many core 
 </tr>
 </tbody>
 </table>
+</div>
+</figure>
 </div>
 
 
@@ -1458,7 +1494,7 @@ These methods have been part of science for decades and <strong>share many core 
         margin: 0.1,
 
         math: {
-          mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js',
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js',
           config: 'TeX-AMS_HTML-full',
           tex2jax: {
             inlineMath: [['\\(','\\)']],
@@ -1523,190 +1559,173 @@ These methods have been part of science for decades and <strong>share many core 
     </script>
 
     <script id="quarto-html-after-body" type="application/javascript">
-    window.document.addEventListener("DOMContentLoaded", function (event) {
-      const toggleBodyColorMode = (bsSheetEl) => {
-        const mode = bsSheetEl.getAttribute("data-mode");
-        const bodyEl = window.document.querySelector("body");
-        if (mode === "dark") {
-          bodyEl.classList.add("quarto-dark");
-          bodyEl.classList.remove("quarto-light");
-        } else {
-          bodyEl.classList.add("quarto-light");
-          bodyEl.classList.remove("quarto-dark");
-        }
-      }
-      const toggleBodyColorPrimary = () => {
-        const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
-        if (bsSheetEl) {
-          toggleBodyColorMode(bsSheetEl);
-        }
-      }
-      toggleBodyColorPrimary();  
-      const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
-      tabsets.forEach(function(tabset) {
-        const tabby = new Tabby('#' + tabset.id);
-      });
-      const isCodeAnnotation = (el) => {
-        for (const clz of el.classList) {
-          if (clz.startsWith('code-annotation-')) {                     
-            return true;
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
           }
+          return false;
         }
-        return false;
-      }
-      const onCopySuccess = function(e) {
-        // button target
-        const button = e.trigger;
-        // don't keep focus
-        button.blur();
-        // flash "checked"
-        button.classList.add('code-copy-button-checked');
-        var currentTitle = button.getAttribute("title");
-        button.setAttribute("title", "Copied!");
-        let tooltip;
-        if (window.bootstrap) {
-          button.setAttribute("data-bs-toggle", "tooltip");
-          button.setAttribute("data-bs-placement", "left");
-          button.setAttribute("data-bs-title", "Copied!");
-          tooltip = new bootstrap.Tooltip(button, 
-            { trigger: "manual", 
-              customClass: "code-copy-button-tooltip",
-              offset: [0, -8]});
-          tooltip.show();    
-        }
-        setTimeout(function() {
-          if (tooltip) {
-            tooltip.hide();
-            button.removeAttribute("data-bs-title");
-            button.removeAttribute("data-bs-toggle");
-            button.removeAttribute("data-bs-placement");
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Copied!");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Copied!");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
           }
-          button.setAttribute("title", currentTitle);
-          button.classList.remove('code-copy-button-checked');
-        }, 1000);
-        // clear code selection
-        e.clearSelection();
-      }
-      const getTextToCopy = function(trigger) {
-          const codeEl = trigger.previousElementSibling.cloneNode(true);
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
           for (const childEl of codeEl.children) {
             if (isCodeAnnotation(childEl)) {
               childEl.remove();
             }
           }
           return codeEl.innerText;
-      }
-      const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
-        text: getTextToCopy
-      });
-      clipboard.on('success', onCopySuccess);
-      if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-        const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
-          text: getTextToCopy,
-          container: window.document.getElementById('quarto-embedded-source-code-modal')
-        });
-        clipboardModal.on('success', onCopySuccess);
-      }
-        var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
-        var mailtoRegex = new RegExp(/^mailto:/);
-          var filterRegex = new RegExp("https:\/\/doratiass\.github\.io\/ml_for_epidemiology\/");
-        var isInternal = (href) => {
-            return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
         }
-        // Inspect non-navigation links and adorn them if external
-     	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
-        for (var i=0; i<links.length; i++) {
-          const link = links[i];
-          if (!isInternal(link.href)) {
-            // undo the damage that might have been done by quarto-nav.js in the case of
-            // links that we want to consider external
-            if (link.dataset.originalHref !== undefined) {
-              link.href = link.dataset.originalHref;
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp("https:\/\/doratiass\.github\.io\/ml_for_epidemiology\/");
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
             }
           }
-        }
-      function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
-        const config = {
-          allowHTML: true,
-          maxWidth: 500,
-          delay: 100,
-          arrow: false,
-          appendTo: function(el) {
-              return el.closest('section.slide') || el.parentElement;
-          },
-          interactive: true,
-          interactiveBorder: 10,
-          theme: 'light-border',
-          placement: 'bottom-start',
-        };
-        if (contentFn) {
-          config.content = contentFn;
-        }
-        if (onTriggerFn) {
-          config.onTrigger = onTriggerFn;
-        }
-        if (onUntriggerFn) {
-          config.onUntrigger = onUntriggerFn;
-        }
-          config['offset'] = [0,0];
-          config['maxWidth'] = 700;
-        window.tippy(el, config); 
-      }
-      const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
-      for (var i=0; i<noterefs.length; i++) {
-        const ref = noterefs[i];
-        tippyHover(ref, function() {
-          // use id or data attribute instead here
-          let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
-          try { href = new URL(href).hash; } catch {}
-          const id = href.replace(/^#\/?/, "");
-          const note = window.document.getElementById(id);
-          if (note) {
-            return note.innerHTML;
-          } else {
-            return "";
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
           }
-        });
-      }
-      const findCites = (el) => {
-        const parentEl = el.parentElement;
-        if (parentEl) {
-          const cites = parentEl.dataset.cites;
-          if (cites) {
-            return {
-              el,
-              cites: cites.split(' ')
-            };
-          } else {
-            return findCites(el.parentElement)
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
           }
-        } else {
-          return undefined;
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
         }
-      };
-      var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
-      for (var i=0; i<bibliorefs.length; i++) {
-        const ref = bibliorefs[i];
-        const citeInfo = findCites(ref);
-        if (citeInfo) {
-          tippyHover(citeInfo.el, function() {
-            var popup = window.document.createElement('div');
-            citeInfo.cites.forEach(function(cite) {
-              var citeDiv = window.document.createElement('div');
-              citeDiv.classList.add('hanging-indent');
-              citeDiv.classList.add('csl-entry');
-              var biblioDiv = window.document.getElementById('ref-' + cite);
-              if (biblioDiv) {
-                citeDiv.innerHTML = biblioDiv.innerHTML;
-              }
-              popup.appendChild(citeDiv);
-            });
-            return popup.innerHTML;
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
           });
         }
-      }
-    });
-    </script>
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
     
 
 </body></html>
