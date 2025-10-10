@@ -19,7 +19,7 @@ format:
     code-fold: false
     code-tools: true
     fig-dpi: 600
-    fig-format: png
+    fig-format: svg
     fontsize: 1.2em
 knitr:
   opts_chunk:
@@ -48,6 +48,8 @@ library(glmnet)
 library(gtsummary)
 library(ggpubr) 
 library(readr) 
+library(plotly)
+library(htmlwidgets)
 
 # Define Model-Specific Parameters and Functions 
 thresh_other <- 0.1 # Threshold for grouping infrequent levels to "other_combined"
@@ -99,7 +101,7 @@ ctl_grid <- control_resamples(
 
 ```{r}
 #| include: false 
-# Load functions
+# Source functions and load data
 source("scripts/00 - funcs.R")
 # Load pre-prepared modeling dataset
 load("data/model_fits.RData")
@@ -121,6 +123,16 @@ By the end of this lecture, you will be able to:
 ::: notes
 This lecture bridges traditional epidemiological training with modern ML methods. We'll use the Centenarianism prediction study throughout as our practical example.
 :::
+
+## A roadmap for this lecture
+
+-   This lecture is based on our published research: [Machine learning in epidemiology: An introduction, comparison with traditional methods, and a case study of predicting extreme longevity](https://doi.org/10.1016/j.annepidem.2025.07.024) - elaborated information can be found there
+
+-   The data in this lecture was synthetically made with [synthpop](https://www.synthpop.org.uk) package in R based on the original dataset
+
+-   The scripts and data for this lecture can be found in my [GitHub repository](https://github.com/doratiass/ml_for_epidemiology)
+
+-   **StatQuest** [website](https://statquest.org) and [YouTube channel](https://www.youtube.com/@statquest) by **Josh Starmer** - great resource for learning ML concepts
 
 # Why Machine Learning in Public Health?
 
@@ -1230,48 +1242,32 @@ scale_x_discrete(labels = vars_label) +
 
 ### What are Hyperparameters?
 
-**Hyperparameters** are configuration settings that we must specify **before** training a machine learning model begins. "recipe settings" - like oven temperature and cooking time - that control how your algorithm learns from data.
+**Hyperparameters** are configuration settings that we must specify **before** training a machine learning model begins.
 
+"Recipe" - like oven temperature and cooking time - that control how your algorithm learns from data.
+
+::::: columns
+::: {.column width="60%"}
 ### Key Characteristics:
 
 -   **Not learned from data**: We set them manually based on systematic testing
 -   **Control the learning process**: They determine how the algorithm behaves during training
 -   **Model-specific**: Different algorithms have different hyperparameters
--   **Critical for performance**: Poor hyperparameter choices can lead to suboptimal models
+-   **Critical for performance**: Poor hyperparameter choices can lead to suboptimal models and effect computational requirements
+:::
 
+::: {.column width="40%"}
 ### Examples in Epidemiology:
 
 -   **LASSO regression**: The penalty parameter (λ) that controls how much we shrink coefficients
 -   **Random Forest**: Number of trees, maximum tree depth, minimum samples per leaf
 -   **XGBoost**: Learning rate, tree depth, number of boosting rounds
+:::
+:::::
 
 ::: notes
 Emphasize that hyperparameter tuning is like being a chef - you need to adjust the recipe based on ingredients (data) and desired outcome (prediction task). There's no universal "best" setting.
 :::
-
-## How Hyperparameters Affect Model Behavior
-
-::::: columns
-::: {.column width="50%"}
-### Impact on Model Performance
-
-Hyperparameters directly influence critical aspects of your model:
-
-capacity, , bias–variance tradeoff, and
-
-#### **Bias-Variance Trade-off**
-
-#### **Risk of overfitting**
-
-#### **Speed of learning**
-
-#### **Computational Requirements**
-:::
-
-::: {.column width="50%"}
-PALCEHOLDER FOR IMAGE - how cariables shrink with LASSO
-:::
-:::::
 
 ## Hyperparameters: How to Tune Them?
 
@@ -1287,8 +1283,86 @@ PALCEHOLDER FOR IMAGE - how cariables shrink with LASSO
     -   Good for: Expensive model training, when each evaluation takes significant time
     -   Efficiently samples near promising regions
 
+## Hyperparameters: Visualizing the Search Space
+
+```{r}
+# Create a parameter grid using space-filling methods
+grid <- bind_rows(
+  grid_space_filling(
+    penalty(),
+    tree_depth(),
+    learn_rate(c(0, 1), trans = scales::transform_log()),
+    size = 200,
+    original = FALSE,
+    type = "latin_hypercube"
+  ) %>%
+    mutate(method = "Latin Hypercube"),
+  grid_space_filling(
+    penalty(),
+    tree_depth(),
+    learn_rate(c(0, 1), trans = scales::transform_log()),
+    size = 200,
+    original = FALSE,
+    type = "max_entropy"
+  ) %>%
+    mutate(method = "Max Entropy")
+)
+
+# Create a 3D scatter plot using plotly
+plot_ly(
+  data = grid,
+  x = ~penalty,
+  y = ~tree_depth,
+  z = ~learn_rate,
+  color = ~method,
+  type = "scatter3d",
+  mode = "markers",
+  colors = c(
+    "Max Entropy" = "#FF6B6B",
+    #"Random Search" = "#4ECDC4",
+    "Latin Hypercube" = "#4ECDC4"
+  ),
+  marker = list(size = 4, opacity = 0.8),
+  text = ~ paste(
+    "Method:",
+    method,
+    "<br>λ:",
+    round(penalty, 4),
+    "<br>d:",
+    round(tree_depth, 1),
+    "<br>η:",
+    round(learn_rate, 4)
+  )
+) %>%
+  layout(
+    scene = list(
+      xaxis = list(title = "log₁₀(λ) - L2 Regularization"),
+      yaxis = list(title = "d - Max Depth"),
+      zaxis = list(title = "log₁₀(η) - Learning Rate")
+    ),
+    paper_bgcolor = 'rgba(0,0,0,0)',
+    plot_bgcolor = 'rgba(0,0,0,0)',
+    legend = list(
+      orientation = "h",
+      x = 0.5,
+      xanchor = "center",
+      y = -0.1
+    )
+  ) %>% htmlwidgets::saveWidget(
+    "images/plotly_grid.html",
+    selfcontained = TRUE
+  )
+
+```
+```{=html}
+<iframe width="100%", height="100%", frameborder="0"
+  src="images/plotly_grid.html"
+></iframe>
+```
 ## Hyperparameters: How to Tune Them?
 
+::::: columns
+::: {.column width="50%"}
 ### Step 2: Choose Evaluation Strategy
 
 -   **Hold-out validation**: Simpler but less reliable
@@ -1299,13 +1373,100 @@ PALCEHOLDER FOR IMAGE - how cariables shrink with LASSO
 
 Choose based on your epidemiological context:
 
--   **Screening tools**: Prioritize sensitivity (catch all cases)
-
--   **Confirmatory tests**: Prioritize specificity (avoid false alarms)
+-   **Classification tasks**: AUC-ROC, accuracy, F1-score
 
 -   **Rare diseases**: Use Precision-Recall AUC instead of ROC-AUC
 
 -   **Risk prediction**: Consider calibration alongside discrimination
+
+-   **Screening tools**: Prioritize sensitivity (catch all cases)
+:::
+
+::: {.column width="50%"}
+```{r}
+#| fig-height: 7
+# Extract coefficient paths using the correct approach
+  coef_paths <- map_dfr(1:nrow(collect_extracts(lasso_res)), function(i) {
+    # Get the extract (fitted model) and penalty value
+    extract_row <- collect_extracts(lasso_res)[i, ]
+    fitted_model <- extract_row$.extracts[[1]]
+    penalty_value <- extract_row$penalty
+
+    # Get coefficients for the specific penalty value used in tuning
+    coef_at_penalty <- fitted_model %>%
+      extract_fit_engine() %>%
+      coef(s = penalty_value) %>%
+      as.matrix() %>%
+      as.data.frame() %>%
+      rownames_to_column("term") %>%
+      rename(estimate = colnames(.)[2]) %>%
+      mutate(penalty = penalty_value)
+
+    auc_tbl <- lasso_res %>%
+      unnest(.metrics) %>%
+      filter(.metric == "roc_auc", penalty == penalty_value) %>%
+      unnest(.extracts, names_sep = "_") %>%
+      group_by(penalty) %>%
+      summarize(mean_auc = mean(.estimate, na.rm = TRUE))
+
+    return(coef_at_penalty %>% left_join(auc_tbl, by = "penalty"))
+  }) %>%
+    # Average across CV folds for each penalty
+    group_by(penalty, term) %>%
+    summarize(
+      mean_estimate = mean(estimate, na.rm = TRUE),
+      mean_auc = mean(mean_auc, na.rm = TRUE),
+      .groups = "drop"
+    ) %>%
+    filter(term != "(Intercept)") %>%
+    # Keep only variables that are non-zero for at least one penalty
+    group_by(term) %>%
+    filter(any(mean_estimate != 0)) %>%
+    ungroup()
+
+max_penalty_auc <- coef_paths %>%
+  filter(mean_auc == max(mean_auc)) %>%
+  distinct(mean_auc, penalty)
+# Now create the coefficient path plot with the correct penalties
+coef_paths %>%
+  # Keep meaningful coefficients
+  group_by(term) %>%
+  mutate(max_abs_coef = max(abs(mean_estimate))) %>%
+  filter(max_abs_coef > 0.001,
+  penalty > 1e-5,
+  penalty < 1e-1) %>%
+  slice_max(order_by = max_abs_coef, n = 20) %>%
+  ungroup() %>%
+  ggplot(aes(x = penalty, y = mean_estimate, color = term, group = term)) +
+  geom_line(alpha = 0.7, linewidth = 1) +
+  geom_smooth(
+inherit.aes = FALSE,
+    aes(x = penalty, y = mean_auc-0.75),
+    method = "loess",
+    se = FALSE,
+      linetype = "dashed",
+      alpha = 0.7, color = "steelblue", linewidth = 1
+      
+  ) +
+  scale_x_log10() +
+  scale_y_continuous(
+    sec.axis = sec_axis(~ .+0.75, name = "Mean AUC", labels = scales::number_format(accuracy = 0.01))
+  ) + 
+    geom_vline(xintercept = max_penalty_auc$penalty, linetype = "dotted", color = "red") +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "gray50") +
+  labs(
+    x = "Penalty (λ) - Log Scale",
+    y = "Coefficient Value"
+  ) +
+  my_theme +
+  theme(
+    legend.position = "none",
+    panel.grid.minor = element_blank()
+  )
+```
+:::
+:::::
+
 
 ## How to Choose Hyperparameter Ranges
 
@@ -1845,6 +2006,81 @@ ggplot() +
     plot.margin = margin(8, 12, 8, 12)
   )
 ```
+
+## Neural Networks: The Foundation of Modern AI
+
+### What are Neural Networks?
+
+**Neural networks** are computing systems inspired by biological neural networks that learn patterns through interconnected nodes (neurons) organized in layers.
+
+::::: columns
+::: {.column width="50%"}
+### Key Characteristics
+
+-   **Layered architecture**: Input layer → Hidden layer(s) → Output layer
+-   **Weighted connections**: Each connection has a learnable weight
+-   **Activation functions**: Non-linear transformations (sigmoid, ReLU, tanh)
+-   **Backpropagation**: Algorithm that adjusts weights to minimize prediction errors
+-   **Universal approximators**: Can theoretically learn any continuous function
+:::
+
+::: {.column width="50%"}
+### Connection to LLMs
+
+**Neural networks form the foundation of Large Language Models (LLMs)**:
+
+-   **GPT, ChatGPT, Claude**: Built on transformer neural network architectures
+-   **Deep learning**: Neural networks with many hidden layers
+-   **Attention mechanisms**: Advanced neural network components for processing sequences
+-   **Same principles**: Pattern recognition through weighted connections and learning
+
+### In Epidemiology
+
+**Can be used for traditional prediction tasks**: - Disease outcome prediction - Risk stratification - Medical image analysis - Time series forecasting (disease outbreaks)
+:::
+:::::
+
+## Neural Networks: Strengths and Limitations
+
+::::: columns
+::: {.column width="50%"}
+### Excellent Performance On:
+
+-   **Images/Video**: Medical imaging, radiology, pathology slides
+-   **Sound/Audio**: Heart murmurs, lung sounds, speech patterns
+-   **Text/Language**: Clinical notes, literature mining, patient communications
+-   **Sequential data**: Time series, patient trajectories, treatment sequences
+
+### Why They Excel Here:
+
+-   **Spatial patterns**: Convolutional layers detect local features
+-   **Temporal patterns**: Recurrent layers capture sequences
+-   **Hierarchical learning**: Lower layers learn simple patterns, higher layers combine them
+-   **End-to-end learning**: Automatically learn optimal feature representations
+:::
+
+::: {.column width="50%"}
+### Usually Not as Good on Tabular Data
+
+**Epidemiological datasets are typically tabular**:
+
+-   **Limited spatial/temporal structure**: Most epidemiological data lacks the spatial or sequential patterns that neural networks excel at
+-   **Feature engineering matters more**: Traditional ML methods often perform better with well-engineered features
+-   **Interpretability trade-offs**: Neural networks are "black boxes" - harder to understand than logistic regression or trees
+-   **Sample efficiency**: Often need very large datasets to perform well
+-   **Overfitting prone**: Can memorize patterns in smaller datasets
+
+### Practical Recommendation:
+
+**For most epidemiological prediction tasks, start with simpler methods (logistic regression, XGBoost) before considering neural networks**
+:::
+:::::
+
+::: callout-note
+## Key Takeaway
+
+While neural networks power modern AI breakthroughs like LLMs, they're not always the best choice for epidemiological prediction. **Match your method to your data type and research question.**
+:::
 
 ## Performance Metrics: Choosing the Right Measure
 

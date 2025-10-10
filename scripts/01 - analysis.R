@@ -3,6 +3,7 @@
 # ============================================================================ #
 library(tidyverse)
 library(tidymodels)
+library(broom)
 library(patchwork)
 library(future)
 library(furrr)
@@ -42,12 +43,25 @@ my_theme <- theme_minimal(base_size = 14) +
 # Standardize parallel processing
 options(future.globals.maxSize = 4 * 1024^3) # 4GB in bytes
 all_cores <- parallel::detectCores()
-plan(multisession, workers = all_cores - 2)
+plan(multisession, workers = all_cores - 1)
 ctl_grid <- control_resamples(
   save_pred = TRUE,
   save_workflow = TRUE,
   parallel_over = 'everything'
 )
+
+get_lm_coefs <- function(x) {
+  x %>%
+    extract_fit_parsnip()
+}
+
+ctl_grid_lasso <- control_grid(
+  save_pred = TRUE,
+  save_workflow = TRUE,
+  parallel_over = 'everything',
+  extract = get_lm_coefs
+)
+
 # ============================================================================ #
 # Build Model Data Frame -------------------------------------------------------
 # ============================================================================ #
@@ -160,7 +174,7 @@ lasso_spec <- logistic_reg(penalty = tune(), mixture = 1) %>%
   set_mode('classification')
 
 # Create grid of penalty values for tuning
-lambda_grid <- grid_regular(penalty(), levels = 1000)
+lambda_grid <- grid_regular(penalty(), levels = 100)
 
 # Create workflow for hyperparameter tuning
 lasso_wf <- workflow() %>%
@@ -173,7 +187,7 @@ lasso_res <- tune_grid(
   resamples = df_train_cv, # Use defined CV folds
   grid = lambda_grid, # Use defined grid of penalty values
   metrics = metric_set(roc_auc, pr_auc), # Evaluate using ROC-AUC and PR-AUC
-  control = ctl_grid # Use parallel processing controls
+  control = ctl_grid_lasso # Use parallel processing controls
 )
 
 # Inspect tuning results for optimal penalty value
@@ -328,7 +342,6 @@ xgb_train_fit <- fit_resamples(
 )
 
 plan(sequential)
-
 
 save(
   ml_df,
