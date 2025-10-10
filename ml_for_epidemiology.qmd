@@ -46,10 +46,15 @@ library(furrr)
 library(ggplot2)
 library(glmnet)
 library(gtsummary)
+library(ggforce)
 library(ggpubr) 
 library(readr) 
 library(plotly)
 library(htmlwidgets)
+library(RColorBrewer)
+library(rpart)
+library(rpart.plot)
+library(kableExtra)
 
 # Define Model-Specific Parameters and Functions 
 thresh_other <- 0.1 # Threshold for grouping infrequent levels to "other_combined"
@@ -756,9 +761,11 @@ Yes! Overfitting occurs when a model learns noise instead of signal, leading to 
 
 **Variance**: measures how much a model’s predictions change with different training datasets
 
-**Overfitting** occurs when variance is high
+**Underfitting** occurs when the model is too simple, bias is high
 
-**Underfitting** when bias is high **Sweet spot**: Balanced complexity for your data
+**Overfitting** occurs when the model is too complex, variance is high
+
+**Sweet spot**: Balanced complexity for your data
 :::
 
 ::: {.column width="50%"}
@@ -1164,9 +1171,9 @@ $$\text{Cost}(y, \hat{y}) = -\frac{1}{m} \sum_{i=1}^{m} [y^{(i)} \log(\hat{y}^{(
 
 $$\text{Total Cost} = \text{Loss Function} + \lambda \times \text{Penalty}$$
 
+-   $\beta_j$: Coefficients for each predictor
 -   $\lambda$ (lambda): Regularization strength
 -   Higher $\lambda$ = More aggressive pruning
--   Tuned using cross-validation
 
 ::: notes
 Use the gardening analogy - just as pruning makes trees healthier and more robust, regularization makes models more generalizable by removing unnecessary complexity.
@@ -1238,6 +1245,10 @@ scale_x_discrete(labels = vars_label) +
   my_theme
 ```
 
+::: {.callout-note title="How can we tell whats the best penalty?"}
+The best penalty (λ) is typically chosen via cross-validation, selecting the value produce the optimal model performance.
+:::
+
 ## Hyperparameters: "Adjusting the Recipe"
 
 ### What are Hyperparameters?
@@ -1273,21 +1284,45 @@ Emphasize that hyperparameter tuning is like being a chef - you need to adjust t
 
 ### Step 1: Define the Search Space
 
--   **Grid Search**: Test specific combinations systematically
-    -   Good for: Few hyperparameters, small search spaces
+-   **Grid Search**: Exhaustively tests all combinations in a pre-defined grid of hyperparameters.
+    -   Good for: The parameter ranges are **small**, **well-understood**, and **computationally cheap** to evaluate.
     -   Example: Testing λ values \[0.001, 0.01, 0.1, 1.0, 10.0\]
--   **Random Search**: Sample randomly from the hyperparameter space
-    -   Good for: High-dimensional spaces, when some hyperparameters matter more than others
-    -   Often outperforms grid search with same computational budget
--   **Bayesian Optimization**: Use previous results to guide next choices
-    -   Good for: Expensive model training, when each evaluation takes significant time
-    -   Efficiently samples near promising regions
+-   **Random Search**: Randomly samples parameter combinations uniformly across the search space.
+    -   The space is **large**, but only a subset is worth exploring
+    -   Often finds near-optimal results faster than grid search
+-   **Space-Filling Designs**: Systematically samples combinations to cover the search space **evenly** without redundancy.
+    -   Good for: When you want **efficient coverage** without exhaustive evaluation
+    -   Common in model tuning with limited runs
+-   **Bayesian Optimization**: Builds a probabilistic model (e.g., Gaussian Process) of performance across the space and **updates** it iteratively to focus on promising regions.
+    -   Good for: Each evaluation is **computationally expensive** (e.g., large datasets)
+    -   Smart, data-driven exploration balancing exploration and exploitation.
+
+::: {.callout-tip title="Key Principle"}
+The **choice of search space** should align with your **optimization strategy**.\
+Different methods explore parameter combinations in distinct ways.
+:::
 
 ## Hyperparameters: Visualizing the Search Space
 
 ```{r}
 # Create a parameter grid using space-filling methods
+my_colors <- brewer.pal(n = 3, name = "Set1") # Example: 5 colors from 'Set1'
+
 grid <- bind_rows(
+  grid_regular(penalty(),
+ tree_depth(),
+ learn_rate(c(0, 1), trans = scales::transform_log()),
+ levels = 7,
+ original = FALSE) %>%
+    mutate(method = "Grid Search"),
+  grid_random(
+    penalty(),
+    tree_depth(),
+    learn_rate(c(0, 1), trans = scales::transform_log()),
+    size = 200,
+    original = FALSE
+  ) %>%
+    mutate(method = "Random Search"),
   grid_space_filling(
     penalty(),
     tree_depth(),
@@ -1296,16 +1331,7 @@ grid <- bind_rows(
     original = FALSE,
     type = "latin_hypercube"
   ) %>%
-    mutate(method = "Latin Hypercube"),
-  grid_space_filling(
-    penalty(),
-    tree_depth(),
-    learn_rate(c(0, 1), trans = scales::transform_log()),
-    size = 200,
-    original = FALSE,
-    type = "max_entropy"
-  ) %>%
-    mutate(method = "Max Entropy")
+    mutate(method = "Latin Hypercube")
 )
 
 # Create a 3D scatter plot using plotly
@@ -1317,11 +1343,7 @@ plot_ly(
   color = ~method,
   type = "scatter3d",
   mode = "markers",
-  colors = c(
-    "Max Entropy" = "#FF6B6B",
-    #"Random Search" = "#4ECDC4",
-    "Latin Hypercube" = "#4ECDC4"
-  ),
+  colors = my_colors,
   marker = list(size = 4, opacity = 0.8),
   text = ~ paste(
     "Method:",
@@ -1336,9 +1358,9 @@ plot_ly(
 ) %>%
   layout(
     scene = list(
-      xaxis = list(title = "log₁₀(λ) - L2 Regularization"),
-      yaxis = list(title = "d - Max Depth"),
-      zaxis = list(title = "log₁₀(η) - Learning Rate")
+      xaxis = list(title = "log₁₀(λ)"),
+      yaxis = list(title = "Max Depth"),
+      zaxis = list(title = "log₁₀(η)")
     ),
     paper_bgcolor = 'rgba(0,0,0,0)',
     plot_bgcolor = 'rgba(0,0,0,0)',
@@ -1350,15 +1372,18 @@ plot_ly(
     )
   ) %>% htmlwidgets::saveWidget(
     "images/plotly_grid.html",
-    selfcontained = TRUE
+    selfcontained = TRUE,
+    background = "transparent"
   )
 
 ```
+
 ```{=html}
 <iframe width="100%", height="100%", frameborder="0"
   src="images/plotly_grid.html"
 ></iframe>
 ```
+
 ## Hyperparameters: How to Tune Them?
 
 ::::: columns
@@ -1467,7 +1492,6 @@ inherit.aes = FALSE,
 :::
 :::::
 
-
 ## How to Choose Hyperparameter Ranges
 
 PLACEHOLDER: Discuss domain knowledge, prior studies, and practical considerations in setting realistic ranges for hyperparameters.
@@ -1520,28 +1544,31 @@ PALCEHOLDER FOR IMAGE
 
 ## Decision Trees
 
+Decision Trees are intuitive, non-parametric models that recursively split data to achieve homogenous outcome groups, effectively mimicking clinical decision-making processes.
+
 ::::: columns
 ::: {.column width="50%"}
 ### Key Characteristics
 
 -   **Non-parametric architecture**: No assumptions about data distribution or linear relationships
--   **Recursive splitting**: Algorithm selects the variable and split point that maximizes information gain
--   **Stopping criteria**: Controlled by minimum samples per node, maximum depth, and complexity parameters (hyperparameters)
 -   **Handles mixed data types**: Works with both continuous and categorical predictors natively
 -   **Automatic interaction detection**: Naturally captures variable interactions through hierarchical splits
 -   **Interpretable**: Easy to understand and explain to clinicians
+
+### Decision Trees hyperparameters
+
+-   **cost_complexity**: Penalty for tree complexity (higher = simpler trees)
+-   **tree_depth**: Maximum depth of the tree (higher = more complex)
+-   **min_n**: Minimum samples required to split a node (higher = fewer splits)
 :::
 
 ::: {.column width="50%"}
 ```{r}
-# Decision Tree Example in R
-library(rpart)
-library(rpart.plot)
-
+#| fig-height: 10
 # Fit decision tree model
 tree_spec <- decision_tree(  
   cost_complexity = 0.001,  # Lower complexity penalty
-  tree_depth = 10,          # Allow deeper trees
+  tree_depth = 5,          # Allow deeper trees
   min_n = 10               # Lower minimum observations per node
 ) %>%
    set_engine("rpart") %>%
@@ -1572,7 +1599,14 @@ tree_fit <- tree_wf %>%
 
 # Visualize the tree
 tree_fit$fit %>%
-  rpart.plot(type = 4, extra = 2, roundint = FALSE)
+  rpart.plot(
+    type = 4,
+    extra = 2,
+    fallen.leaves = FALSE,
+    roundint = FALSE,
+    box.palette = "GnBu",
+    nn = TRUE
+  ) 
 ```
 :::
 :::::
@@ -1624,8 +1658,6 @@ Decision trees are intuitive but prone to overfitting and thus rarely used alone
 **Ensemble Prediction:** $$\hat{y} = \frac{1}{B} \sum_{b=1}^{B} \hat{f}_b(x)$$
 
 Where $\hat{f}_b$ is the $b$-th tree trained on bootstrap sample
-
-**Variance Reduction:** $$\text{Var}(\bar{X}) = \frac{\sigma^2}{n} \text{ (if trees independent)}$$
 :::
 :::::
 
@@ -1639,15 +1671,11 @@ Where $\hat{f}_b$ is the $b$-th tree trained on bootstrap sample
 
 ## eXtreme Gradient Boosting (XGBoost)
 
-::::: columns
-::: {.column width="50%"}
 ### Algorithm Overview
 
-XGBoost employs **sequential ensemble learning** where each tree corrects errors from previous learners, building weak decision trees that collectively form a powerful predictor.
+XGBoost employs **sequential ensemble learning** where each tree **corrects errors** from previous learners, building **weak decision** trees that collectively form a powerful predictor.
 
-**Key Innovation:** Unlike simple decision trees that make single predictions, **gradient boosting** sequentially trains multiple trees where each corrects errors from previous ones, while XGBoost enhances this with **similarity scores** and built-in **regularization**.
-:::
-
+::::: columns
 ::: {.column width="50%"}
 ### Key Characteristics
 
@@ -1656,21 +1684,8 @@ XGBoost employs **sequential ensemble learning** where each tree corrects errors
 -   **Built-in regularization**: λ (lambda) prevents overfitting by shrinking similarity scores
 -   **Automatic pruning**: γ (gamma) removes branches that don't improve gain sufficiently
 -   **Built-in feature selection**: Automatically prioritizes important variables
--   **Handles missing data**: Native missing value support without imputation
+-   **Handles outliers & missing data**: Native missing value support without imputation
 -   **Complex relationships**: Captures non-linear patterns and interactions
-:::
-:::::
-
-## eXtreme Gradient Boosting (XGBoost)
-
-::::: columns
-::: {.column width="50%"}
-### Advantages in Epidemiology
-
--   **Excellent predictive performance** with complex health datasets
--   **Handles large, high-dimensional data** common in electronic health records
--   **Automatic interaction detection** between risk factors
--   **Robust to outliers and missing data** (crucial for real-world medical data)
 :::
 
 ::: {.column width="50%"}
