@@ -173,6 +173,15 @@ Dr.&nbsp;Dor Atias, MD-MPH
           display:block!important;
       }</style></aside>
 </section>
+<section id="a-roadmap-for-this-lecture" class="slide level2">
+<h2>A roadmap for this lecture</h2>
+<ul>
+<li><p>This lecture is based on our published research: <a href="https://doi.org/10.1016/j.annepidem.2025.07.024">Machine learning in epidemiology: An introduction, comparison with traditional methods, and a case study of predicting extreme longevity</a> - elaborated information can be found there</p></li>
+<li><p>The data in this lecture was synthetically made with <a href="https://www.synthpop.org.uk">synthpop</a> package in R based on the original dataset</p></li>
+<li><p>The scripts and data for this lecture can be found in my <a href="https://github.com/doratiass/ml_for_epidemiology">GitHub repository</a></p></li>
+<li><p><strong>StatQuest</strong> <a href="https://statquest.org">website</a> and <a href="https://www.youtube.com/@statquest">YouTube channel</a> by <strong>Josh Starmer</strong> - great resource for learning ML concepts</p></li>
+</ul>
+</section>
 <section>
 <section id="why-machine-learning-in-public-health" class="title-slide slide level1 center">
 <h1>Why Machine Learning in Public Health?</h1>
@@ -483,58 +492,58 @@ Dr.&nbsp;Dor Atias, MD-MPH
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">Systolic Blood Pressure (per 10 mmHg)</td>
-<td style="text-align: center;">1.194</td>
-<td style="text-align: center;">1.141</td>
-<td style="text-align: center;">1.250</td>
+<td style="text-align: center;">0.837</td>
+<td style="text-align: center;">0.800</td>
+<td style="text-align: center;">0.876</td>
 <td style="text-align: center;">&lt; 0.001</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Ex-Smoker</td>
-<td style="text-align: center;">1.101</td>
-<td style="text-align: center;">0.884</td>
-<td style="text-align: center;">1.371</td>
+<td style="text-align: center;">0.909</td>
+<td style="text-align: center;">0.730</td>
+<td style="text-align: center;">1.131</td>
 <td style="text-align: center;">0.391</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">1-10 Cigarettes/Day</td>
-<td style="text-align: center;">0.931</td>
-<td style="text-align: center;">0.752</td>
-<td style="text-align: center;">1.153</td>
+<td style="text-align: center;">1.074</td>
+<td style="text-align: center;">0.868</td>
+<td style="text-align: center;">1.330</td>
 <td style="text-align: center;">0.512</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">11-20 Cigarettes/Day</td>
-<td style="text-align: center;">2.213</td>
-<td style="text-align: center;">1.703</td>
-<td style="text-align: center;">2.876</td>
+<td style="text-align: center;">0.452</td>
+<td style="text-align: center;">0.348</td>
+<td style="text-align: center;">0.587</td>
 <td style="text-align: center;">&lt; 0.001</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">20+ Cigarettes/Day</td>
-<td style="text-align: center;">2.071</td>
-<td style="text-align: center;">1.627</td>
-<td style="text-align: center;">2.635</td>
+<td style="text-align: center;">0.483</td>
+<td style="text-align: center;">0.380</td>
+<td style="text-align: center;">0.615</td>
 <td style="text-align: center;">&lt; 0.001</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Myocardial Infarction</td>
-<td style="text-align: center;">0.905</td>
-<td style="text-align: center;">0.683</td>
-<td style="text-align: center;">1.199</td>
+<td style="text-align: center;">1.105</td>
+<td style="text-align: center;">0.834</td>
+<td style="text-align: center;">1.465</td>
 <td style="text-align: center;">0.487</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Diabetes Mellitus</td>
-<td style="text-align: center;">1.110</td>
-<td style="text-align: center;">0.825</td>
-<td style="text-align: center;">1.494</td>
+<td style="text-align: center;">0.901</td>
+<td style="text-align: center;">0.669</td>
+<td style="text-align: center;">1.212</td>
 <td style="text-align: center;">0.491</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Body Mass Index</td>
-<td style="text-align: center;">1.015</td>
-<td style="text-align: center;">0.990</td>
-<td style="text-align: center;">1.041</td>
+<td style="text-align: center;">0.985</td>
+<td style="text-align: center;">0.961</td>
+<td style="text-align: center;">1.010</td>
 <td style="text-align: center;">0.235</td>
 </tr>
 </tbody>
@@ -860,20 +869,25 @@ Dr.&nbsp;Dor Atias, MD-MPH
 <section id="hyperparameters-adjusting-the-recipe" class="slide level2">
 <h2>Hyperparameters: “Adjusting the Recipe”</h2>
 <h3 id="what-are-hyperparameters">What are Hyperparameters?</h3>
-<p><strong>Hyperparameters</strong> are configuration settings that we must specify <strong>before</strong> training a machine learning model begins. “recipe settings” - like oven temperature and cooking time - that control how your algorithm learns from data.</p>
+<p><strong>Hyperparameters</strong> are configuration settings that we must specify <strong>before</strong> training a machine learning model begins.</p>
+<p>“Recipe” - like oven temperature and cooking time - that control how your algorithm learns from data.</p>
+<div class="columns">
+<div class="column" style="width:60%;">
 <h3 id="key-characteristics-2">Key Characteristics:</h3>
 <ul>
 <li><strong>Not learned from data</strong>: We set them manually based on systematic testing</li>
 <li><strong>Control the learning process</strong>: They determine how the algorithm behaves during training</li>
 <li><strong>Model-specific</strong>: Different algorithms have different hyperparameters</li>
-<li><strong>Critical for performance</strong>: Poor hyperparameter choices can lead to suboptimal models</li>
+<li><strong>Critical for performance</strong>: Poor hyperparameter choices can lead to suboptimal models and effect computational requirements</li>
 </ul>
+</div><div class="column" style="width:40%;">
 <h3 id="examples-in-epidemiology">Examples in Epidemiology:</h3>
 <ul>
 <li><strong>LASSO regression</strong>: The penalty parameter (λ) that controls how much we shrink coefficients</li>
 <li><strong>Random Forest</strong>: Number of trees, maximum tree depth, minimum samples per leaf</li>
 <li><strong>XGBoost</strong>: Learning rate, tree depth, number of boosting rounds</li>
 </ul>
+</div></div>
 <aside class="notes">
 <p>Emphasize that hyperparameter tuning is like being a chef - you need to adjust the recipe based on ingredients (data) and desired outcome (prediction task). There’s no universal “best” setting.</p>
 <style type="text/css">
@@ -887,21 +901,6 @@ Dr.&nbsp;Dor Atias, MD-MPH
           overflow: hidden!important;
           display:block!important;
       }</style></aside>
-</section>
-<section id="how-hyperparameters-affect-model-behavior" class="slide level2">
-<h2>How Hyperparameters Affect Model Behavior</h2>
-<div class="columns">
-<div class="column" style="width:50%;">
-<h3 id="impact-on-model-performance">Impact on Model Performance</h3>
-<p>Hyperparameters directly influence critical aspects of your model:</p>
-<p>capacity, , bias–variance tradeoff, and</p>
-<h4 id="bias-variance-trade-off"><strong>Bias-Variance Trade-off</strong></h4>
-<h4 id="risk-of-overfitting"><strong>Risk of overfitting</strong></h4>
-<h4 id="speed-of-learning"><strong>Speed of learning</strong></h4>
-<h4 id="computational-requirements"><strong>Computational Requirements</strong></h4>
-</div><div class="column" style="width:50%;">
-<p>PALCEHOLDER FOR IMAGE - how cariables shrink with LASSO</p>
-</div></div>
 </section>
 <section id="hyperparameters-how-to-tune-them" class="slide level2">
 <h2>Hyperparameters: How to Tune Them?</h2>
@@ -924,8 +923,14 @@ Dr.&nbsp;Dor Atias, MD-MPH
 </ul></li>
 </ul>
 </section>
+<section id="hyperparameters-visualizing-the-search-space" class="slide level2">
+<h2>Hyperparameters: Visualizing the Search Space</h2>
+<iframe width="100%" ,="" height="100%" frameborder="0" src="images/plotly_grid.html"></iframe>
+</section>
 <section id="hyperparameters-how-to-tune-them-1" class="slide level2">
 <h2>Hyperparameters: How to Tune Them?</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
 <h3 id="step-2-choose-evaluation-strategy">Step 2: Choose Evaluation Strategy</h3>
 <ul>
 <li><p><strong>Hold-out validation</strong>: Simpler but less reliable</p></li>
@@ -934,11 +939,22 @@ Dr.&nbsp;Dor Atias, MD-MPH
 <h3 id="step-3-select-optimization-metric">Step 3: Select Optimization Metric</h3>
 <p>Choose based on your epidemiological context:</p>
 <ul>
-<li><p><strong>Screening tools</strong>: Prioritize sensitivity (catch all cases)</p></li>
-<li><p><strong>Confirmatory tests</strong>: Prioritize specificity (avoid false alarms)</p></li>
+<li><p><strong>Classification tasks</strong>: AUC-ROC, accuracy, F1-score</p></li>
 <li><p><strong>Rare diseases</strong>: Use Precision-Recall AUC instead of ROC-AUC</p></li>
 <li><p><strong>Risk prediction</strong>: Consider calibration alongside discrimination</p></li>
+<li><p><strong>Screening tools</strong>: Prioritize sensitivity (catch all cases)</p></li>
 </ul>
+</div><div class="column" style="width:50%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-11-1.png"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
 </section>
 <section id="how-to-choose-hyperparameter-ranges" class="slide level2">
 <h2>How to Choose Hyperparameter Ranges</h2>
@@ -1003,7 +1019,7 @@ Dr.&nbsp;Dor Atias, MD-MPH
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-10-1.png"></p>
+<p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-12-1.png"></p>
 </figure>
 </div>
 </div>
@@ -1139,11 +1155,83 @@ Dr.&nbsp;Dor Atias, MD-MPH
 <section id="xgboost---under-the-hood-1" class="slide level2">
 <h2>XGBoost - under the hood</h2>
 
-<img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-11-1.png" class="r-stretch"></section>
+<img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-13-1.png" class="r-stretch"></section>
 <section id="common-xgboost-hyperparameter" class="slide level2">
 <h2>Common XGBoost Hyperparameter</h2>
 
-<img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-12-1.png" class="r-stretch"></section>
+<img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-14-1.png" class="r-stretch"></section>
+<section id="neural-networks-the-foundation-of-modern-ai" class="slide level2">
+<h2>Neural Networks: The Foundation of Modern AI</h2>
+<h3 id="what-are-neural-networks">What are Neural Networks?</h3>
+<p><strong>Neural networks</strong> are computing systems inspired by biological neural networks that learn patterns through interconnected nodes (neurons) organized in layers.</p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<h3 id="key-characteristics-6">Key Characteristics</h3>
+<ul>
+<li><strong>Layered architecture</strong>: Input layer → Hidden layer(s) → Output layer</li>
+<li><strong>Weighted connections</strong>: Each connection has a learnable weight</li>
+<li><strong>Activation functions</strong>: Non-linear transformations (sigmoid, ReLU, tanh)</li>
+<li><strong>Backpropagation</strong>: Algorithm that adjusts weights to minimize prediction errors</li>
+<li><strong>Universal approximators</strong>: Can theoretically learn any continuous function</li>
+</ul>
+</div><div class="column" style="width:50%;">
+<h3 id="connection-to-llms">Connection to LLMs</h3>
+<p><strong>Neural networks form the foundation of Large Language Models (LLMs)</strong>:</p>
+<ul>
+<li><strong>GPT, ChatGPT, Claude</strong>: Built on transformer neural network architectures</li>
+<li><strong>Deep learning</strong>: Neural networks with many hidden layers</li>
+<li><strong>Attention mechanisms</strong>: Advanced neural network components for processing sequences</li>
+<li><strong>Same principles</strong>: Pattern recognition through weighted connections and learning</li>
+</ul>
+<h3 id="in-epidemiology">In Epidemiology</h3>
+<p><strong>Can be used for traditional prediction tasks</strong>: - Disease outcome prediction - Risk stratification - Medical image analysis - Time series forecasting (disease outbreaks)</p>
+</div></div>
+</section>
+<section id="neural-networks-strengths-and-limitations" class="slide level2">
+<h2>Neural Networks: Strengths and Limitations</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<h3 id="excellent-performance-on">Excellent Performance On:</h3>
+<ul>
+<li><strong>Images/Video</strong>: Medical imaging, radiology, pathology slides</li>
+<li><strong>Sound/Audio</strong>: Heart murmurs, lung sounds, speech patterns</li>
+<li><strong>Text/Language</strong>: Clinical notes, literature mining, patient communications</li>
+<li><strong>Sequential data</strong>: Time series, patient trajectories, treatment sequences</li>
+</ul>
+<h3 id="why-they-excel-here">Why They Excel Here:</h3>
+<ul>
+<li><strong>Spatial patterns</strong>: Convolutional layers detect local features</li>
+<li><strong>Temporal patterns</strong>: Recurrent layers capture sequences</li>
+<li><strong>Hierarchical learning</strong>: Lower layers learn simple patterns, higher layers combine them</li>
+<li><strong>End-to-end learning</strong>: Automatically learn optimal feature representations</li>
+</ul>
+</div><div class="column" style="width:50%;">
+<h3 id="usually-not-as-good-on-tabular-data">Usually Not as Good on Tabular Data</h3>
+<p><strong>Epidemiological datasets are typically tabular</strong>:</p>
+<ul>
+<li><strong>Limited spatial/temporal structure</strong>: Most epidemiological data lacks the spatial or sequential patterns that neural networks excel at</li>
+<li><strong>Feature engineering matters more</strong>: Traditional ML methods often perform better with well-engineered features</li>
+<li><strong>Interpretability trade-offs</strong>: Neural networks are “black boxes” - harder to understand than logistic regression or trees</li>
+<li><strong>Sample efficiency</strong>: Often need very large datasets to perform well</li>
+<li><strong>Overfitting prone</strong>: Can memorize patterns in smaller datasets</li>
+</ul>
+<h3 id="practical-recommendation">Practical Recommendation:</h3>
+<p><strong>For most epidemiological prediction tasks, start with simpler methods (logistic regression, XGBoost) before considering neural networks</strong></p>
+</div></div>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Key Takeaway</strong></p>
+</div>
+<div class="callout-content">
+<p>While neural networks power modern AI breakthroughs like LLMs, they’re not always the best choice for epidemiological prediction. <strong>Match your method to your data type and research question.</strong></p>
+</div>
+</div>
+</div>
+</section>
 <section id="performance-metrics-choosing-the-right-measure" class="slide level2">
 <h2>Performance Metrics: Choosing the Right Measure</h2>
 <h3 id="understanding-your-epidemiological-context">Understanding Your Epidemiological Context</h3>

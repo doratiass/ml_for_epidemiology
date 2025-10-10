@@ -7,6 +7,13 @@
     "text": "Learning Objectives\nBy the end of this lecture, you will be able to:\n\nDistinguish between machine learning and traditional epidemiological approaches\nRecognize when ML is appropriate vs. traditional methods\nUnderstand core ML concepts: the ML workflow, models, overfitting, cross-validation\nImplement ML workflows using R and tidymodels\nEvaluate model performance using appropriate metrics\nApply explainable AI tools to interpret complex models\n\n\nThis lecture bridges traditional epidemiological training with modern ML methods. We’ll use the Centenarianism prediction study throughout as our practical example."
   },
   {
+    "objectID": "ml_for_epidemiology.html#a-roadmap-for-this-lecture",
+    "href": "ml_for_epidemiology.html#a-roadmap-for-this-lecture",
+    "title": "Machine Learning in Epidemiology",
+    "section": "A roadmap for this lecture",
+    "text": "A roadmap for this lecture\n\nThis lecture is based on our published research: Machine learning in epidemiology: An introduction, comparison with traditional methods, and a case study of predicting extreme longevity - elaborated information can be found there\nThe data in this lecture was synthetically made with synthpop package in R based on the original dataset\nThe scripts and data for this lecture can be found in my GitHub repository\nStatQuest website and YouTube channel by Josh Starmer - great resource for learning ML concepts"
+  },
+  {
     "objectID": "ml_for_epidemiology.html#what-is-machine-learning",
     "href": "ml_for_epidemiology.html#what-is-machine-learning",
     "title": "Machine Learning in Epidemiology",
@@ -60,7 +67,7 @@
     "href": "ml_for_epidemiology.html#logistic-regression-results-predictors-of-centenarianism",
     "title": "Machine Learning in Epidemiology",
     "section": "Logistic Regression Results: Predictors of Centenarianism",
-    "text": "Logistic Regression Results: Predictors of Centenarianism\n\n\n\n\n\nPredictor\nOdds Ratio\n95% CI Lower\n95% CI Upper\nP-value\n\n\n\n\nSystolic Blood Pressure (per 10 mmHg)\n1.194\n1.141\n1.250\n&lt; 0.001\n\n\nEx-Smoker\n1.101\n0.884\n1.371\n0.391\n\n\n1-10 Cigarettes/Day\n0.931\n0.752\n1.153\n0.512\n\n\n11-20 Cigarettes/Day\n2.213\n1.703\n2.876\n&lt; 0.001\n\n\n20+ Cigarettes/Day\n2.071\n1.627\n2.635\n&lt; 0.001\n\n\nMyocardial Infarction\n0.905\n0.683\n1.199\n0.487\n\n\nDiabetes Mellitus\n1.110\n0.825\n1.494\n0.491\n\n\nBody Mass Index\n1.015\n0.990\n1.041\n0.235"
+    "text": "Logistic Regression Results: Predictors of Centenarianism\n\n\n\n\n\nPredictor\nOdds Ratio\n95% CI Lower\n95% CI Upper\nP-value\n\n\n\n\nSystolic Blood Pressure (per 10 mmHg)\n0.837\n0.800\n0.876\n&lt; 0.001\n\n\nEx-Smoker\n0.909\n0.730\n1.131\n0.391\n\n\n1-10 Cigarettes/Day\n1.074\n0.868\n1.330\n0.512\n\n\n11-20 Cigarettes/Day\n0.452\n0.348\n0.587\n&lt; 0.001\n\n\n20+ Cigarettes/Day\n0.483\n0.380\n0.615\n&lt; 0.001\n\n\nMyocardial Infarction\n1.105\n0.834\n1.465\n0.487\n\n\nDiabetes Mellitus\n0.901\n0.669\n1.212\n0.491\n\n\nBody Mass Index\n0.985\n0.961\n1.010\n0.235"
   },
   {
     "objectID": "ml_for_epidemiology.html#loss-function-the-cost-of-being-wrong",
@@ -144,14 +151,7 @@
     "href": "ml_for_epidemiology.html#hyperparameters-adjusting-the-recipe",
     "title": "Machine Learning in Epidemiology",
     "section": "Hyperparameters: “Adjusting the Recipe”",
-    "text": "Hyperparameters: “Adjusting the Recipe”\nWhat are Hyperparameters?\nHyperparameters are configuration settings that we must specify before training a machine learning model begins. “recipe settings” - like oven temperature and cooking time - that control how your algorithm learns from data.\nKey Characteristics:\n\nNot learned from data: We set them manually based on systematic testing\nControl the learning process: They determine how the algorithm behaves during training\nModel-specific: Different algorithms have different hyperparameters\nCritical for performance: Poor hyperparameter choices can lead to suboptimal models\n\nExamples in Epidemiology:\n\nLASSO regression: The penalty parameter (λ) that controls how much we shrink coefficients\nRandom Forest: Number of trees, maximum tree depth, minimum samples per leaf\nXGBoost: Learning rate, tree depth, number of boosting rounds\n\n\nEmphasize that hyperparameter tuning is like being a chef - you need to adjust the recipe based on ingredients (data) and desired outcome (prediction task). There’s no universal “best” setting."
-  },
-  {
-    "objectID": "ml_for_epidemiology.html#how-hyperparameters-affect-model-behavior",
-    "href": "ml_for_epidemiology.html#how-hyperparameters-affect-model-behavior",
-    "title": "Machine Learning in Epidemiology",
-    "section": "How Hyperparameters Affect Model Behavior",
-    "text": "How Hyperparameters Affect Model Behavior\n\n\nImpact on Model Performance\nHyperparameters directly influence critical aspects of your model:\ncapacity, , bias–variance tradeoff, and\nBias-Variance Trade-off\nRisk of overfitting\nSpeed of learning\nComputational Requirements\n\nPALCEHOLDER FOR IMAGE - how cariables shrink with LASSO"
+    "text": "Hyperparameters: “Adjusting the Recipe”\nWhat are Hyperparameters?\nHyperparameters are configuration settings that we must specify before training a machine learning model begins.\n“Recipe” - like oven temperature and cooking time - that control how your algorithm learns from data.\n\n\nKey Characteristics:\n\nNot learned from data: We set them manually based on systematic testing\nControl the learning process: They determine how the algorithm behaves during training\nModel-specific: Different algorithms have different hyperparameters\nCritical for performance: Poor hyperparameter choices can lead to suboptimal models and effect computational requirements\n\n\nExamples in Epidemiology:\n\nLASSO regression: The penalty parameter (λ) that controls how much we shrink coefficients\nRandom Forest: Number of trees, maximum tree depth, minimum samples per leaf\nXGBoost: Learning rate, tree depth, number of boosting rounds\n\n\n\nEmphasize that hyperparameter tuning is like being a chef - you need to adjust the recipe based on ingredients (data) and desired outcome (prediction task). There’s no universal “best” setting."
   },
   {
     "objectID": "ml_for_epidemiology.html#hyperparameters-how-to-tune-them",
@@ -161,11 +161,18 @@
     "text": "Hyperparameters: How to Tune Them?\nStep 1: Define the Search Space\n\nGrid Search: Test specific combinations systematically\n\nGood for: Few hyperparameters, small search spaces\nExample: Testing λ values [0.001, 0.01, 0.1, 1.0, 10.0]\n\nRandom Search: Sample randomly from the hyperparameter space\n\nGood for: High-dimensional spaces, when some hyperparameters matter more than others\nOften outperforms grid search with same computational budget\n\nBayesian Optimization: Use previous results to guide next choices\n\nGood for: Expensive model training, when each evaluation takes significant time\nEfficiently samples near promising regions"
   },
   {
+    "objectID": "ml_for_epidemiology.html#hyperparameters-visualizing-the-search-space",
+    "href": "ml_for_epidemiology.html#hyperparameters-visualizing-the-search-space",
+    "title": "Machine Learning in Epidemiology",
+    "section": "Hyperparameters: Visualizing the Search Space",
+    "text": "Hyperparameters: Visualizing the Search Space"
+  },
+  {
     "objectID": "ml_for_epidemiology.html#hyperparameters-how-to-tune-them-1",
     "href": "ml_for_epidemiology.html#hyperparameters-how-to-tune-them-1",
     "title": "Machine Learning in Epidemiology",
     "section": "Hyperparameters: How to Tune Them?",
-    "text": "Hyperparameters: How to Tune Them?\nStep 2: Choose Evaluation Strategy\n\nHold-out validation: Simpler but less reliable\nCross-validation: Most robust for estimating performance\n\nStep 3: Select Optimization Metric\nChoose based on your epidemiological context:\n\nScreening tools: Prioritize sensitivity (catch all cases)\nConfirmatory tests: Prioritize specificity (avoid false alarms)\nRare diseases: Use Precision-Recall AUC instead of ROC-AUC\nRisk prediction: Consider calibration alongside discrimination"
+    "text": "Hyperparameters: How to Tune Them?\n\n\nStep 2: Choose Evaluation Strategy\n\nHold-out validation: Simpler but less reliable\nCross-validation: Most robust for estimating performance\n\nStep 3: Select Optimization Metric\nChoose based on your epidemiological context:\n\nClassification tasks: AUC-ROC, accuracy, F1-score\nRare diseases: Use Precision-Recall AUC instead of ROC-AUC\nRisk prediction: Consider calibration alongside discrimination\nScreening tools: Prioritize sensitivity (catch all cases)"
   },
   {
     "objectID": "ml_for_epidemiology.html#how-to-choose-hyperparameter-ranges",
@@ -243,6 +250,20 @@
     "title": "Machine Learning in Epidemiology",
     "section": "Common XGBoost Hyperparameter",
     "text": "Common XGBoost Hyperparameter"
+  },
+  {
+    "objectID": "ml_for_epidemiology.html#neural-networks-the-foundation-of-modern-ai",
+    "href": "ml_for_epidemiology.html#neural-networks-the-foundation-of-modern-ai",
+    "title": "Machine Learning in Epidemiology",
+    "section": "Neural Networks: The Foundation of Modern AI",
+    "text": "Neural Networks: The Foundation of Modern AI\nWhat are Neural Networks?\nNeural networks are computing systems inspired by biological neural networks that learn patterns through interconnected nodes (neurons) organized in layers.\n\n\nKey Characteristics\n\nLayered architecture: Input layer → Hidden layer(s) → Output layer\nWeighted connections: Each connection has a learnable weight\nActivation functions: Non-linear transformations (sigmoid, ReLU, tanh)\nBackpropagation: Algorithm that adjusts weights to minimize prediction errors\nUniversal approximators: Can theoretically learn any continuous function\n\n\nConnection to LLMs\nNeural networks form the foundation of Large Language Models (LLMs):\n\nGPT, ChatGPT, Claude: Built on transformer neural network architectures\nDeep learning: Neural networks with many hidden layers\nAttention mechanisms: Advanced neural network components for processing sequences\nSame principles: Pattern recognition through weighted connections and learning\n\nIn Epidemiology\nCan be used for traditional prediction tasks: - Disease outcome prediction - Risk stratification - Medical image analysis - Time series forecasting (disease outbreaks)"
+  },
+  {
+    "objectID": "ml_for_epidemiology.html#neural-networks-strengths-and-limitations",
+    "href": "ml_for_epidemiology.html#neural-networks-strengths-and-limitations",
+    "title": "Machine Learning in Epidemiology",
+    "section": "Neural Networks: Strengths and Limitations",
+    "text": "Neural Networks: Strengths and Limitations\n\n\nExcellent Performance On:\n\nImages/Video: Medical imaging, radiology, pathology slides\nSound/Audio: Heart murmurs, lung sounds, speech patterns\nText/Language: Clinical notes, literature mining, patient communications\nSequential data: Time series, patient trajectories, treatment sequences\n\nWhy They Excel Here:\n\nSpatial patterns: Convolutional layers detect local features\nTemporal patterns: Recurrent layers capture sequences\nHierarchical learning: Lower layers learn simple patterns, higher layers combine them\nEnd-to-end learning: Automatically learn optimal feature representations\n\n\nUsually Not as Good on Tabular Data\nEpidemiological datasets are typically tabular:\n\nLimited spatial/temporal structure: Most epidemiological data lacks the spatial or sequential patterns that neural networks excel at\nFeature engineering matters more: Traditional ML methods often perform better with well-engineered features\nInterpretability trade-offs: Neural networks are “black boxes” - harder to understand than logistic regression or trees\nSample efficiency: Often need very large datasets to perform well\nOverfitting prone: Can memorize patterns in smaller datasets\n\nPractical Recommendation:\nFor most epidemiological prediction tasks, start with simpler methods (logistic regression, XGBoost) before considering neural networks\n\n\n\n\n\n\n\nKey Takeaway\n\n\nWhile neural networks power modern AI breakthroughs like LLMs, they’re not always the best choice for epidemiological prediction. Match your method to your data type and research question."
   },
   {
     "objectID": "ml_for_epidemiology.html#performance-metrics-choosing-the-right-measure",
