@@ -365,7 +365,7 @@ Dr.&nbsp;Dor Atias, MD-MPH
 <section id="machine-learning-workflow-for-epidemiological-research" class="slide level2">
 <h2>Machine Learning Workflow for Epidemiological Research</h2>
 
-<img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-3-1.png" class="quarto-figure quarto-figure-center r-stretch"><div class="callout callout-important callout-titled callout-style-default">
+<img data-src="ml_for_epidemiology-2_files/figure-revealjs/unnamed-chunk-3-1.png" class="quarto-figure quarto-figure-center r-stretch"><div class="callout callout-important callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
 <div class="callout-icon-container">
@@ -408,7 +408,7 @@ Dr.&nbsp;Dor Atias, MD-MPH
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-4-1.png"></p>
+<p><img data-src="ml_for_epidemiology-2_files/figure-revealjs/unnamed-chunk-4-1.png"></p>
 </figure>
 </div>
 </div>
@@ -426,7 +426,7 @@ Dr.&nbsp;Dor Atias, MD-MPH
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-5-1.png"></p>
+<p><img data-src="ml_for_epidemiology-2_files/figure-revealjs/unnamed-chunk-5-1.png"></p>
 </figure>
 </div>
 </div>
@@ -629,15 +629,14 @@ Dr.&nbsp;Dor Atias, MD-MPH
 <h3 id="key-concepts">Key Concepts</h3>
 <p><strong>Bias</strong>: measures how far off, on average, a model’s predictions are from the ground truth values.</p>
 <p><strong>Variance</strong>: measures how much a model’s predictions change with different training datasets</p>
-<p><strong>Underfitting</strong> occurs when the model is too simple, bias is high</p>
-<p><strong>Overfitting</strong> occurs when the model is too complex, variance is high</p>
-<p><strong>Sweet spot</strong>: Balanced complexity for your data</p>
+<p><strong>Overfitting</strong> occurs when variance is high</p>
+<p><strong>Underfitting</strong> when bias is high <strong>Sweet spot</strong>: Balanced complexity for your data</p>
 </div><div class="column" style="width:50%;">
 <div class="cell">
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-7-1.png"></p>
+<p><img data-src="ml_for_epidemiology-2_files/figure-revealjs/unnamed-chunk-7-1.png"></p>
 </figure>
 </div>
 </div>
@@ -681,7 +680,7 @@ Dr.&nbsp;Dor Atias, MD-MPH
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-8-1.png"></p>
+<p><img data-src="ml_for_epidemiology-2_files/figure-revealjs/unnamed-chunk-8-1.png"></p>
 </figure>
 </div>
 </div>
@@ -845,9 +844,9 @@ Dr.&nbsp;Dor Atias, MD-MPH
 <h3 id="mathematical-penalty">Mathematical Penalty</h3>
 <p><span class="math display">\[\text{Total Cost} = \text{Loss Function} + \lambda \times \text{Penalty}\]</span></p>
 <ul>
-<li><span class="math inline">\(\beta_j\)</span>: Coefficients for each predictor</li>
 <li><span class="math inline">\(\lambda\)</span> (lambda): Regularization strength</li>
 <li>Higher <span class="math inline">\(\lambda\)</span> = More aggressive pruning</li>
+<li>Tuned using cross-validation</li>
 </ul>
 <aside class="notes">
 <p>Use the gardening analogy - just as pruning makes trees healthier and more robust, regularization makes models more generalizable by removing unnecessary complexity.</p>
@@ -866,22 +865,7 @@ Dr.&nbsp;Dor Atias, MD-MPH
 <section id="lasso-coefficient-comparison-different-penalties" class="slide level2">
 <h2>LASSO Coefficient Comparison: Different Penalties</h2>
 
-<img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-9-1.png" class="r-stretch"><div title="How can we tell whats the best penalty?">
-<div class="callout callout-note callout-titled callout-style-default">
-<div class="callout-body">
-<div class="callout-title">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<p><strong>How can we tell whats the best penalty?</strong></p>
-</div>
-<div class="callout-content">
-<p>The best penalty (λ) is typically chosen via cross-validation, selecting the value produce the optimal model performance.</p>
-</div>
-</div>
-</div>
-</div>
-</section>
+<img data-src="ml_for_epidemiology-2_files/figure-revealjs/unnamed-chunk-9-1.png" class="r-stretch"></section>
 <section id="hyperparameters-adjusting-the-recipe" class="slide level2">
 <h2>Hyperparameters: “Adjusting the Recipe”</h2>
 <h3 id="what-are-hyperparameters">What are Hyperparameters?</h3>
@@ -922,43 +906,22 @@ Dr.&nbsp;Dor Atias, MD-MPH
 <h2>Hyperparameters: How to Tune Them?</h2>
 <h3 id="step-1-define-the-search-space">Step 1: Define the Search Space</h3>
 <ul>
-<li><strong>Grid Search</strong>: Exhaustively tests all combinations in a pre-defined grid of hyperparameters.
+<li><strong>Grid Search</strong>: Test specific combinations systematically
 <ul>
-<li>Good for: The parameter ranges are <strong>small</strong>, <strong>well-understood</strong>, and <strong>computationally cheap</strong> to evaluate.</li>
+<li>Good for: Few hyperparameters, small search spaces</li>
 <li>Example: Testing λ values [0.001, 0.01, 0.1, 1.0, 10.0]</li>
 </ul></li>
-<li><strong>Random Search</strong>: Randomly samples parameter combinations uniformly across the search space.
+<li><strong>Random Search</strong>: Sample randomly from the hyperparameter space
 <ul>
-<li>The space is <strong>large</strong>, but only a subset is worth exploring</li>
-<li>Often finds near-optimal results faster than grid search</li>
+<li>Good for: High-dimensional spaces, when some hyperparameters matter more than others</li>
+<li>Often outperforms grid search with same computational budget</li>
 </ul></li>
-<li><strong>Space-Filling Designs</strong>: Systematically samples combinations to cover the search space <strong>evenly</strong> without redundancy.
+<li><strong>Bayesian Optimization</strong>: Use previous results to guide next choices
 <ul>
-<li>Good for: When you want <strong>efficient coverage</strong> without exhaustive evaluation</li>
-<li>Common in model tuning with limited runs</li>
-</ul></li>
-<li><strong>Bayesian Optimization</strong>: Builds a probabilistic model (e.g., Gaussian Process) of performance across the space and <strong>updates</strong> it iteratively to focus on promising regions.
-<ul>
-<li>Good for: Each evaluation is <strong>computationally expensive</strong> (e.g., large datasets)</li>
-<li>Smart, data-driven exploration balancing exploration and exploitation.</li>
+<li>Good for: Expensive model training, when each evaluation takes significant time</li>
+<li>Efficiently samples near promising regions</li>
 </ul></li>
 </ul>
-<div title="Key Principle">
-<div class="callout callout-tip callout-titled callout-style-default">
-<div class="callout-body">
-<div class="callout-title">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<p><strong>Key Principle</strong></p>
-</div>
-<div class="callout-content">
-<p>The <strong>choice of search space</strong> should align with your <strong>optimization strategy</strong>.<br>
-Different methods explore parameter combinations in distinct ways.</p>
-</div>
-</div>
-</div>
-</div>
 </section>
 <section id="hyperparameters-visualizing-the-search-space" class="slide level2">
 <h2>Hyperparameters: Visualizing the Search Space</h2>
@@ -986,7 +949,7 @@ Different methods explore parameter combinations in distinct ways.</p>
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-11-1.png"></p>
+<p><img data-src="ml_for_epidemiology-2_files/figure-revealjs/unnamed-chunk-11-1.png"></p>
 </figure>
 </div>
 </div>
@@ -1040,28 +1003,23 @@ Different methods explore parameter combinations in distinct ways.</p>
 </section>
 <section id="decision-trees" class="slide level2">
 <h2>Decision Trees</h2>
-<p>Decision Trees are intuitive, non-parametric models that recursively split data to achieve homogenous outcome groups, effectively mimicking clinical decision-making processes.</p>
 <div class="columns">
 <div class="column" style="width:50%;">
 <h3 id="key-characteristics-3">Key Characteristics</h3>
 <ul>
 <li><strong>Non-parametric architecture</strong>: No assumptions about data distribution or linear relationships</li>
+<li><strong>Recursive splitting</strong>: Algorithm selects the variable and split point that maximizes information gain</li>
+<li><strong>Stopping criteria</strong>: Controlled by minimum samples per node, maximum depth, and complexity parameters (hyperparameters)</li>
 <li><strong>Handles mixed data types</strong>: Works with both continuous and categorical predictors natively</li>
 <li><strong>Automatic interaction detection</strong>: Naturally captures variable interactions through hierarchical splits</li>
 <li><strong>Interpretable</strong>: Easy to understand and explain to clinicians</li>
-</ul>
-<h3 id="decision-trees-hyperparameters">Decision Trees hyperparameters</h3>
-<ul>
-<li><strong>cost_complexity</strong>: Penalty for tree complexity (higher = simpler trees)</li>
-<li><strong>tree_depth</strong>: Maximum depth of the tree (higher = more complex)</li>
-<li><strong>min_n</strong>: Minimum samples required to split a node (higher = fewer splits)</li>
 </ul>
 </div><div class="column" style="width:50%;">
 <div class="cell">
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-12-1.png"></p>
+<p><img data-src="ml_for_epidemiology-2_files/figure-revealjs/unnamed-chunk-12-1.png"></p>
 </figure>
 </div>
 </div>
@@ -1109,6 +1067,7 @@ Different methods explore parameter combinations in distinct ways.</p>
 <h3 id="mathematical-foundation-3">Mathematical Foundation</h3>
 <p><strong>Ensemble Prediction:</strong> <span class="math display">\[\hat{y} = \frac{1}{B} \sum_{b=1}^{B} \hat{f}_b(x)\]</span></p>
 <p>Where <span class="math inline">\(\hat{f}_b\)</span> is the <span class="math inline">\(b\)</span>-th tree trained on bootstrap sample</p>
+<p><strong>Variance Reduction:</strong> <span class="math display">\[\text{Var}(\bar{X}) = \frac{\sigma^2}{n} \text{ (if trees independent)}\]</span></p>
 </div></div>
 <aside class="notes">
 <ul>
@@ -1132,10 +1091,12 @@ Different methods explore parameter combinations in distinct ways.</p>
 </section>
 <section id="extreme-gradient-boosting-xgboost" class="slide level2">
 <h2>eXtreme Gradient Boosting (XGBoost)</h2>
-<h3 id="algorithm-overview">Algorithm Overview</h3>
-<p>XGBoost employs <strong>sequential ensemble learning</strong> where each tree <strong>corrects errors</strong> from previous learners, building <strong>weak decision</strong> trees that collectively form a powerful predictor.</p>
 <div class="columns">
 <div class="column" style="width:50%;">
+<h3 id="algorithm-overview">Algorithm Overview</h3>
+<p>XGBoost employs <strong>sequential ensemble learning</strong> where each tree corrects errors from previous learners, building weak decision trees that collectively form a powerful predictor.</p>
+<p><strong>Key Innovation:</strong> Unlike simple decision trees that make single predictions, <strong>gradient boosting</strong> sequentially trains multiple trees where each corrects errors from previous ones, while XGBoost enhances this with <strong>similarity scores</strong> and built-in <strong>regularization</strong>.</p>
+</div><div class="column" style="width:50%;">
 <h3 id="key-characteristics-5">Key Characteristics</h3>
 <ul>
 <li><strong>Ensemble method</strong>: Combines multiple weak learners sequentially</li>
@@ -1143,8 +1104,21 @@ Different methods explore parameter combinations in distinct ways.</p>
 <li><strong>Built-in regularization</strong>: λ (lambda) prevents overfitting by shrinking similarity scores</li>
 <li><strong>Automatic pruning</strong>: γ (gamma) removes branches that don’t improve gain sufficiently</li>
 <li><strong>Built-in feature selection</strong>: Automatically prioritizes important variables</li>
-<li><strong>Handles outliers &amp; missing data</strong>: Native missing value support without imputation</li>
+<li><strong>Handles missing data</strong>: Native missing value support without imputation</li>
 <li><strong>Complex relationships</strong>: Captures non-linear patterns and interactions</li>
+</ul>
+</div></div>
+</section>
+<section id="extreme-gradient-boosting-xgboost-1" class="slide level2">
+<h2>eXtreme Gradient Boosting (XGBoost)</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<h3 id="advantages-in-epidemiology">Advantages in Epidemiology</h3>
+<ul>
+<li><strong>Excellent predictive performance</strong> with complex health datasets</li>
+<li><strong>Handles large, high-dimensional data</strong> common in electronic health records</li>
+<li><strong>Automatic interaction detection</strong> between risk factors</li>
+<li><strong>Robust to outliers and missing data</strong> (crucial for real-world medical data)</li>
 </ul>
 </div><div class="column" style="width:50%;">
 <h3 id="limitations">Limitations</h3>
@@ -1181,11 +1155,11 @@ Different methods explore parameter combinations in distinct ways.</p>
 <section id="xgboost---under-the-hood-1" class="slide level2">
 <h2>XGBoost - under the hood</h2>
 
-<img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-13-1.png" class="r-stretch"></section>
+<img data-src="ml_for_epidemiology-2_files/figure-revealjs/unnamed-chunk-13-1.png" class="r-stretch"></section>
 <section id="common-xgboost-hyperparameter" class="slide level2">
 <h2>Common XGBoost Hyperparameter</h2>
 
-<img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-14-1.png" class="r-stretch"></section>
+<img data-src="ml_for_epidemiology-2_files/figure-revealjs/unnamed-chunk-14-1.png" class="r-stretch"></section>
 <section id="neural-networks-the-foundation-of-modern-ai" class="slide level2">
 <h2>Neural Networks: The Foundation of Modern AI</h2>
 <h3 id="what-are-neural-networks">What are Neural Networks?</h3>
