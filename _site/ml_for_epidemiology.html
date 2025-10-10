@@ -10,7 +10,7 @@
   <meta name="generator" content="quarto-1.8.25">
 
   <meta name="author" content="Dr.&nbsp;Dor Atias, MD-MPH">
-  <meta name="dcterms.date" content="2025-10-09">
+  <meta name="dcterms.date" content="2025-10-10">
   <title>Machine Learning in Epidemiology</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -146,7 +146,7 @@ Dr.&nbsp;Dor Atias, MD-MPH
     </div>
 </div>
 
-  <p class="date">2025-10-09</p>
+  <p class="date">2025-10-10</p>
 </section>
 <section id="learning-objectives" class="slide level2">
 <h2>Learning Objectives</h2>
@@ -483,58 +483,58 @@ Dr.&nbsp;Dor Atias, MD-MPH
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">Systolic Blood Pressure (per 10 mmHg)</td>
-<td style="text-align: center;">0.837</td>
-<td style="text-align: center;">0.800</td>
-<td style="text-align: center;">0.876</td>
+<td style="text-align: center;">1.194</td>
+<td style="text-align: center;">1.141</td>
+<td style="text-align: center;">1.250</td>
 <td style="text-align: center;">&lt; 0.001</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Ex-Smoker</td>
-<td style="text-align: center;">0.909</td>
-<td style="text-align: center;">0.730</td>
-<td style="text-align: center;">1.131</td>
+<td style="text-align: center;">1.101</td>
+<td style="text-align: center;">0.884</td>
+<td style="text-align: center;">1.371</td>
 <td style="text-align: center;">0.391</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">1-10 Cigarettes/Day</td>
-<td style="text-align: center;">1.074</td>
-<td style="text-align: center;">0.868</td>
-<td style="text-align: center;">1.330</td>
+<td style="text-align: center;">0.931</td>
+<td style="text-align: center;">0.752</td>
+<td style="text-align: center;">1.153</td>
 <td style="text-align: center;">0.512</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">11-20 Cigarettes/Day</td>
-<td style="text-align: center;">0.452</td>
-<td style="text-align: center;">0.348</td>
-<td style="text-align: center;">0.587</td>
+<td style="text-align: center;">2.213</td>
+<td style="text-align: center;">1.703</td>
+<td style="text-align: center;">2.876</td>
 <td style="text-align: center;">&lt; 0.001</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">20+ Cigarettes/Day</td>
-<td style="text-align: center;">0.483</td>
-<td style="text-align: center;">0.380</td>
-<td style="text-align: center;">0.615</td>
+<td style="text-align: center;">2.071</td>
+<td style="text-align: center;">1.627</td>
+<td style="text-align: center;">2.635</td>
 <td style="text-align: center;">&lt; 0.001</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Myocardial Infarction</td>
-<td style="text-align: center;">1.105</td>
-<td style="text-align: center;">0.834</td>
-<td style="text-align: center;">1.465</td>
+<td style="text-align: center;">0.905</td>
+<td style="text-align: center;">0.683</td>
+<td style="text-align: center;">1.199</td>
 <td style="text-align: center;">0.487</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Diabetes Mellitus</td>
-<td style="text-align: center;">0.901</td>
-<td style="text-align: center;">0.669</td>
-<td style="text-align: center;">1.212</td>
+<td style="text-align: center;">1.110</td>
+<td style="text-align: center;">0.825</td>
+<td style="text-align: center;">1.494</td>
 <td style="text-align: center;">0.491</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Body Mass Index</td>
-<td style="text-align: center;">0.985</td>
-<td style="text-align: center;">0.961</td>
-<td style="text-align: center;">1.010</td>
+<td style="text-align: center;">1.015</td>
+<td style="text-align: center;">0.990</td>
+<td style="text-align: center;">1.041</td>
 <td style="text-align: center;">0.235</td>
 </tr>
 </tbody>
@@ -597,16 +597,18 @@ Dr.&nbsp;Dor Atias, MD-MPH
 <li><p>When <span class="math inline">\(y_i = 0\)</span> and <span class="math inline">\(\hat{y}^{(i)}\)</span> is large → Large penalty</p></li>
 <li><p>Perfect predictions → Zero loss</p></li>
 </ul>
+<div title="Can we predict too well?">
 <div class="callout callout-note callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<p><strong>Note</strong></p>
+<p><strong>Can we predict too well?</strong></p>
 </div>
 <div class="callout-content">
-<p>Can we predict too well? Yes! Overfitting occurs when a model learns noise instead of signal, leading to poor performance on new data.</p>
+<p>Yes! Overfitting occurs when a model learns noise instead of signal, leading to poor performance on new data.</p>
+</div>
 </div>
 </div>
 </div>
@@ -811,16 +813,16 @@ Dr.&nbsp;Dor Atias, MD-MPH
 <li>Works with high-dimensional datasets</li>
 </ul>
 </div></div>
-<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout callout-warning callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<p><strong>Note</strong></p>
+<p><strong>Remember: LASSO is still a form of logistic regression</strong></p>
 </div>
 <div class="callout-content">
-<p>LASSO is still a form of logistic regression, just with added regularization. It still assumes linear relationships and requires careful preprocessing.</p>
+<p>Just with added regularization. It still assumes linear relationships and requires careful preprocessing.</p>
 </div>
 </div>
 </div>
@@ -861,7 +863,7 @@ Dr.&nbsp;Dor Atias, MD-MPH
 <p><strong>Hyperparameters</strong> are configuration settings that we must specify <strong>before</strong> training a machine learning model begins. “recipe settings” - like oven temperature and cooking time - that control how your algorithm learns from data.</p>
 <h3 id="key-characteristics-2">Key Characteristics:</h3>
 <ul>
-<li><strong>Not learned from data</strong>: We set them manually based on experience or systematic testing</li>
+<li><strong>Not learned from data</strong>: We set them manually based on systematic testing</li>
 <li><strong>Control the learning process</strong>: They determine how the algorithm behaves during training</li>
 <li><strong>Model-specific</strong>: Different algorithms have different hyperparameters</li>
 <li><strong>Critical for performance</strong>: Poor hyperparameter choices can lead to suboptimal models</li>
@@ -926,8 +928,8 @@ Dr.&nbsp;Dor Atias, MD-MPH
 <h2>Hyperparameters: How to Tune Them?</h2>
 <h3 id="step-2-choose-evaluation-strategy">Step 2: Choose Evaluation Strategy</h3>
 <ul>
-<li><strong>Cross-validation</strong>: Most robust for estimating performance</li>
-<li><strong>Hold-out validation</strong>: Simpler but less reliable</li>
+<li><p><strong>Hold-out validation</strong>: Simpler but less reliable</p></li>
+<li><p><strong>Cross-validation</strong>: Most robust for estimating performance</p></li>
 </ul>
 <h3 id="step-3-select-optimization-metric">Step 3: Select Optimization Metric</h3>
 <p>Choose based on your epidemiological context:</p>
@@ -995,7 +997,6 @@ Dr.&nbsp;Dor Atias, MD-MPH
 <li><strong>Handles mixed data types</strong>: Works with both continuous and categorical predictors natively</li>
 <li><strong>Automatic interaction detection</strong>: Naturally captures variable interactions through hierarchical splits</li>
 <li><strong>Interpretable</strong>: Easy to understand and explain to clinicians</li>
-<li><strong>Prone to overfitting</strong>: Thus, rarely used alone for prediction</li>
 </ul>
 </div><div class="column" style="width:50%;">
 <div class="cell">
@@ -1024,6 +1025,19 @@ Dr.&nbsp;Dor Atias, MD-MPH
 <li><p><strong>No splits</strong>: Total Gini = original root Gini</p></li>
 <li><p><strong>Larger leaves</strong> contribute more to the total impurity due to weighting by <span class="math inline">\(\frac{N_j}{N}\)</span></p></li>
 </ul>
+<div class="callout callout-warning callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Warning</strong></p>
+</div>
+<div class="callout-content">
+<p>Decision trees are intuitive but prone to overfitting and thus rarely used alone. They serve as the building blocks for more robust ensemble methods like Random Forest and XGBoost.</p>
+</div>
+</div>
+</div>
 </section>
 <section id="random-forest-wisdom-of-the-crowd" class="slide level2 center">
 <h2>Random Forest: Wisdom of the Crowd</h2>

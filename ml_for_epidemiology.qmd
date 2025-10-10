@@ -99,13 +99,8 @@ ctl_grid <- control_resamples(
 
 ```{r}
 #| include: false 
-# Load synthetic data and prepare for modeling
+# Load functions
 source("scripts/00 - funcs.R")
-load("data/syn_data.RData")
-ml_df <- syn %>%
-  mutate(id = row_number(), .before = dmg_admission_age) %>% # Add ID column for realism
-  mutate_if(is.logical, as.factor) # Convert logicals to factors for modeling
-
 # Load pre-prepared modeling dataset
 load("data/model_fits.RData")
 ```
@@ -1018,6 +1013,7 @@ The student analogy is powerful because everyone can relate to the difference be
 3.  **Complex model**: Too many parameters for data size
 4.  **Unstable predictions**: Small data changes → big prediction changes
 :::
+
 ::: {.column width="50%"}
 ### Prevention Strategies
 
@@ -1030,6 +1026,7 @@ The student analogy is powerful because everyone can relate to the difference be
 -   **Early stopping**: Stop before overfitting begins
 :::
 :::::
+
 ::: callout-warning
 ## Remember: Overfitting is ML's Greatest Enemy
 
@@ -1087,7 +1084,7 @@ Always validate on truly unseen data. If it seems too good to be true, it probab
 
 -   Creates sparse models
 
--   e.g., LASSO regression 
+-   e.g., LASSO regression
 :::
 
 ::: {.column width="33%"}
@@ -1099,7 +1096,7 @@ Always validate on truly unseen data. If it seems too good to be true, it probab
 
 -   Good when all predictors are somewhat relevant
 
--   e.g., Ridge regression 
+-   e.g., Ridge regression
 :::
 
 ::: {.column width="33%"}
@@ -1109,7 +1106,7 @@ Always validate on truly unseen data. If it seems too good to be true, it probab
 
 -   Balances variable selection with coefficient shrinkage
 
--   e.g., Elastic Net 
+-   e.g., Elastic Net
 :::
 ::::::
 
@@ -1139,6 +1136,7 @@ A regularized version of logistic regression that adds a penalty to the loss fun
 
 ::: callout-warning
 ## Remember: LASSO is still a form of logistic regression
+
 Just with added regularization. It still assumes linear relationships and requires careful preprocessing.
 :::
 
@@ -1847,6 +1845,7 @@ ggplot() +
     plot.margin = margin(8, 12, 8, 12)
   )
 ```
+
 ## Performance Metrics: Choosing the Right Measure
 
 ### Understanding Your Epidemiological Context
