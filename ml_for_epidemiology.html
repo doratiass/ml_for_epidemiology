@@ -10,7 +10,7 @@
   <meta name="generator" content="quarto-1.8.25">
 
   <meta name="author" content="Dr.&nbsp;Dor Atias, MD-MPH">
-  <meta name="dcterms.date" content="2025-10-09">
+  <meta name="dcterms.date" content="2025-10-10">
   <title>Machine Learning in Epidemiology</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -146,7 +146,7 @@ Dr.&nbsp;Dor Atias, MD-MPH
     </div>
 </div>
 
-  <p class="date">2025-10-09</p>
+  <p class="date">2025-10-10</p>
 </section>
 <section id="learning-objectives" class="slide level2">
 <h2>Learning Objectives</h2>
@@ -483,58 +483,58 @@ Dr.&nbsp;Dor Atias, MD-MPH
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">Systolic Blood Pressure (per 10 mmHg)</td>
-<td style="text-align: center;">0.837</td>
-<td style="text-align: center;">0.800</td>
-<td style="text-align: center;">0.876</td>
+<td style="text-align: center;">1.194</td>
+<td style="text-align: center;">1.141</td>
+<td style="text-align: center;">1.250</td>
 <td style="text-align: center;">&lt; 0.001</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Ex-Smoker</td>
-<td style="text-align: center;">0.909</td>
-<td style="text-align: center;">0.730</td>
-<td style="text-align: center;">1.131</td>
+<td style="text-align: center;">1.101</td>
+<td style="text-align: center;">0.884</td>
+<td style="text-align: center;">1.371</td>
 <td style="text-align: center;">0.391</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">1-10 Cigarettes/Day</td>
-<td style="text-align: center;">1.074</td>
-<td style="text-align: center;">0.868</td>
-<td style="text-align: center;">1.330</td>
+<td style="text-align: center;">0.931</td>
+<td style="text-align: center;">0.752</td>
+<td style="text-align: center;">1.153</td>
 <td style="text-align: center;">0.512</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">11-20 Cigarettes/Day</td>
-<td style="text-align: center;">0.452</td>
-<td style="text-align: center;">0.348</td>
-<td style="text-align: center;">0.587</td>
+<td style="text-align: center;">2.213</td>
+<td style="text-align: center;">1.703</td>
+<td style="text-align: center;">2.876</td>
 <td style="text-align: center;">&lt; 0.001</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">20+ Cigarettes/Day</td>
-<td style="text-align: center;">0.483</td>
-<td style="text-align: center;">0.380</td>
-<td style="text-align: center;">0.615</td>
+<td style="text-align: center;">2.071</td>
+<td style="text-align: center;">1.627</td>
+<td style="text-align: center;">2.635</td>
 <td style="text-align: center;">&lt; 0.001</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Myocardial Infarction</td>
-<td style="text-align: center;">1.105</td>
-<td style="text-align: center;">0.834</td>
-<td style="text-align: center;">1.465</td>
+<td style="text-align: center;">0.905</td>
+<td style="text-align: center;">0.683</td>
+<td style="text-align: center;">1.199</td>
 <td style="text-align: center;">0.487</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Diabetes Mellitus</td>
-<td style="text-align: center;">0.901</td>
-<td style="text-align: center;">0.669</td>
-<td style="text-align: center;">1.212</td>
+<td style="text-align: center;">1.110</td>
+<td style="text-align: center;">0.825</td>
+<td style="text-align: center;">1.494</td>
 <td style="text-align: center;">0.491</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Body Mass Index</td>
-<td style="text-align: center;">0.985</td>
-<td style="text-align: center;">0.961</td>
-<td style="text-align: center;">1.010</td>
+<td style="text-align: center;">1.015</td>
+<td style="text-align: center;">0.990</td>
+<td style="text-align: center;">1.041</td>
 <td style="text-align: center;">0.235</td>
 </tr>
 </tbody>
@@ -597,21 +597,23 @@ Dr.&nbsp;Dor Atias, MD-MPH
 <li><p>When <span class="math inline">\(y_i = 0\)</span> and <span class="math inline">\(\hat{y}^{(i)}\)</span> is large → Large penalty</p></li>
 <li><p>Perfect predictions → Zero loss</p></li>
 </ul>
+<div title="Can we predict too well?">
 <div class="callout callout-note callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<p><strong>Note</strong></p>
+<p><strong>Can we predict too well?</strong></p>
 </div>
 <div class="callout-content">
-<p>Can we predict too well? Yes! Overfitting occurs when a model learns noise instead of signal, leading to poor performance on new data.</p>
+<p>Yes! Overfitting occurs when a model learns noise instead of signal, leading to poor performance on new data.</p>
+</div>
 </div>
 </div>
 </div>
 </section>
-<section id="the-bias-variance-trade-off" class="slide level2">
+<section id="the-bias-variance-trade-off" class="slide level2 center">
 <h2>The Bias-Variance Trade-off</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
@@ -631,6 +633,19 @@ Dr.&nbsp;Dor Atias, MD-MPH
 </div>
 </div>
 </div></div>
+<div class="callout callout-important callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Important</strong></p>
+</div>
+<div class="callout-content">
+<p>Bias = systematic error | Variance = prediction inconsistency</p>
+</div>
+</div>
+</div>
 </section>
 <section id="the-overfitting-problem-student-learning-analogy" class="slide level2">
 <h2>The Overfitting Problem (Student Learning Analogy)</h2>
@@ -676,8 +691,10 @@ Dr.&nbsp;Dor Atias, MD-MPH
           display:block!important;
       }</style></aside>
 </section>
-<section id="overfitting-memorizing-vs.-understanding" class="slide level2">
+<section id="overfitting-memorizing-vs.-understanding" class="slide level2 center">
 <h2>Overfitting: “Memorizing vs.&nbsp;Understanding”</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
 <h3 id="warning-signs">Warning Signs</h3>
 <ol type="1">
 <li><strong>Perfect training scores</strong>: Usually too good to be true</li>
@@ -685,6 +702,7 @@ Dr.&nbsp;Dor Atias, MD-MPH
 <li><strong>Complex model</strong>: Too many parameters for data size</li>
 <li><strong>Unstable predictions</strong>: Small data changes → big prediction changes</li>
 </ol>
+</div><div class="column" style="width:50%;">
 <h3 id="prevention-strategies">Prevention Strategies</h3>
 <ul>
 <li><p><strong>Validation</strong>: Hold out test data</p></li>
@@ -692,6 +710,7 @@ Dr.&nbsp;Dor Atias, MD-MPH
 <li><p><strong>Regularization</strong>: Penalize complexity</p></li>
 <li><p><strong>Early stopping</strong>: Stop before overfitting begins</p></li>
 </ul>
+</div></div>
 <div class="callout callout-warning callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
@@ -731,6 +750,7 @@ Dr.&nbsp;Dor Atias, MD-MPH
 </ul>
 <h3 id="special-considerations-for-epidemiological-data">Special Considerations for Epidemiological Data</h3>
 <ul>
+<li><strong>Well-balanced outcomes</strong>: Random splits usually suffice</li>
 <li><strong>Class Imbalance</strong>: Stratify splits to maintain outcome proportions</li>
 <li><strong>Temporal Data</strong>: Use time-based splits to mimic real-world prediction</li>
 <li><strong>Clustered Data</strong>: Split by site or cluster to avoid leakage</li>
@@ -748,24 +768,27 @@ Dr.&nbsp;Dor Atias, MD-MPH
 <h3 id="types-of-regularization">Types of Regularization</h3>
 <div class="columns">
 <div class="column" style="width:33%;">
-<p><strong>LASSO (L1)</strong>:</p>
+<p><strong>L1</strong>:</p>
 <ul>
-<li><p>Shrinks coefficients toward zero</p></li>
+<li><p>Based on absolute values of coefficients</p></li>
 <li><p><strong>Variable selection</strong>: Can set coefficients exactly to zero</p></li>
 <li><p>Creates sparse models</p></li>
+<li><p>e.g., LASSO regression</p></li>
 </ul>
 </div><div class="column" style="width:33%;">
-<p><strong>Ridge (L2)</strong>:</p>
+<p><strong>L2</strong>:</p>
 <ul>
-<li><p>Shrinks all coefficients toward zero</p></li>
-<li><p>Keeps all variables but reduces their impact</p></li>
+<li><p>Based on squared values of coefficients</p></li>
+<li><p>Shrinks coefficients toward zero (but none to zero)</p></li>
 <li><p>Good when all predictors are somewhat relevant</p></li>
+<li><p>e.g., Ridge regression</p></li>
 </ul>
 </div><div class="column" style="width:33%;">
-<p><strong>Elastic Net</strong>:</p>
+<p><strong>Mix</strong>:</p>
 <ul>
 <li><p>Combines LASSO and Ridge</p></li>
 <li><p>Balances variable selection with coefficient shrinkage</p></li>
+<li><p>e.g., Elastic Net</p></li>
 </ul>
 </div></div>
 </section>
@@ -790,21 +813,21 @@ Dr.&nbsp;Dor Atias, MD-MPH
 <li>Works with high-dimensional datasets</li>
 </ul>
 </div></div>
-<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout callout-warning callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<p><strong>Note</strong></p>
+<p><strong>Remember: LASSO is still a form of logistic regression</strong></p>
 </div>
 <div class="callout-content">
-<p>LASSO is still a form of logistic regression, just with added regularization. It still assumes linear relationships and requires careful preprocessing.</p>
+<p>Just with added regularization. It still assumes linear relationships and requires careful preprocessing.</p>
 </div>
 </div>
 </div>
 </section>
-<section id="lasso-under-the-hood" class="slide level2">
+<section id="lasso-under-the-hood" class="slide level2 center">
 <h2>LASSO under the Hood</h2>
 <h3 id="mathematical-foundation-1">Mathematical Foundation</h3>
 <p>LASSO adds a regularization term to penalize coefficient magnitude:</p>
@@ -834,160 +857,13 @@ Dr.&nbsp;Dor Atias, MD-MPH
 <h2>LASSO Coefficient Comparison: Different Penalties</h2>
 
 <img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-9-1.png" class="r-stretch"></section>
-<section id="decision-trees" class="slide level2">
-<h2>Decision Trees</h2>
-<div class="columns">
-<div class="column" style="width:50%;">
-<h3 id="key-characteristics-2">Key Characteristics</h3>
-<ul>
-<li><strong>Non-parametric architecture</strong>: No assumptions about data distribution or linear relationships</li>
-<li><strong>Recursive splitting</strong>: Algorithm selects the variable and split point that maximizes information gain</li>
-<li><strong>Stopping criteria</strong>: Controlled by minimum samples per node, maximum depth, and complexity parameters (hyperparameters)</li>
-<li><strong>Handles mixed data types</strong>: Works with both continuous and categorical predictors natively</li>
-<li><strong>Automatic interaction detection</strong>: Naturally captures variable interactions through hierarchical splits</li>
-<li><strong>Interpretable</strong>: Easy to understand and explain to clinicians</li>
-<li><strong>Prone to overfitting</strong>: Thus, rarely used alone for prediction</li>
-</ul>
-</div><div class="column" style="width:50%;">
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure>
-<p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-10-1.png"></p>
-</figure>
-</div>
-</div>
-</div>
-</div></div>
-</section>
-<section id="descision-trees---under-the-hood" class="slide level2">
-<h2>Descision Trees - under the hood</h2>
-<h3 id="mathematical-foundation-2">Mathematical Foundation</h3>
-<p>Decision trees split data using decision criteria, similar to clinical flowcharts, to create homogeneous (pure) groups with each split. Common metrics include Gini impurity, enthropy and information gain.</p>
-<p><span class="math display">\[\text{Total Gini} = \sum{j=1}^{L} \frac{N_j}{N} \times \left(1 - \sum_{i=1}^{c} p_{ij}^2\right)\]</span></p>
-<p>Where:</p>
-<p><span class="math inline">\(L\)</span> = number of leaf nodes in the tree; <span class="math inline">\(N_j\)</span> = number of samples in leaf node <span class="math inline">\(j\)</span>; <span class="math inline">\(N\)</span> = total number of samples in the dataset; <span class="math inline">\(1 - \sum_{i=1}^{c} p_{ij}^2\)</span> = Gini impurity of leaf node <span class="math inline">\(j\)</span>; <span class="math inline">\(c =\)</span> the number of classes; <span class="math inline">\(p_{ij}\)</span> = proportion of class <span class="math inline">\(i\)</span> in leaf node <span class="math inline">\(j\)</span></p>
-<h3 id="mathematical-intuition">Mathematical Intuition</h3>
-<ul>
-<li><p><strong>Gini = 0</strong>: Perfect classification (all samples same class)</p></li>
-<li><p><strong>Gini = 0.5</strong>: Maximum impurity for binary classification (50-50 split)</p></li>
-<li><p><strong>Perfect tree</strong>: Total Gini = 0 (all leaves are pure)</p></li>
-<li><p><strong>No splits</strong>: Total Gini = original root Gini</p></li>
-<li><p><strong>Larger leaves</strong> contribute more to the total impurity due to weighting by <span class="math inline">\(\frac{N_j}{N}\)</span></p></li>
-</ul>
-</section>
-<section id="random-forest-wisdom-of-the-crowd" class="slide level2 center">
-<h2>Random Forest: Wisdom of the Crowd</h2>
-<div class="columns">
-<div class="column" style="width:50%;">
-<h3 id="key-characteristics-3">Key Characteristics</h3>
-<p><strong>Bootstrap Aggregating (Bagging):</strong> - Create many bootstrap samples from training data - Train decision tree on each sample - Use random subset of features at each split - Average predictions across all trees</p>
-<p><strong>Feature Randomness:</strong> At each split, consider only <span class="math inline">\(\sqrt{p}\)</span> randomly selected features (where <span class="math inline">\(p\)</span> = total features)</p>
-<p><strong>Key Innovation:</strong> Combines <strong>variance reduction</strong> (bagging) with <strong>feature randomness</strong></p>
-</div><div class="column" style="width:50%;">
-<h3 id="mathematical-foundation-3">Mathematical Foundation</h3>
-<p><strong>Ensemble Prediction:</strong> <span class="math display">\[\hat{y} = \frac{1}{B} \sum_{b=1}^{B} \hat{f}_b(x)\]</span></p>
-<p>Where <span class="math inline">\(\hat{f}_b\)</span> is the <span class="math inline">\(b\)</span>-th tree trained on bootstrap sample</p>
-<p><strong>Variance Reduction:</strong> <span class="math display">\[\text{Var}(\bar{X}) = \frac{\sigma^2}{n} \text{ (if trees independent)}\]</span></p>
-</div></div>
-<aside class="notes">
-<ul>
-<li>Random Forest is like having a committee of doctors each looking at different aspects of a patient</li>
-<li>Each “doctor” (tree) sees different patients (bootstrap samples) and focuses on different symptoms (random features)</li>
-<li>The final diagnosis comes from majority vote - more reliable than any single opinion</li>
-<li>Great stepping stone between interpretable single trees and complex ensemble methods like XGBoost</li>
-<li>Emphasize that this introduces the key concept of ensemble learning that XGBoost will build upon</li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="extreme-gradient-boosting-xgboost" class="slide level2">
-<h2>eXtreme Gradient Boosting (XGBoost)</h2>
-<div class="columns">
-<div class="column" style="width:50%;">
-<h3 id="algorithm-overview">Algorithm Overview</h3>
-<p>XGBoost employs <strong>sequential ensemble learning</strong> where each tree corrects errors from previous learners, building weak decision trees that collectively form a powerful predictor.</p>
-<p><strong>Key Innovation:</strong> Unlike simple decision trees that make single predictions, <strong>gradient boosting</strong> sequentially trains multiple trees where each corrects errors from previous ones, while XGBoost enhances this with <strong>similarity scores</strong> and built-in <strong>regularization</strong>.</p>
-</div><div class="column" style="width:50%;">
-<h3 id="key-characteristics-4">Key Characteristics</h3>
-<ul>
-<li><strong>Ensemble method</strong>: Combines multiple weak learners sequentially</li>
-<li><strong>Gradient boosting</strong>: Each tree learns from previous trees’ errors</li>
-<li><strong>Built-in regularization</strong>: λ (lambda) prevents overfitting by shrinking similarity scores</li>
-<li><strong>Automatic pruning</strong>: γ (gamma) removes branches that don’t improve gain sufficiently</li>
-<li><strong>Built-in feature selection</strong>: Automatically prioritizes important variables</li>
-<li><strong>Handles missing data</strong>: Native missing value support without imputation</li>
-<li><strong>Complex relationships</strong>: Captures non-linear patterns and interactions</li>
-</ul>
-</div></div>
-</section>
-<section id="extreme-gradient-boosting-xgboost-1" class="slide level2">
-<h2>eXtreme Gradient Boosting (XGBoost)</h2>
-<div class="columns">
-<div class="column" style="width:50%;">
-<h3 id="advantages-in-epidemiology">Advantages in Epidemiology</h3>
-<ul>
-<li><strong>Excellent predictive performance</strong> with complex health datasets</li>
-<li><strong>Handles large, high-dimensional data</strong> common in electronic health records</li>
-<li><strong>Automatic interaction detection</strong> between risk factors</li>
-<li><strong>Robust to outliers and missing data</strong> (crucial for real-world medical data)</li>
-</ul>
-</div><div class="column" style="width:50%;">
-<h3 id="limitations">Limitations</h3>
-<ul>
-<li><strong>Black box nature</strong>: Requires post-hoc explanation methods (SHAP)</li>
-<li><strong>Computational intensity</strong>: More resources than simpler models</li>
-<li><strong>Hyperparameter sensitivity</strong>: Multiple parameters (η, λ, γ, max_depth) require tuning</li>
-<li><strong>Overfitting risk</strong>: Despite regularization, still needs careful cross-validation</li>
-</ul>
-</div></div>
-</section>
-<section id="xgboost---under-the-hood" class="slide level2">
-<h2>XGBoost - under the hood</h2>
-<div class="columns">
-<div class="column" style="width:50%;">
-<h3 id="how-xgboost-works">How XGBoost Works</h3>
-<p><strong>Step 1:</strong> Start with initial prediction (typically 0.5)</p>
-<p><strong>Step 2:</strong> Calculate <strong>pseudo-residuals</strong> (errors from previous predictions)</p>
-<p><strong>Step 3:</strong> Build trees to predict residuals using <strong>similarity scores</strong>: <span class="math inline">\(\text{Similarity} = \frac{(\sum \text{residuals})^2}{\text{number of residuals} + \lambda}\)</span></p>
-<p><strong>Step 4:</strong> Use <strong>gain</strong> to find optimal splits: <span class="math inline">\(\text{Gain} = \text{Similarity}_{\text{left}} + \text{Similarity}_{\text{right}} - \text{Similarity}_{\text{root}}\)</span></p>
-<p><strong>Step 5:</strong> <strong>Prune</strong> using gamma (complexity parameter)</p>
-<p><strong>Step 6:</strong> Scale by learning rate (η) and repeat</p>
-</div><div class="column" style="width:50%;">
-<h3 id="key-mathematical-concepts">Key Mathematical Concepts</h3>
-<p><strong>Similarity Scores:</strong> When residuals are similar, they don’t cancel out → high similarity score. When residuals are different, they cancel out → low similarity score.</p>
-<p><strong>Learning Rate (η):</strong> Takes “small steps in the right direction” - empirical evidence shows many small steps outperform few large steps.</p>
-<p><strong>Regularization Effects:</strong></p>
-<ul>
-<li><strong>Lambda (λ) &gt; 0</strong>: Shrinks similarity scores → easier pruning → prevents overfitting</li>
-<li><strong>Gamma (γ)</strong>: Sets minimum gain threshold for splits → controls tree complexity</li>
-</ul>
-</div></div>
-</section>
-<section id="xgboost---under-the-hood-1" class="slide level2">
-<h2>XGBoost - under the hood</h2>
-
-<img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-11-1.png" class="r-stretch"></section>
-<section id="common-xgboost-hyperparameter" class="slide level2">
-<h2>Common XGBoost Hyperparameter</h2>
-
-<img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-12-1.png" class="r-stretch"></section>
 <section id="hyperparameters-adjusting-the-recipe" class="slide level2">
 <h2>Hyperparameters: “Adjusting the Recipe”</h2>
 <h3 id="what-are-hyperparameters">What are Hyperparameters?</h3>
 <p><strong>Hyperparameters</strong> are configuration settings that we must specify <strong>before</strong> training a machine learning model begins. “recipe settings” - like oven temperature and cooking time - that control how your algorithm learns from data.</p>
-<h3 id="key-characteristics-5">Key Characteristics:</h3>
+<h3 id="key-characteristics-2">Key Characteristics:</h3>
 <ul>
-<li><strong>Not learned from data</strong>: We set them manually based on experience or systematic testing</li>
+<li><strong>Not learned from data</strong>: We set them manually based on systematic testing</li>
 <li><strong>Control the learning process</strong>: They determine how the algorithm behaves during training</li>
 <li><strong>Model-specific</strong>: Different algorithms have different hyperparameters</li>
 <li><strong>Critical for performance</strong>: Poor hyperparameter choices can lead to suboptimal models</li>
@@ -1052,8 +928,8 @@ Dr.&nbsp;Dor Atias, MD-MPH
 <h2>Hyperparameters: How to Tune Them?</h2>
 <h3 id="step-2-choose-evaluation-strategy">Step 2: Choose Evaluation Strategy</h3>
 <ul>
-<li><strong>Cross-validation</strong>: Most robust for estimating performance</li>
-<li><strong>Hold-out validation</strong>: Simpler but less reliable</li>
+<li><p><strong>Hold-out validation</strong>: Simpler but less reliable</p></li>
+<li><p><strong>Cross-validation</strong>: Most robust for estimating performance</p></li>
 </ul>
 <h3 id="step-3-select-optimization-metric">Step 3: Select Optimization Metric</h3>
 <p>Choose based on your epidemiological context:</p>
@@ -1109,6 +985,165 @@ Dr.&nbsp;Dor Atias, MD-MPH
 <p>PALCEHOLDER FOR IMAGE</p>
 </div></div>
 </section>
+<section id="decision-trees" class="slide level2">
+<h2>Decision Trees</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<h3 id="key-characteristics-3">Key Characteristics</h3>
+<ul>
+<li><strong>Non-parametric architecture</strong>: No assumptions about data distribution or linear relationships</li>
+<li><strong>Recursive splitting</strong>: Algorithm selects the variable and split point that maximizes information gain</li>
+<li><strong>Stopping criteria</strong>: Controlled by minimum samples per node, maximum depth, and complexity parameters (hyperparameters)</li>
+<li><strong>Handles mixed data types</strong>: Works with both continuous and categorical predictors natively</li>
+<li><strong>Automatic interaction detection</strong>: Naturally captures variable interactions through hierarchical splits</li>
+<li><strong>Interpretable</strong>: Easy to understand and explain to clinicians</li>
+</ul>
+</div><div class="column" style="width:50%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-10-1.png"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="descision-trees---under-the-hood" class="slide level2">
+<h2>Descision Trees - under the hood</h2>
+<h3 id="mathematical-foundation-2">Mathematical Foundation</h3>
+<p>Decision trees split data using decision criteria, similar to clinical flowcharts, to create homogeneous (pure) groups with each split. Common metrics include Gini impurity, enthropy and information gain.</p>
+<p><span class="math display">\[\text{Total Gini} = \sum{j=1}^{L} \frac{N_j}{N} \times \left(1 - \sum_{i=1}^{c} p_{ij}^2\right)\]</span></p>
+<p>Where:</p>
+<p><span class="math inline">\(L\)</span> = number of leaf nodes in the tree; <span class="math inline">\(N_j\)</span> = number of samples in leaf node <span class="math inline">\(j\)</span>; <span class="math inline">\(N\)</span> = total number of samples in the dataset; <span class="math inline">\(1 - \sum_{i=1}^{c} p_{ij}^2\)</span> = Gini impurity of leaf node <span class="math inline">\(j\)</span>; <span class="math inline">\(c =\)</span> the number of classes; <span class="math inline">\(p_{ij}\)</span> = proportion of class <span class="math inline">\(i\)</span> in leaf node <span class="math inline">\(j\)</span></p>
+<h3 id="mathematical-intuition">Mathematical Intuition</h3>
+<ul>
+<li><p><strong>Gini = 0</strong>: Perfect classification (all samples same class)</p></li>
+<li><p><strong>Gini = 0.5</strong>: Maximum impurity for binary classification (50-50 split)</p></li>
+<li><p><strong>Perfect tree</strong>: Total Gini = 0 (all leaves are pure)</p></li>
+<li><p><strong>No splits</strong>: Total Gini = original root Gini</p></li>
+<li><p><strong>Larger leaves</strong> contribute more to the total impurity due to weighting by <span class="math inline">\(\frac{N_j}{N}\)</span></p></li>
+</ul>
+<div class="callout callout-warning callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Warning</strong></p>
+</div>
+<div class="callout-content">
+<p>Decision trees are intuitive but prone to overfitting and thus rarely used alone. They serve as the building blocks for more robust ensemble methods like Random Forest and XGBoost.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="random-forest-wisdom-of-the-crowd" class="slide level2 center">
+<h2>Random Forest: Wisdom of the Crowd</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<h3 id="key-characteristics-4">Key Characteristics</h3>
+<p><strong>Bootstrap Aggregating (Bagging):</strong> - Create many bootstrap samples from training data - Train decision tree on each sample - Use random subset of features at each split - Average predictions across all trees</p>
+<p><strong>Feature Randomness:</strong> At each split, consider only <span class="math inline">\(\sqrt{p}\)</span> randomly selected features (where <span class="math inline">\(p\)</span> = total features)</p>
+<p><strong>Key Innovation:</strong> Combines <strong>variance reduction</strong> (bagging) with <strong>feature randomness</strong></p>
+</div><div class="column" style="width:50%;">
+<h3 id="mathematical-foundation-3">Mathematical Foundation</h3>
+<p><strong>Ensemble Prediction:</strong> <span class="math display">\[\hat{y} = \frac{1}{B} \sum_{b=1}^{B} \hat{f}_b(x)\]</span></p>
+<p>Where <span class="math inline">\(\hat{f}_b\)</span> is the <span class="math inline">\(b\)</span>-th tree trained on bootstrap sample</p>
+<p><strong>Variance Reduction:</strong> <span class="math display">\[\text{Var}(\bar{X}) = \frac{\sigma^2}{n} \text{ (if trees independent)}\]</span></p>
+</div></div>
+<aside class="notes">
+<ul>
+<li>Random Forest is like having a committee of doctors each looking at different aspects of a patient</li>
+<li>Each “doctor” (tree) sees different patients (bootstrap samples) and focuses on different symptoms (random features)</li>
+<li>The final diagnosis comes from majority vote - more reliable than any single opinion</li>
+<li>Great stepping stone between interpretable single trees and complex ensemble methods like XGBoost</li>
+<li>Emphasize that this introduces the key concept of ensemble learning that XGBoost will build upon</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="extreme-gradient-boosting-xgboost" class="slide level2">
+<h2>eXtreme Gradient Boosting (XGBoost)</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<h3 id="algorithm-overview">Algorithm Overview</h3>
+<p>XGBoost employs <strong>sequential ensemble learning</strong> where each tree corrects errors from previous learners, building weak decision trees that collectively form a powerful predictor.</p>
+<p><strong>Key Innovation:</strong> Unlike simple decision trees that make single predictions, <strong>gradient boosting</strong> sequentially trains multiple trees where each corrects errors from previous ones, while XGBoost enhances this with <strong>similarity scores</strong> and built-in <strong>regularization</strong>.</p>
+</div><div class="column" style="width:50%;">
+<h3 id="key-characteristics-5">Key Characteristics</h3>
+<ul>
+<li><strong>Ensemble method</strong>: Combines multiple weak learners sequentially</li>
+<li><strong>Gradient boosting</strong>: Each tree learns from previous trees’ errors</li>
+<li><strong>Built-in regularization</strong>: λ (lambda) prevents overfitting by shrinking similarity scores</li>
+<li><strong>Automatic pruning</strong>: γ (gamma) removes branches that don’t improve gain sufficiently</li>
+<li><strong>Built-in feature selection</strong>: Automatically prioritizes important variables</li>
+<li><strong>Handles missing data</strong>: Native missing value support without imputation</li>
+<li><strong>Complex relationships</strong>: Captures non-linear patterns and interactions</li>
+</ul>
+</div></div>
+</section>
+<section id="extreme-gradient-boosting-xgboost-1" class="slide level2">
+<h2>eXtreme Gradient Boosting (XGBoost)</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<h3 id="advantages-in-epidemiology">Advantages in Epidemiology</h3>
+<ul>
+<li><strong>Excellent predictive performance</strong> with complex health datasets</li>
+<li><strong>Handles large, high-dimensional data</strong> common in electronic health records</li>
+<li><strong>Automatic interaction detection</strong> between risk factors</li>
+<li><strong>Robust to outliers and missing data</strong> (crucial for real-world medical data)</li>
+</ul>
+</div><div class="column" style="width:50%;">
+<h3 id="limitations">Limitations</h3>
+<ul>
+<li><strong>Black box nature</strong>: Requires post-hoc explanation methods (SHAP)</li>
+<li><strong>Computational intensity</strong>: More resources than simpler models</li>
+<li><strong>Hyperparameter sensitivity</strong>: Multiple parameters (η, λ, γ, max_depth) require tuning</li>
+<li><strong>Overfitting risk</strong>: Despite regularization, still needs careful cross-validation</li>
+</ul>
+</div></div>
+</section>
+<section id="xgboost---under-the-hood" class="slide level2">
+<h2>XGBoost - under the hood</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<h3 id="how-xgboost-works">How XGBoost Works</h3>
+<p><strong>Step 1:</strong> Start with initial prediction (typically 0.5)</p>
+<p><strong>Step 2:</strong> Calculate <strong>pseudo-residuals</strong> (errors from previous predictions)</p>
+<p><strong>Step 3:</strong> Build trees to predict residuals using <strong>similarity scores</strong>: <span class="math inline">\(\text{Similarity} = \frac{(\sum \text{residuals})^2}{\text{number of residuals} + \lambda}\)</span></p>
+<p><strong>Step 4:</strong> Use <strong>gain</strong> to find optimal splits: <span class="math inline">\(\text{Gain} = \text{Similarity}_{\text{left}} + \text{Similarity}_{\text{right}} - \text{Similarity}_{\text{root}}\)</span></p>
+<p><strong>Step 5:</strong> <strong>Prune</strong> using gamma (complexity parameter)</p>
+<p><strong>Step 6:</strong> Scale by learning rate (η) and repeat</p>
+</div><div class="column" style="width:50%;">
+<h3 id="key-mathematical-concepts">Key Mathematical Concepts</h3>
+<p><strong>Similarity Scores:</strong> When residuals are similar, they don’t cancel out → high similarity score. When residuals are different, they cancel out → low similarity score.</p>
+<p><strong>Learning Rate (η):</strong> Takes “small steps in the right direction” - empirical evidence shows many small steps outperform few large steps.</p>
+<p><strong>Regularization Effects:</strong></p>
+<ul>
+<li><strong>Lambda (λ) &gt; 0</strong>: Shrinks similarity scores → easier pruning → prevents overfitting</li>
+<li><strong>Gamma (γ)</strong>: Sets minimum gain threshold for splits → controls tree complexity</li>
+</ul>
+</div></div>
+</section>
+<section id="xgboost---under-the-hood-1" class="slide level2">
+<h2>XGBoost - under the hood</h2>
+
+<img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-11-1.png" class="r-stretch"></section>
+<section id="common-xgboost-hyperparameter" class="slide level2">
+<h2>Common XGBoost Hyperparameter</h2>
+
+<img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-12-1.png" class="r-stretch"></section>
 <section id="performance-metrics-choosing-the-right-measure" class="slide level2">
 <h2>Performance Metrics: Choosing the Right Measure</h2>
 <h3 id="understanding-your-epidemiological-context">Understanding Your Epidemiological Context</h3>

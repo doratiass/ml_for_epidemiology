@@ -60,7 +60,7 @@
     "href": "ml_for_epidemiology.html#logistic-regression-results-predictors-of-centenarianism",
     "title": "Machine Learning in Epidemiology",
     "section": "Logistic Regression Results: Predictors of Centenarianism",
-    "text": "Logistic Regression Results: Predictors of Centenarianism\n\n\n\n\n\nPredictor\nOdds Ratio\n95% CI Lower\n95% CI Upper\nP-value\n\n\n\n\nSystolic Blood Pressure (per 10 mmHg)\n0.837\n0.800\n0.876\n&lt; 0.001\n\n\nEx-Smoker\n0.909\n0.730\n1.131\n0.391\n\n\n1-10 Cigarettes/Day\n1.074\n0.868\n1.330\n0.512\n\n\n11-20 Cigarettes/Day\n0.452\n0.348\n0.587\n&lt; 0.001\n\n\n20+ Cigarettes/Day\n0.483\n0.380\n0.615\n&lt; 0.001\n\n\nMyocardial Infarction\n1.105\n0.834\n1.465\n0.487\n\n\nDiabetes Mellitus\n0.901\n0.669\n1.212\n0.491\n\n\nBody Mass Index\n0.985\n0.961\n1.010\n0.235"
+    "text": "Logistic Regression Results: Predictors of Centenarianism\n\n\n\n\n\nPredictor\nOdds Ratio\n95% CI Lower\n95% CI Upper\nP-value\n\n\n\n\nSystolic Blood Pressure (per 10 mmHg)\n1.194\n1.141\n1.250\n&lt; 0.001\n\n\nEx-Smoker\n1.101\n0.884\n1.371\n0.391\n\n\n1-10 Cigarettes/Day\n0.931\n0.752\n1.153\n0.512\n\n\n11-20 Cigarettes/Day\n2.213\n1.703\n2.876\n&lt; 0.001\n\n\n20+ Cigarettes/Day\n2.071\n1.627\n2.635\n&lt; 0.001\n\n\nMyocardial Infarction\n0.905\n0.683\n1.199\n0.487\n\n\nDiabetes Mellitus\n1.110\n0.825\n1.494\n0.491\n\n\nBody Mass Index\n1.015\n0.990\n1.041\n0.235"
   },
   {
     "objectID": "ml_for_epidemiology.html#loss-function-the-cost-of-being-wrong",
@@ -74,14 +74,14 @@
     "href": "ml_for_epidemiology.html#logistic-regression-loss-function",
     "title": "Machine Learning in Epidemiology",
     "section": "Logistic Regression Loss Function",
-    "text": "Logistic Regression Loss Function\nFor binary classification (like Centenarianism prediction):\n\\[\\text{Log-Loss} = -\\frac{1}{m} \\sum_{i=1}^{m} [y^{(i)} \\log(\\hat{y}^{(i)}) + (1 - y^{(i)}) \\log(1 - \\hat{y}^{(i)})]\\]\nWhere:\n\n\\(y_i\\) = actual outcome (0 or 1)\n\\(\\hat{y}^{(i)}\\) = predicted probability\n\\(m\\) = number of observations\n\nIntuition:\n\nWhen \\(y_i = 1\\) and \\(\\hat{y}^{(i)}\\) is small → Large penalty\nWhen \\(y_i = 0\\) and \\(\\hat{y}^{(i)}\\) is large → Large penalty\nPerfect predictions → Zero loss\n\n\n\n\n\n\n\nNote\n\n\nCan we predict too well? Yes! Overfitting occurs when a model learns noise instead of signal, leading to poor performance on new data."
+    "text": "Logistic Regression Loss Function\nFor binary classification (like Centenarianism prediction):\n\\[\\text{Log-Loss} = -\\frac{1}{m} \\sum_{i=1}^{m} [y^{(i)} \\log(\\hat{y}^{(i)}) + (1 - y^{(i)}) \\log(1 - \\hat{y}^{(i)})]\\]\nWhere:\n\n\\(y_i\\) = actual outcome (0 or 1)\n\\(\\hat{y}^{(i)}\\) = predicted probability\n\\(m\\) = number of observations\n\nIntuition:\n\nWhen \\(y_i = 1\\) and \\(\\hat{y}^{(i)}\\) is small → Large penalty\nWhen \\(y_i = 0\\) and \\(\\hat{y}^{(i)}\\) is large → Large penalty\nPerfect predictions → Zero loss\n\n\n\n\n\n\n\n\nCan we predict too well?\n\n\nYes! Overfitting occurs when a model learns noise instead of signal, leading to poor performance on new data."
   },
   {
     "objectID": "ml_for_epidemiology.html#the-bias-variance-trade-off",
     "href": "ml_for_epidemiology.html#the-bias-variance-trade-off",
     "title": "Machine Learning in Epidemiology",
     "section": "The Bias-Variance Trade-off",
-    "text": "The Bias-Variance Trade-off\n\n\nKey Concepts\nBias: measures how far off, on average, a model’s predictions are from the ground truth values.\nVariance: measures how much a model’s predictions change with different training datasets\nOverfitting occurs when variance is high\nUnderfitting when bias is high Sweet spot: Balanced complexity for your data"
+    "text": "The Bias-Variance Trade-off\n\n\nKey Concepts\nBias: measures how far off, on average, a model’s predictions are from the ground truth values.\nVariance: measures how much a model’s predictions change with different training datasets\nOverfitting occurs when variance is high\nUnderfitting when bias is high Sweet spot: Balanced complexity for your data\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nImportant\n\n\nBias = systematic error | Variance = prediction inconsistency"
   },
   {
     "objectID": "ml_for_epidemiology.html#the-overfitting-problem-student-learning-analogy",
@@ -95,7 +95,7 @@
     "href": "ml_for_epidemiology.html#overfitting-memorizing-vs.-understanding",
     "title": "Machine Learning in Epidemiology",
     "section": "Overfitting: “Memorizing vs. Understanding”",
-    "text": "Overfitting: “Memorizing vs. Understanding”\nWarning Signs\n\nPerfect training scores: Usually too good to be true\nLarge gap: Training accuracy &gt;&gt; Test accuracy\nComplex model: Too many parameters for data size\nUnstable predictions: Small data changes → big prediction changes\n\nPrevention Strategies\n\nValidation: Hold out test data\nCross-validation: Multiple honest estimates\nRegularization: Penalize complexity\nEarly stopping: Stop before overfitting begins\n\n\n\n\n\n\n\nRemember: Overfitting is ML’s Greatest Enemy\n\n\nAlways validate on truly unseen data. If it seems too good to be true, it probably is!"
+    "text": "Overfitting: “Memorizing vs. Understanding”\n\n\nWarning Signs\n\nPerfect training scores: Usually too good to be true\nLarge gap: Training accuracy &gt;&gt; Test accuracy\nComplex model: Too many parameters for data size\nUnstable predictions: Small data changes → big prediction changes\n\n\nPrevention Strategies\n\nValidation: Hold out test data\nCross-validation: Multiple honest estimates\nRegularization: Penalize complexity\nEarly stopping: Stop before overfitting begins\n\n\n\n\n\n\n\n\nRemember: Overfitting is ML’s Greatest Enemy\n\n\nAlways validate on truly unseen data. If it seems too good to be true, it probably is!"
   },
   {
     "objectID": "ml_for_epidemiology.html#traintest-split-why-do-we-split-our-data",
@@ -109,21 +109,21 @@
     "href": "ml_for_epidemiology.html#traintest-split-how-to-split",
     "title": "Machine Learning in Epidemiology",
     "section": "Train/Test Split: How to Split",
-    "text": "Train/Test Split: How to Split\nCommon Split Ratios:\n\n75/25: Good balance for moderate sample sizes (n &gt; 1,000)\n80/20: When you have large datasets and need more training data\n70/30: When you have smaller datasets and need robust testing\n\nSpecial Considerations for Epidemiological Data\n\nClass Imbalance: Stratify splits to maintain outcome proportions\nTemporal Data: Use time-based splits to mimic real-world prediction\nClustered Data: Split by site or cluster to avoid leakage"
+    "text": "Train/Test Split: How to Split\nCommon Split Ratios:\n\n75/25: Good balance for moderate sample sizes (n &gt; 1,000)\n80/20: When you have large datasets and need more training data\n70/30: When you have smaller datasets and need robust testing\n\nSpecial Considerations for Epidemiological Data\n\nWell-balanced outcomes: Random splits usually suffice\nClass Imbalance: Stratify splits to maintain outcome proportions\nTemporal Data: Use time-based splits to mimic real-world prediction\nClustered Data: Split by site or cluster to avoid leakage"
   },
   {
     "objectID": "ml_for_epidemiology.html#regularization",
     "href": "ml_for_epidemiology.html#regularization",
     "title": "Machine Learning in Epidemiology",
     "section": "Regularization",
-    "text": "Regularization\nThe Regularization Concept\nCore Idea: Prevent overly complex models\n\nOccam’s Razor: Simpler explanations are usually better\nBiological basis: Parsimonious models often generalize better\nPrevents overfitting: Stops model from memorizing noise\n\nTypes of Regularization\n\n\nLASSO (L1):\n\nShrinks coefficients toward zero\nVariable selection: Can set coefficients exactly to zero\nCreates sparse models\n\n\nRidge (L2):\n\nShrinks all coefficients toward zero\nKeeps all variables but reduces their impact\nGood when all predictors are somewhat relevant\n\n\nElastic Net:\n\nCombines LASSO and Ridge\nBalances variable selection with coefficient shrinkage"
+    "text": "Regularization\nThe Regularization Concept\nCore Idea: Prevent overly complex models\n\nOccam’s Razor: Simpler explanations are usually better\nBiological basis: Parsimonious models often generalize better\nPrevents overfitting: Stops model from memorizing noise\n\nTypes of Regularization\n\n\nL1:\n\nBased on absolute values of coefficients\nVariable selection: Can set coefficients exactly to zero\nCreates sparse models\ne.g., LASSO regression\n\n\nL2:\n\nBased on squared values of coefficients\nShrinks coefficients toward zero (but none to zero)\nGood when all predictors are somewhat relevant\ne.g., Ridge regression\n\n\nMix:\n\nCombines LASSO and Ridge\nBalances variable selection with coefficient shrinkage\ne.g., Elastic Net"
   },
   {
     "objectID": "ml_for_epidemiology.html#lasso-regression-least-absolute-shrinkage-and-selection-operator",
     "href": "ml_for_epidemiology.html#lasso-regression-least-absolute-shrinkage-and-selection-operator",
     "title": "Machine Learning in Epidemiology",
     "section": "LASSO Regression (Least Absolute Shrinkage and Selection Operator)",
-    "text": "LASSO Regression (Least Absolute Shrinkage and Selection Operator)\nA regularized version of logistic regression that adds a penalty to the loss function to shrink coefficients.\n\n\nKey Characteristics\n\nAutomatic feature selection: Shrinks unimportant coefficients to zero\nRegularization: λ hyperparameter controls shrinkage amount\nHandles high-dimensional data: Can work when p &gt; N\nMaintains interpretability: Similar to logistic regression\n\n\nAdvantages Over Standard Logistic Regression\n\nPrevents overfitting through regularization\nAutomatically selects relevant variables\nHandles multicollinearity better\nWorks with high-dimensional datasets\n\n\n\n\n\n\n\n\nNote\n\n\nLASSO is still a form of logistic regression, just with added regularization. It still assumes linear relationships and requires careful preprocessing."
+    "text": "LASSO Regression (Least Absolute Shrinkage and Selection Operator)\nA regularized version of logistic regression that adds a penalty to the loss function to shrink coefficients.\n\n\nKey Characteristics\n\nAutomatic feature selection: Shrinks unimportant coefficients to zero\nRegularization: λ hyperparameter controls shrinkage amount\nHandles high-dimensional data: Can work when p &gt; N\nMaintains interpretability: Similar to logistic regression\n\n\nAdvantages Over Standard Logistic Regression\n\nPrevents overfitting through regularization\nAutomatically selects relevant variables\nHandles multicollinearity better\nWorks with high-dimensional datasets\n\n\n\n\n\n\n\n\nRemember: LASSO is still a form of logistic regression\n\n\nJust with added regularization. It still assumes linear relationships and requires careful preprocessing."
   },
   {
     "objectID": "ml_for_epidemiology.html#lasso-under-the-hood",
@@ -140,18 +140,67 @@
     "text": "LASSO Coefficient Comparison: Different Penalties"
   },
   {
+    "objectID": "ml_for_epidemiology.html#hyperparameters-adjusting-the-recipe",
+    "href": "ml_for_epidemiology.html#hyperparameters-adjusting-the-recipe",
+    "title": "Machine Learning in Epidemiology",
+    "section": "Hyperparameters: “Adjusting the Recipe”",
+    "text": "Hyperparameters: “Adjusting the Recipe”\nWhat are Hyperparameters?\nHyperparameters are configuration settings that we must specify before training a machine learning model begins. “recipe settings” - like oven temperature and cooking time - that control how your algorithm learns from data.\nKey Characteristics:\n\nNot learned from data: We set them manually based on systematic testing\nControl the learning process: They determine how the algorithm behaves during training\nModel-specific: Different algorithms have different hyperparameters\nCritical for performance: Poor hyperparameter choices can lead to suboptimal models\n\nExamples in Epidemiology:\n\nLASSO regression: The penalty parameter (λ) that controls how much we shrink coefficients\nRandom Forest: Number of trees, maximum tree depth, minimum samples per leaf\nXGBoost: Learning rate, tree depth, number of boosting rounds\n\n\nEmphasize that hyperparameter tuning is like being a chef - you need to adjust the recipe based on ingredients (data) and desired outcome (prediction task). There’s no universal “best” setting."
+  },
+  {
+    "objectID": "ml_for_epidemiology.html#how-hyperparameters-affect-model-behavior",
+    "href": "ml_for_epidemiology.html#how-hyperparameters-affect-model-behavior",
+    "title": "Machine Learning in Epidemiology",
+    "section": "How Hyperparameters Affect Model Behavior",
+    "text": "How Hyperparameters Affect Model Behavior\n\n\nImpact on Model Performance\nHyperparameters directly influence critical aspects of your model:\ncapacity, , bias–variance tradeoff, and\nBias-Variance Trade-off\nRisk of overfitting\nSpeed of learning\nComputational Requirements\n\nPALCEHOLDER FOR IMAGE - how cariables shrink with LASSO"
+  },
+  {
+    "objectID": "ml_for_epidemiology.html#hyperparameters-how-to-tune-them",
+    "href": "ml_for_epidemiology.html#hyperparameters-how-to-tune-them",
+    "title": "Machine Learning in Epidemiology",
+    "section": "Hyperparameters: How to Tune Them?",
+    "text": "Hyperparameters: How to Tune Them?\nStep 1: Define the Search Space\n\nGrid Search: Test specific combinations systematically\n\nGood for: Few hyperparameters, small search spaces\nExample: Testing λ values [0.001, 0.01, 0.1, 1.0, 10.0]\n\nRandom Search: Sample randomly from the hyperparameter space\n\nGood for: High-dimensional spaces, when some hyperparameters matter more than others\nOften outperforms grid search with same computational budget\n\nBayesian Optimization: Use previous results to guide next choices\n\nGood for: Expensive model training, when each evaluation takes significant time\nEfficiently samples near promising regions"
+  },
+  {
+    "objectID": "ml_for_epidemiology.html#hyperparameters-how-to-tune-them-1",
+    "href": "ml_for_epidemiology.html#hyperparameters-how-to-tune-them-1",
+    "title": "Machine Learning in Epidemiology",
+    "section": "Hyperparameters: How to Tune Them?",
+    "text": "Hyperparameters: How to Tune Them?\nStep 2: Choose Evaluation Strategy\n\nHold-out validation: Simpler but less reliable\nCross-validation: Most robust for estimating performance\n\nStep 3: Select Optimization Metric\nChoose based on your epidemiological context:\n\nScreening tools: Prioritize sensitivity (catch all cases)\nConfirmatory tests: Prioritize specificity (avoid false alarms)\nRare diseases: Use Precision-Recall AUC instead of ROC-AUC\nRisk prediction: Consider calibration alongside discrimination"
+  },
+  {
+    "objectID": "ml_for_epidemiology.html#how-to-choose-hyperparameter-ranges",
+    "href": "ml_for_epidemiology.html#how-to-choose-hyperparameter-ranges",
+    "title": "Machine Learning in Epidemiology",
+    "section": "How to Choose Hyperparameter Ranges",
+    "text": "How to Choose Hyperparameter Ranges\nPLACEHOLDER: Discuss domain knowledge, prior studies, and practical considerations in setting realistic ranges for hyperparameters."
+  },
+  {
+    "objectID": "ml_for_epidemiology.html#cross-validation-beyond-simple-splitting",
+    "href": "ml_for_epidemiology.html#cross-validation-beyond-simple-splitting",
+    "title": "Machine Learning in Epidemiology",
+    "section": "Cross-Validation: Beyond Simple Splitting",
+    "text": "Cross-Validation: Beyond Simple Splitting\n\n\nWhat Is Cross-Validation?\nCross-validation (CV) divides your training data into multiple folds to get more robust estimates of model performance during hyperparameter tuning.\nHow K-Fold Cross-Validation Works\n\nDivide training data into k equal parts (typically k=5 or k=10)\nFor each hyperparameter combination:\n\nTrain model on k-1 folds\nTest on the remaining fold\nRepeat k times (each fold serves as validation once)\nAverage performance across all k tests"
+  },
+  {
+    "objectID": "ml_for_epidemiology.html#why-cross-validation-helps",
+    "href": "ml_for_epidemiology.html#why-cross-validation-helps",
+    "title": "Machine Learning in Epidemiology",
+    "section": "Why Cross-Validation Helps",
+    "text": "Why Cross-Validation Helps\n\n\n1. Reduces Overfitting to Validation Set\n\nSingle train/validation split might be lucky/unlucky\nCV averages across multiple validation sets\nMore robust hyperparameter selection\n\n2. Better Use of Limited Data\n\nEvery observation serves as both training and validation data\nParticularly important in epidemiology where data collection is expensive\n\n3. Provides Uncertainty Estimates\n\nPALCEHOLDER FOR IMAGE"
+  },
+  {
     "objectID": "ml_for_epidemiology.html#decision-trees",
     "href": "ml_for_epidemiology.html#decision-trees",
     "title": "Machine Learning in Epidemiology",
     "section": "Decision Trees",
-    "text": "Decision Trees\n\n\nKey Characteristics\n\nNon-parametric architecture: No assumptions about data distribution or linear relationships\nRecursive splitting: Algorithm selects the variable and split point that maximizes information gain\nStopping criteria: Controlled by minimum samples per node, maximum depth, and complexity parameters (hyperparameters)\nHandles mixed data types: Works with both continuous and categorical predictors natively\nAutomatic interaction detection: Naturally captures variable interactions through hierarchical splits\nInterpretable: Easy to understand and explain to clinicians\nProne to overfitting: Thus, rarely used alone for prediction"
+    "text": "Decision Trees\n\n\nKey Characteristics\n\nNon-parametric architecture: No assumptions about data distribution or linear relationships\nRecursive splitting: Algorithm selects the variable and split point that maximizes information gain\nStopping criteria: Controlled by minimum samples per node, maximum depth, and complexity parameters (hyperparameters)\nHandles mixed data types: Works with both continuous and categorical predictors natively\nAutomatic interaction detection: Naturally captures variable interactions through hierarchical splits\nInterpretable: Easy to understand and explain to clinicians"
   },
   {
     "objectID": "ml_for_epidemiology.html#descision-trees---under-the-hood",
     "href": "ml_for_epidemiology.html#descision-trees---under-the-hood",
     "title": "Machine Learning in Epidemiology",
     "section": "Descision Trees - under the hood",
-    "text": "Descision Trees - under the hood\nMathematical Foundation\nDecision trees split data using decision criteria, similar to clinical flowcharts, to create homogeneous (pure) groups with each split. Common metrics include Gini impurity, enthropy and information gain.\n\\[\\text{Total Gini} = \\sum{j=1}^{L} \\frac{N_j}{N} \\times \\left(1 - \\sum_{i=1}^{c} p_{ij}^2\\right)\\]\nWhere:\n\\(L\\) = number of leaf nodes in the tree; \\(N_j\\) = number of samples in leaf node \\(j\\); \\(N\\) = total number of samples in the dataset; \\(1 - \\sum_{i=1}^{c} p_{ij}^2\\) = Gini impurity of leaf node \\(j\\); \\(c =\\) the number of classes; \\(p_{ij}\\) = proportion of class \\(i\\) in leaf node \\(j\\)\nMathematical Intuition\n\nGini = 0: Perfect classification (all samples same class)\nGini = 0.5: Maximum impurity for binary classification (50-50 split)\nPerfect tree: Total Gini = 0 (all leaves are pure)\nNo splits: Total Gini = original root Gini\nLarger leaves contribute more to the total impurity due to weighting by \\(\\frac{N_j}{N}\\)"
+    "text": "Descision Trees - under the hood\nMathematical Foundation\nDecision trees split data using decision criteria, similar to clinical flowcharts, to create homogeneous (pure) groups with each split. Common metrics include Gini impurity, enthropy and information gain.\n\\[\\text{Total Gini} = \\sum{j=1}^{L} \\frac{N_j}{N} \\times \\left(1 - \\sum_{i=1}^{c} p_{ij}^2\\right)\\]\nWhere:\n\\(L\\) = number of leaf nodes in the tree; \\(N_j\\) = number of samples in leaf node \\(j\\); \\(N\\) = total number of samples in the dataset; \\(1 - \\sum_{i=1}^{c} p_{ij}^2\\) = Gini impurity of leaf node \\(j\\); \\(c =\\) the number of classes; \\(p_{ij}\\) = proportion of class \\(i\\) in leaf node \\(j\\)\nMathematical Intuition\n\nGini = 0: Perfect classification (all samples same class)\nGini = 0.5: Maximum impurity for binary classification (50-50 split)\nPerfect tree: Total Gini = 0 (all leaves are pure)\nNo splits: Total Gini = original root Gini\nLarger leaves contribute more to the total impurity due to weighting by \\(\\frac{N_j}{N}\\)\n\n\n\n\n\n\n\nWarning\n\n\nDecision trees are intuitive but prone to overfitting and thus rarely used alone. They serve as the building blocks for more robust ensemble methods like Random Forest and XGBoost."
   },
   {
     "objectID": "ml_for_epidemiology.html#random-forest-wisdom-of-the-crowd",
@@ -194,55 +243,6 @@
     "title": "Machine Learning in Epidemiology",
     "section": "Common XGBoost Hyperparameter",
     "text": "Common XGBoost Hyperparameter"
-  },
-  {
-    "objectID": "ml_for_epidemiology.html#hyperparameters-adjusting-the-recipe",
-    "href": "ml_for_epidemiology.html#hyperparameters-adjusting-the-recipe",
-    "title": "Machine Learning in Epidemiology",
-    "section": "Hyperparameters: “Adjusting the Recipe”",
-    "text": "Hyperparameters: “Adjusting the Recipe”\nWhat are Hyperparameters?\nHyperparameters are configuration settings that we must specify before training a machine learning model begins. “recipe settings” - like oven temperature and cooking time - that control how your algorithm learns from data.\nKey Characteristics:\n\nNot learned from data: We set them manually based on experience or systematic testing\nControl the learning process: They determine how the algorithm behaves during training\nModel-specific: Different algorithms have different hyperparameters\nCritical for performance: Poor hyperparameter choices can lead to suboptimal models\n\nExamples in Epidemiology:\n\nLASSO regression: The penalty parameter (λ) that controls how much we shrink coefficients\nRandom Forest: Number of trees, maximum tree depth, minimum samples per leaf\nXGBoost: Learning rate, tree depth, number of boosting rounds\n\n\nEmphasize that hyperparameter tuning is like being a chef - you need to adjust the recipe based on ingredients (data) and desired outcome (prediction task). There’s no universal “best” setting."
-  },
-  {
-    "objectID": "ml_for_epidemiology.html#how-hyperparameters-affect-model-behavior",
-    "href": "ml_for_epidemiology.html#how-hyperparameters-affect-model-behavior",
-    "title": "Machine Learning in Epidemiology",
-    "section": "How Hyperparameters Affect Model Behavior",
-    "text": "How Hyperparameters Affect Model Behavior\n\n\nImpact on Model Performance\nHyperparameters directly influence critical aspects of your model:\ncapacity, , bias–variance tradeoff, and\nBias-Variance Trade-off\nRisk of overfitting\nSpeed of learning\nComputational Requirements\n\nPALCEHOLDER FOR IMAGE - how cariables shrink with LASSO"
-  },
-  {
-    "objectID": "ml_for_epidemiology.html#hyperparameters-how-to-tune-them",
-    "href": "ml_for_epidemiology.html#hyperparameters-how-to-tune-them",
-    "title": "Machine Learning in Epidemiology",
-    "section": "Hyperparameters: How to Tune Them?",
-    "text": "Hyperparameters: How to Tune Them?\nStep 1: Define the Search Space\n\nGrid Search: Test specific combinations systematically\n\nGood for: Few hyperparameters, small search spaces\nExample: Testing λ values [0.001, 0.01, 0.1, 1.0, 10.0]\n\nRandom Search: Sample randomly from the hyperparameter space\n\nGood for: High-dimensional spaces, when some hyperparameters matter more than others\nOften outperforms grid search with same computational budget\n\nBayesian Optimization: Use previous results to guide next choices\n\nGood for: Expensive model training, when each evaluation takes significant time\nEfficiently samples near promising regions"
-  },
-  {
-    "objectID": "ml_for_epidemiology.html#hyperparameters-how-to-tune-them-1",
-    "href": "ml_for_epidemiology.html#hyperparameters-how-to-tune-them-1",
-    "title": "Machine Learning in Epidemiology",
-    "section": "Hyperparameters: How to Tune Them?",
-    "text": "Hyperparameters: How to Tune Them?\nStep 2: Choose Evaluation Strategy\n\nCross-validation: Most robust for estimating performance\nHold-out validation: Simpler but less reliable\n\nStep 3: Select Optimization Metric\nChoose based on your epidemiological context:\n\nScreening tools: Prioritize sensitivity (catch all cases)\nConfirmatory tests: Prioritize specificity (avoid false alarms)\nRare diseases: Use Precision-Recall AUC instead of ROC-AUC\nRisk prediction: Consider calibration alongside discrimination"
-  },
-  {
-    "objectID": "ml_for_epidemiology.html#how-to-choose-hyperparameter-ranges",
-    "href": "ml_for_epidemiology.html#how-to-choose-hyperparameter-ranges",
-    "title": "Machine Learning in Epidemiology",
-    "section": "How to Choose Hyperparameter Ranges",
-    "text": "How to Choose Hyperparameter Ranges\nPLACEHOLDER: Discuss domain knowledge, prior studies, and practical considerations in setting realistic ranges for hyperparameters."
-  },
-  {
-    "objectID": "ml_for_epidemiology.html#cross-validation-beyond-simple-splitting",
-    "href": "ml_for_epidemiology.html#cross-validation-beyond-simple-splitting",
-    "title": "Machine Learning in Epidemiology",
-    "section": "Cross-Validation: Beyond Simple Splitting",
-    "text": "Cross-Validation: Beyond Simple Splitting\n\n\nWhat Is Cross-Validation?\nCross-validation (CV) divides your training data into multiple folds to get more robust estimates of model performance during hyperparameter tuning.\nHow K-Fold Cross-Validation Works\n\nDivide training data into k equal parts (typically k=5 or k=10)\nFor each hyperparameter combination:\n\nTrain model on k-1 folds\nTest on the remaining fold\nRepeat k times (each fold serves as validation once)\nAverage performance across all k tests"
-  },
-  {
-    "objectID": "ml_for_epidemiology.html#why-cross-validation-helps",
-    "href": "ml_for_epidemiology.html#why-cross-validation-helps",
-    "title": "Machine Learning in Epidemiology",
-    "section": "Why Cross-Validation Helps",
-    "text": "Why Cross-Validation Helps\n\n\n1. Reduces Overfitting to Validation Set\n\nSingle train/validation split might be lucky/unlucky\nCV averages across multiple validation sets\nMore robust hyperparameter selection\n\n2. Better Use of Limited Data\n\nEvery observation serves as both training and validation data\nParticularly important in epidemiology where data collection is expensive\n\n3. Provides Uncertainty Estimates\n\nPALCEHOLDER FOR IMAGE"
   },
   {
     "objectID": "ml_for_epidemiology.html#performance-metrics-choosing-the-right-measure",
