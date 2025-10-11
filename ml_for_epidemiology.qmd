@@ -1068,6 +1068,8 @@ Always validate on truly unseen data. If it seems too good to be true, it probab
 
 ## Train/Test Split: How to Split
 
+::::: columns
+::: {.column width="50%"}
 ### Common Split Ratios:
 
 -   **75/25**: Good balance for moderate sample sizes (n \> 1,000)
@@ -1080,6 +1082,102 @@ Always validate on truly unseen data. If it seems too good to be true, it probab
 -   **Class Imbalance**: Stratify splits to maintain outcome proportions
 -   **Temporal Data**: Use time-based splits to mimic real-world prediction
 -   **Clustered Data**: Split by site or cluster to avoid leakage
+:::
+
+::: {.column width="50%"}
+```{r}
+#| fig-align: "center"
+library(mgcv)
+
+# --- Simulate monthly MI incidence (1963-1972) ---
+set.seed(42)
+dates <- seq(ymd("1963-01-01"), ymd("1972-12-01"), by = "month")
+n <- length(dates)
+t_idx <- seq_len(n)              # numeric time index
+month_num <- month(dates)        # 1-12 month index
+omega <- 2 * pi / 12             # yearly seasonality (12 months)
+
+# nonlinear trend + annual seasonality + noise
+incidence <- 45 +
+  0.1 * (t_idx) + 0.002 * (t_idx^1.7) +       # long-term increasing trend
+  6 * sin(omega * t_idx) + 3 * cos(omega * t_idx) +  # yearly seasonality
+  rnorm(n, 0, 2.5)                             # random noise
+
+df <- tibble(
+  date = dates,
+  t = t_idx,
+  month = month_num,
+  sin12 = sin(omega * t_idx),
+  cos12 = cos(omega * t_idx),
+  mi_incidence = incidence
+)
+
+# --- Temporal split (train until end of 1968) ---
+split_date <- ymd("1969-01-01")
+df <- df %>%
+  mutate(split_group = if_else(date < split_date, "Train (1963-1968)", "Test (1969-1972)"))
+
+train <- filter(df, date < split_date)
+
+# --- Fit GAM on training data only (smooth nonlinear trend + seasonal harmonics) ---
+gam_fit <- gam(mi_incidence ~ s(t, k = 20) + sin12 + cos12,
+               data = train, method = "REML")
+
+# --- Predict across full timeline ---
+df_pred <- df %>%
+  mutate(pred = predict(gam_fit, newdata = df),
+         segment = if_else(date < split_date, 
+                           "In-sample fit (GAM)", 
+                           "Extrapolated forecast (GAM)"))
+
+# --- Plot ---
+ggplot(df, aes(date, mi_incidence)) +
+  # Original data points
+  geom_point(size = 2.5, alpha = 0.8, color = "#2c3e50") +
+
+  # Training seasonal model (solid line)
+  geom_line(
+    data = df_pred %>% filter(split_group == "Train (1963-1968)"),
+    aes(x = date, y = pred),
+    linewidth = 1.2,
+    color = "#e74c3c",
+    linetype = "solid"
+  ) +
+
+  # Testing seasonal prediction (dotted line)
+  geom_line(
+    data = df_pred %>% filter(split_group == "Test (1969-1972)"),
+    aes(x = date, y = pred),
+    linewidth = 1.2,
+    color = "#e74c3c",
+    linetype = "dotted"
+  ) +
+
+  # Add vertical line to separate training and testing periods
+  geom_vline(
+    xintercept = as.Date("1969-01-01"),
+    linetype = "dashed",
+    color = "#7f8c8d",
+    alpha = 0.7
+  ) +
+  labs(
+    title = "Temporal Data Split: MI Incidence with Seasonal Pattern",
+    subtitle = "Training Period: 1963-1968 | Testing Period: 1969-1972",
+    x = "Year",
+    y = "MI Incidence (per 100,000)",
+    caption = "Solid line: Seasonal model on training data | Dotted line: Seasonal extrapolation\nDots: Observed data"
+  ) +
+  # Clean, presentation-ready theme
+  my_theme +
+  theme(plot.caption = element_text(hjust = 0.5)) +
+  # Labels and title
+
+  # Scale adjustments
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 8))
+```
+:::
+:::::
 
 ## Regularization
 
@@ -1246,7 +1344,7 @@ scale_x_discrete(labels = vars_label) +
 ```
 
 ::: {.callout-note title="How can we tell whats the best penalty?"}
-The best penalty (λ) is typically chosen via cross-validation, selecting the value produce the optimal model performance.
+The best penalty (λ) is typically chosen in hyperparameter tuning via cross-validation, selecting the value produce the optimal model performance.
 :::
 
 ## Hyperparameters: "Adjusting the Recipe"
@@ -1298,8 +1396,7 @@ Emphasize that hyperparameter tuning is like being a chef - you need to adjust t
     -   Smart, data-driven exploration balancing exploration and exploitation.
 
 ::: {.callout-tip title="Key Principle"}
-The **choice of search space** should align with your **optimization strategy**.\
-Different methods explore parameter combinations in distinct ways.
+The **choice of search space** should align with your **optimization strategy**. Different methods explore parameter combinations in distinct ways.
 :::
 
 ## Hyperparameters: Visualizing the Search Space
@@ -1492,10 +1589,6 @@ inherit.aes = FALSE,
 :::
 :::::
 
-## How to Choose Hyperparameter Ranges
-
-PLACEHOLDER: Discuss domain knowledge, prior studies, and practical considerations in setting realistic ranges for hyperparameters.
-
 ## Cross-Validation: Beyond Simple Splitting
 
 ::::: columns
@@ -1519,28 +1612,10 @@ Cross-validation (CV) divides your **training data** into multiple folds to get 
 :::
 :::::
 
-## Why Cross-Validation Helps
-
-::::: columns
-::: {.column width="50%"}
-### 1. **Reduces Overfitting to Validation Set**
-
--   Single train/validation split might be lucky/unlucky
--   CV averages across multiple validation sets
--   More robust hyperparameter selection
-
-### 2. **Better Use of Limited Data**
-
--   Every observation serves as both training and validation data
--   Particularly important in epidemiology where data collection is expensive
-
-### 3. **Provides Uncertainty Estimates**
+::: {.callout-tip title="Key Principle"}
+Cross-validation improves model reliability by **reducing overfitting**, **maximizing data use**, and **quantifying uncertainty**.\
+It averages performance across multiple validation folds, ensuring stable hyperparameter selection even with limited epidemiological data.
 :::
-
-::: {.column width="50%"}
-PALCEHOLDER FOR IMAGE
-:::
-:::::
 
 ## Decision Trees
 
@@ -1551,8 +1626,8 @@ Decision Trees are intuitive, non-parametric models that recursively split data 
 ### Key Characteristics
 
 -   **Non-parametric architecture**: No assumptions about data distribution or linear relationships
--   **Handles mixed data types**: Works with both continuous and categorical predictors natively
 -   **Automatic interaction detection**: Naturally captures variable interactions through hierarchical splits
+-   **Handles mixed data types**: Works with both continuous and categorical predictors natively
 -   **Interpretable**: Easy to understand and explain to clinicians
 
 ### Decision Trees hyperparameters
@@ -1645,11 +1720,28 @@ Decision trees are intuitive but prone to overfitting and thus rarely used alone
 ::: {.column width="50%"}
 ### Key Characteristics
 
-**Bootstrap Aggregating (Bagging):** - Create many bootstrap samples from training data - Train decision tree on each sample - Use random subset of features at each split - Average predictions across all trees
+**Bootstrap Aggregating (Bagging):**
 
-**Feature Randomness:** At each split, consider only $\sqrt{p}$ randomly selected features (where $p$ = total features)
+-   Create many bootstrap samples from training data
 
-**Key Innovation:** Combines **variance reduction** (bagging) with **feature randomness**
+-   Use random subset of features at each bootstrap
+
+-   Train decision tree on each sample
+
+-   Average predictions across all trees
+
+**Feature Randomness:** At each bootstrap, consider only $\sqrt{p}$ randomly selected features (where $p$ = total features)
+
+**Key features:**
+
+-  **De-correlated trees**: Random feature selection ensures trees are diverse
+
+-  **Variability reduction**: Bagging reduces variance by averaging multiple trees
+
+-  **Robustness**: Handles outliers and noise well
+
+All these lead to **less overfitting**
+
 :::
 
 ::: {.column width="50%"}
@@ -1669,36 +1761,11 @@ Where $\hat{f}_b$ is the $b$-th tree trained on bootstrap sample
 -   Emphasize that this introduces the key concept of ensemble learning that XGBoost will build upon
 :::
 
-## eXtreme Gradient Boosting (XGBoost)
+## eXtreme Gradient Boosting (XGBoost) - under the hood
 
 ### Algorithm Overview
 
 XGBoost employs **sequential ensemble learning** where each tree **corrects errors** from previous learners, building **weak decision** trees that collectively form a powerful predictor.
-
-::::: columns
-::: {.column width="50%"}
-### Key Characteristics
-
--   **Ensemble method**: Combines multiple weak learners sequentially
--   **Gradient boosting**: Each tree learns from previous trees' errors
--   **Built-in regularization**: λ (lambda) prevents overfitting by shrinking similarity scores
--   **Automatic pruning**: γ (gamma) removes branches that don't improve gain sufficiently
--   **Built-in feature selection**: Automatically prioritizes important variables
--   **Handles outliers & missing data**: Native missing value support without imputation
--   **Complex relationships**: Captures non-linear patterns and interactions
-:::
-
-::: {.column width="50%"}
-### Limitations
-
--   **Black box nature**: Requires post-hoc explanation methods (SHAP)
--   **Computational intensity**: More resources than simpler models
--   **Hyperparameter sensitivity**: Multiple parameters (η, λ, γ, max_depth) require tuning
--   **Overfitting risk**: Despite regularization, still needs careful cross-validation
-:::
-:::::
-
-## XGBoost - under the hood
 
 ::::: columns
 ::: {.column width="50%"}
@@ -1708,11 +1775,15 @@ XGBoost employs **sequential ensemble learning** where each tree **corrects erro
 
 **Step 2:** Calculate **pseudo-residuals** (errors from previous predictions)
 
-**Step 3:** Build trees to predict residuals using **similarity scores**: $\text{Similarity} = \frac{(\sum \text{residuals})^2}{\text{number of residuals} + \lambda}$
+**Step 3:** Build trees to predict residuals using **similarity scores**: 
 
-**Step 4:** Use **gain** to find optimal splits: $\text{Gain} = \text{Similarity}_{\text{left}} + \text{Similarity}_{\text{right}} - \text{Similarity}_{\text{root}}$
+$\text{Similarity} = \frac{(\sum \text{residuals})^2}{\sum [\text{previous probabilities} \times (1 - \text{previous probabilities})] + \lambda}$
 
-**Step 5:** **Prune** using gamma (complexity parameter)
+**Step 4:** For each splot calculate the **gain** to find optimal splits: 
+
+$\text{Gain} = \text{Similarity}_{\text{left}} + \text{Similarity}_{\text{right}} - \text{Similarity}_{\text{root}}$
+
+**Step 5:** **Prune** using gamma (complexity parameter, if gain < γ, do not split)
 
 **Step 6:** Scale by learning rate (η) and repeat
 :::
@@ -1720,14 +1791,24 @@ XGBoost employs **sequential ensemble learning** where each tree **corrects erro
 ::: {.column width="50%"}
 ### Key Mathematical Concepts
 
-**Similarity Scores:** When residuals are similar, they don't cancel out → high similarity score. When residuals are different, they cancel out → low similarity score.
+**Similarity Scores:** 
 
-**Learning Rate (η):** Takes "small steps in the right direction" - empirical evidence shows many small steps outperform few large steps.
+-  When residuals are **similar**, they don't cancel out → **high similarity** score. 
+
+-  When residuals are **different**, they cancel out → **low similarity** score.
 
 **Regularization Effects:**
 
 -   **Lambda (λ) \> 0**: Shrinks similarity scores → easier pruning → prevents overfitting
+
 -   **Gamma (γ)**: Sets minimum gain threshold for splits → controls tree complexity
+
+**Learning Rate (η):** 
+
+-  Takes "small steps in the right direction" 
+
+-  empirical evidence shows many small steps outperform few large steps.
+
 :::
 :::::
 
@@ -1758,11 +1839,10 @@ classification_data <- ml_df %>%
 initial_pred <- mean(classification_data$y_binary)
 
 # Simulate progressive tree building
-simulate_tree_progression <- function(data, n_trees = 3) {
+simulate_tree_progression <- function(data, n_trees = 10, learning_rate = 0.2) {
   pred_history <- matrix(initial_pred, nrow = nrow(data), ncol = n_trees + 1)
   residuals_history <- list()
 
-  learning_rate <- 0.6
   current_pred <- rep(initial_pred, nrow(data))
 
   for (tree in 1:n_trees) {
@@ -1787,16 +1867,16 @@ simulate_tree_progression <- function(data, n_trees = 3) {
 }
 
 # Run simulation
-results <- simulate_tree_progression(classification_data, n_trees = 2)
+results <- simulate_tree_progression(classification_data)
 
 # Create data for plotting
 plot_data <- classification_data %>%
   mutate(
     initial = results$predictions[, 1],
-    after_tree_1 = results$predictions[, 2],
-    after_tree_2 = results$predictions[, 3],
+    after_tree_1 = results$predictions[, 3],
+    after_tree_2 = results$predictions[, 10],
     residuals_1 = results$residuals[[1]],
-    residuals_2 = results$residuals[[2]]
+    residuals_2 = results$residuals[[3]]
   )
 
 # Plot 1: Initial prediction
@@ -1804,10 +1884,6 @@ p1 <- plot_data %>%
   ggplot(aes(x = x, y = y_binary)) +
   geom_point(aes(color = factor(outcome)), alpha = 0.7, size = 2) +
   geom_hline(yintercept = initial_pred, color = "red", linewidth = 1.5) +
-  scale_color_manual(
-    values = c("steelblue", "orange"),
-    labels = c("Not Centrenarian", "Centrenarian")
-  ) +
   labs(
     title = "Initial Prediction: Base Rate",
     subtitle = paste("Baseline probability =", round(initial_pred, 3)),
@@ -1816,7 +1892,7 @@ p1 <- plot_data %>%
     color = "Outcome"
   ) +
   ylim(-0.1, 1.1) +
-  theme_minimal() +
+  my_theme +
   theme(legend.position = "none")
 
 # Plot 2: After 1st tree
@@ -1841,10 +1917,6 @@ p2 <- plot_data %>%
     linetype = "dotted",
     alpha = 0.7
   ) +
-  scale_color_manual(
-    values = c("steelblue", "orange"),
-    labels = c("Not Centrenarian", "Centrenarian")
-  ) +
   labs(
     title = "After 1st Tree: First Split",
     subtitle = paste("Split at BP =", round(median(plot_data$x)), "mmHg"),
@@ -1853,7 +1925,7 @@ p2 <- plot_data %>%
     color = "Outcome"
   ) +
   ylim(-0.1, 1.1) +
-  theme_minimal() +
+  my_theme +
   theme(legend.position = "none")
 
 # Plot 3: After 2nd tree
@@ -1867,10 +1939,6 @@ p3 <- plot_data %>%
     linewidth = 1.5,
     direction = "hv"
   ) +
-  scale_color_manual(
-    values = c("steelblue", "orange"),
-    labels = c("Not Centrenarian", "Centrenarian")
-  ) +
   labs(
     title = "After 2nd Tree: Refined Predictions",
     subtitle = "Tree 2 corrects errors from Tree 1",
@@ -1879,19 +1947,45 @@ p3 <- plot_data %>%
     color = "Outcome"
   ) +
   ylim(-0.1, 1.1) +
-  theme_minimal() +
+  my_theme +
   theme(legend.position = "none")
 
 # Combine plots
 (p1 + p2 + p3) +
   plot_layout(guides = "collect") +
   plot_annotation(
-    theme = theme(
+    theme = theme_transparent +
+      theme(
       plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
       plot.subtitle = element_text(size = 13, hjust = 0.5)
     )
   )  
 ```
+
+## XGBoost
+
+::::: columns
+::: {.column width="50%"}
+### Key Characteristics
+
+-   **Ensemble method**: Combines multiple weak learners sequentially
+-   **Gradient boosting**: Each tree learns from previous trees' errors
+-   **Built-in regularization**: λ (lambda) prevents overfitting by shrinking similarity scores
+-   **Automatic pruning**: γ (gamma) removes branches that don't improve gain sufficiently
+-   **Built-in feature selection**: Automatically prioritizes important variables
+-   **Handles outliers & missing data**: Native missing value support without imputation
+-   **Complex relationships**: Captures non-linear patterns and interactions
+:::
+
+::: {.column width="50%"}
+### Limitations
+
+-   **Black box nature**: Requires post-hoc explanation methods (SHAP)
+-   **Computational intensity**: More resources than simpler models
+-   **Hyperparameter sensitivity**: Multiple parameters (η, λ, γ, max_depth and more) require tuning
+-   **Overfitting risk**: Despite regularization, still needs careful cross-validation
+:::
+:::::
 
 ## Common XGBoost Hyperparameter
 
@@ -1999,10 +2093,10 @@ ggplot() +
   geom_point(data = params, aes(x = cx, y = cy), size = 3.2, color = "black") +
   # parameter title (inside dial)
   geom_text(data = titles, aes(x = tx, y = ty, label = label),
-            fontface = "bold", size = 4, vjust = -6, lineheight = 1.05) +
+            fontface = "bold", size = 4, vjust = -6.5, lineheight = 1.05) +
   # chosen numeric value near the tip
   geom_text(data = pointers, aes(x = lx, y = ly, label = chosen_lab),
-            color = "red", fontface = "bold", size = 3.7) +
+            color = "red", fontface = "bold", hjust = 1, vjust = -0.25, size = 3.7) +
   # range under each dial
   geom_text(data = ranges, aes(x = tx, y = ty, label = txt),
             size = 3.4, alpha = 0.85) +
@@ -2040,20 +2134,148 @@ ggplot() +
 :::
 
 ::: {.column width="50%"}
-### Connection to LLMs
 
-**Neural networks form the foundation of Large Language Models (LLMs)**:
+```{r}
+# --- Layer sizes (edit as needed) ---
+layers <- c(Input = 2, Hidden1 = 4, Hidden2 = 4, Output = 2)
 
--   **GPT, ChatGPT, Claude**: Built on transformer neural network architectures
--   **Deep learning**: Neural networks with many hidden layers
--   **Attention mechanisms**: Advanced neural network components for processing sequences
--   **Same principles**: Pattern recognition through weighted connections and learning
+# --- Colors per layer (tweak to taste) ---
+cols <- c(
+  Input = "#1D9BF0", # blue
+  Hidden1 = "#F59E0B", # orange
+  Hidden2 = "#22C55E", # green
+  Output = "#EF4444" # red
+)
 
-### In Epidemiology
+# --- Build node coordinates ---
+df_nodes <- imap_dfr(layers, \(n, lname) {
+  tibble(
+    layer = lname,
+    x = which(names(layers) == lname),
+    # center nodes vertically
+    y = seq_len(n) - (n + 1) / 2
+  )
+}) %>%
+  mutate(color = cols[layer])
 
-**Can be used for traditional prediction tasks**: - Disease outcome prediction - Risk stratification - Medical image analysis - Time series forecasting (disease outbreaks)
+# Normalize y so layers share a similar vertical span
+max_span <- df_nodes %>%
+  group_by(layer) %>%
+  summarise(span = max(y) - min(y)) %>%
+  pull(span) %>%
+  max()
+df_nodes <- df_nodes %>% mutate(y = y / (max_span / 3)) # -> roughly -1.5..1.5
+
+# --- Build edges (fully connected between adjacent layers) ---
+adj_pairs <- tibble(
+  from_layer = names(layers)[-length(layers)],
+  to_layer = names(layers)[-1]
+)
+
+df_edges <- purrr::map2_dfr(
+  adj_pairs$from_layer,
+  adj_pairs$to_layer,
+  \(fl, tl) {
+    left <- df_nodes %>%
+      dplyr::filter(layer == fl) %>%
+      dplyr::transmute(x1 = x, y1 = y, col_from = color) # <- no 'layer'
+
+    right <- df_nodes %>%
+      dplyr::filter(layer == tl) %>%
+      dplyr::transmute(x2 = x, y2 = y, col_to = color) # <- no 'layer'
+
+    tidyr::crossing(left, right) %>%
+      dplyr::transmute(x = x1, y = y1, xend = x2, yend = y2, color = col_from)
+  }
+)
+
+# --- Plot ---
+ggplot() +
+  # connections
+  geom_segment(
+    data = df_edges,
+    aes(
+      x = x,
+      y = y,
+      xend = xend,
+      yend = yend,
+      color = I(scales::alpha(color, 0.55))
+    ),
+    linewidth = 1.6,
+    lineend = "round"
+  ) +
+  # nodes (hollow)
+  geom_point(
+    data = df_nodes,
+    aes(x, y, stroke = I(2.2), color = I(color)),
+    shape = 21,
+    fill = "white",
+    size = 10
+  ) +
+  # "Input" label + arrows
+  annotate(
+    "text",
+    x = 0.5,
+    y = 0,
+    label = "Input",
+    hjust = 1,
+    size = 6,
+    fontface = "bold"
+  ) +
+  annotate(
+    "segment",
+    x = 0.6,
+    xend = 0.8,
+    y = -0.1,
+    yend = df_nodes$y[df_nodes$layer == "Input"][1] + 0.1,
+    arrow = arrow(type = "closed", length = unit(0.12, "in"))
+  ) +
+  annotate(
+    "segment",
+    x = 0.6,
+    xend = 0.8,
+    y = 0.1,
+    yend = df_nodes$y[df_nodes$layer == "Input"][2] - 0.1,
+    arrow = arrow(type = "closed", length = unit(0.12, "in"))
+  ) +
+  # "Output" label + arrows
+  annotate(
+    "text",
+    x = length(layers) + 0.5,
+    y = 0,
+    label = "Output",
+    hjust = 0,
+    size = 6,
+    fontface = "bold"
+  ) +
+  annotate(
+    "segment",
+    x = length(layers) + 0.15,
+    xend = length(layers) + 0.4,
+    y = df_nodes$y[df_nodes$layer == "Output"][1] + 0.1,
+    yend = -0.1,
+    arrow = arrow(type = "closed", length = unit(0.12, "in"))
+  ) +
+  annotate(
+    "segment",
+    x = length(layers) + 0.15,
+    xend = length(layers) + 0.4,
+    y = df_nodes$y[df_nodes$layer == "Output"][2] - 0.1,
+    yend = 0.1,
+    arrow = arrow(type = "closed", length = unit(0.12, "in"))
+  ) +
+  scale_x_continuous(expand = expansion(mult = c(0.15, 0.15))) +
+  coord_equal() +
+  my_theme +
+  theme_void() 
+```
 :::
 :::::
+
+::: callout-tip
+### Connection to LLMs
+Neural networks form the **foundation of Large Language Models (LLMs)** for *Deep Learning*, **"GPT"** and **"Attention Mechanisms"**
+:::
 
 ## Neural Networks: Strengths and Limitations
 
