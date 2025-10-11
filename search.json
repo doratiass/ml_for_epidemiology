@@ -116,7 +116,7 @@
     "href": "ml_for_epidemiology.html#traintest-split-how-to-split",
     "title": "Machine Learning in Epidemiology",
     "section": "Train/Test Split: How to Split",
-    "text": "Train/Test Split: How to Split\nCommon Split Ratios:\n\n75/25: Good balance for moderate sample sizes (n &gt; 1,000)\n80/20: When you have large datasets and need more training data\n70/30: When you have smaller datasets and need robust testing\n\nSpecial Considerations for Epidemiological Data\n\nWell-balanced outcomes: Random splits usually suffice\nClass Imbalance: Stratify splits to maintain outcome proportions\nTemporal Data: Use time-based splits to mimic real-world prediction\nClustered Data: Split by site or cluster to avoid leakage"
+    "text": "Train/Test Split: How to Split\n\n\nCommon Split Ratios:\n\n75/25: Good balance for moderate sample sizes (n &gt; 1,000)\n80/20: When you have large datasets and need more training data\n70/30: When you have smaller datasets and need robust testing\n\nSpecial Considerations for Epidemiological Data\n\nWell-balanced outcomes: Random splits usually suffice\nClass Imbalance: Stratify splits to maintain outcome proportions\nTemporal Data: Use time-based splits to mimic real-world prediction\nClustered Data: Split by site or cluster to avoid leakage"
   },
   {
     "objectID": "ml_for_epidemiology.html#regularization",
@@ -144,7 +144,7 @@
     "href": "ml_for_epidemiology.html#lasso-coefficient-comparison-different-penalties",
     "title": "Machine Learning in Epidemiology",
     "section": "LASSO Coefficient Comparison: Different Penalties",
-    "text": "LASSO Coefficient Comparison: Different Penalties\n\n\n\n\n\n\n\n\nHow can we tell whats the best penalty?\n\n\nThe best penalty (λ) is typically chosen via cross-validation, selecting the value produce the optimal model performance."
+    "text": "LASSO Coefficient Comparison: Different Penalties\n\n\n\n\n\n\n\n\nHow can we tell whats the best penalty?\n\n\nThe best penalty (λ) is typically chosen in hyperparameter tuning via cross-validation, selecting the value produce the optimal model performance."
   },
   {
     "objectID": "ml_for_epidemiology.html#hyperparameters-adjusting-the-recipe",
@@ -158,7 +158,7 @@
     "href": "ml_for_epidemiology.html#hyperparameters-how-to-tune-them",
     "title": "Machine Learning in Epidemiology",
     "section": "Hyperparameters: How to Tune Them?",
-    "text": "Hyperparameters: How to Tune Them?\nStep 1: Define the Search Space\n\nGrid Search: Exhaustively tests all combinations in a pre-defined grid of hyperparameters.\n\nGood for: The parameter ranges are small, well-understood, and computationally cheap to evaluate.\nExample: Testing λ values [0.001, 0.01, 0.1, 1.0, 10.0]\n\nRandom Search: Randomly samples parameter combinations uniformly across the search space.\n\nThe space is large, but only a subset is worth exploring\nOften finds near-optimal results faster than grid search\n\nSpace-Filling Designs: Systematically samples combinations to cover the search space evenly without redundancy.\n\nGood for: When you want efficient coverage without exhaustive evaluation\nCommon in model tuning with limited runs\n\nBayesian Optimization: Builds a probabilistic model (e.g., Gaussian Process) of performance across the space and updates it iteratively to focus on promising regions.\n\nGood for: Each evaluation is computationally expensive (e.g., large datasets)\nSmart, data-driven exploration balancing exploration and exploitation.\n\n\n\n\n\n\n\n\n\nKey Principle\n\n\nThe choice of search space should align with your optimization strategy.\nDifferent methods explore parameter combinations in distinct ways."
+    "text": "Hyperparameters: How to Tune Them?\nStep 1: Define the Search Space\n\nGrid Search: Exhaustively tests all combinations in a pre-defined grid of hyperparameters.\n\nGood for: The parameter ranges are small, well-understood, and computationally cheap to evaluate.\nExample: Testing λ values [0.001, 0.01, 0.1, 1.0, 10.0]\n\nRandom Search: Randomly samples parameter combinations uniformly across the search space.\n\nThe space is large, but only a subset is worth exploring\nOften finds near-optimal results faster than grid search\n\nSpace-Filling Designs: Systematically samples combinations to cover the search space evenly without redundancy.\n\nGood for: When you want efficient coverage without exhaustive evaluation\nCommon in model tuning with limited runs\n\nBayesian Optimization: Builds a probabilistic model (e.g., Gaussian Process) of performance across the space and updates it iteratively to focus on promising regions.\n\nGood for: Each evaluation is computationally expensive (e.g., large datasets)\nSmart, data-driven exploration balancing exploration and exploitation.\n\n\n\n\n\n\n\n\n\nKey Principle\n\n\nThe choice of search space should align with your optimization strategy. Different methods explore parameter combinations in distinct ways."
   },
   {
     "objectID": "ml_for_epidemiology.html#hyperparameters-visualizing-the-search-space",
@@ -175,32 +175,18 @@
     "text": "Hyperparameters: How to Tune Them?\n\n\nStep 2: Choose Evaluation Strategy\n\nHold-out validation: Simpler but less reliable\nCross-validation: Most robust for estimating performance\n\nStep 3: Select Optimization Metric\nChoose based on your epidemiological context:\n\nClassification tasks: AUC-ROC, accuracy, F1-score\nRare diseases: Use Precision-Recall AUC instead of ROC-AUC\nRisk prediction: Consider calibration alongside discrimination\nScreening tools: Prioritize sensitivity (catch all cases)"
   },
   {
-    "objectID": "ml_for_epidemiology.html#how-to-choose-hyperparameter-ranges",
-    "href": "ml_for_epidemiology.html#how-to-choose-hyperparameter-ranges",
-    "title": "Machine Learning in Epidemiology",
-    "section": "How to Choose Hyperparameter Ranges",
-    "text": "How to Choose Hyperparameter Ranges\nPLACEHOLDER: Discuss domain knowledge, prior studies, and practical considerations in setting realistic ranges for hyperparameters."
-  },
-  {
     "objectID": "ml_for_epidemiology.html#cross-validation-beyond-simple-splitting",
     "href": "ml_for_epidemiology.html#cross-validation-beyond-simple-splitting",
     "title": "Machine Learning in Epidemiology",
     "section": "Cross-Validation: Beyond Simple Splitting",
-    "text": "Cross-Validation: Beyond Simple Splitting\n\n\nWhat Is Cross-Validation?\nCross-validation (CV) divides your training data into multiple folds to get more robust estimates of model performance during hyperparameter tuning.\nHow K-Fold Cross-Validation Works\n\nDivide training data into k equal parts (typically k=5 or k=10)\nFor each hyperparameter combination:\n\nTrain model on k-1 folds\nTest on the remaining fold\nRepeat k times (each fold serves as validation once)\nAverage performance across all k tests"
-  },
-  {
-    "objectID": "ml_for_epidemiology.html#why-cross-validation-helps",
-    "href": "ml_for_epidemiology.html#why-cross-validation-helps",
-    "title": "Machine Learning in Epidemiology",
-    "section": "Why Cross-Validation Helps",
-    "text": "Why Cross-Validation Helps\n\n\n1. Reduces Overfitting to Validation Set\n\nSingle train/validation split might be lucky/unlucky\nCV averages across multiple validation sets\nMore robust hyperparameter selection\n\n2. Better Use of Limited Data\n\nEvery observation serves as both training and validation data\nParticularly important in epidemiology where data collection is expensive\n\n3. Provides Uncertainty Estimates\n\nPALCEHOLDER FOR IMAGE"
+    "text": "Cross-Validation: Beyond Simple Splitting\n\n\nWhat Is Cross-Validation?\nCross-validation (CV) divides your training data into multiple folds to get more robust estimates of model performance during hyperparameter tuning.\nHow K-Fold Cross-Validation Works\n\nDivide training data into k equal parts (typically k=5 or k=10)\nFor each hyperparameter combination:\n\nTrain model on k-1 folds\nTest on the remaining fold\nRepeat k times (each fold serves as validation once)\nAverage performance across all k tests\n\n\n\n\n\n\n\n\n\n\n\n\nKey Principle\n\n\nCross-validation improves model reliability by reducing overfitting, maximizing data use, and quantifying uncertainty.\nIt averages performance across multiple validation folds, ensuring stable hyperparameter selection even with limited epidemiological data."
   },
   {
     "objectID": "ml_for_epidemiology.html#decision-trees",
     "href": "ml_for_epidemiology.html#decision-trees",
     "title": "Machine Learning in Epidemiology",
     "section": "Decision Trees",
-    "text": "Decision Trees\nDecision Trees are intuitive, non-parametric models that recursively split data to achieve homogenous outcome groups, effectively mimicking clinical decision-making processes.\n\n\nKey Characteristics\n\nNon-parametric architecture: No assumptions about data distribution or linear relationships\nHandles mixed data types: Works with both continuous and categorical predictors natively\nAutomatic interaction detection: Naturally captures variable interactions through hierarchical splits\nInterpretable: Easy to understand and explain to clinicians\n\nDecision Trees hyperparameters\n\ncost_complexity: Penalty for tree complexity (higher = simpler trees)\ntree_depth: Maximum depth of the tree (higher = more complex)\nmin_n: Minimum samples required to split a node (higher = fewer splits)"
+    "text": "Decision Trees\nDecision Trees are intuitive, non-parametric models that recursively split data to achieve homogenous outcome groups, effectively mimicking clinical decision-making processes.\n\n\nKey Characteristics\n\nNon-parametric architecture: No assumptions about data distribution or linear relationships\nAutomatic interaction detection: Naturally captures variable interactions through hierarchical splits\nHandles mixed data types: Works with both continuous and categorical predictors natively\nInterpretable: Easy to understand and explain to clinicians\n\nDecision Trees hyperparameters\n\ncost_complexity: Penalty for tree complexity (higher = simpler trees)\ntree_depth: Maximum depth of the tree (higher = more complex)\nmin_n: Minimum samples required to split a node (higher = fewer splits)"
   },
   {
     "objectID": "ml_for_epidemiology.html#descision-trees---under-the-hood",
@@ -214,28 +200,28 @@
     "href": "ml_for_epidemiology.html#random-forest-wisdom-of-the-crowd",
     "title": "Machine Learning in Epidemiology",
     "section": "Random Forest: Wisdom of the Crowd",
-    "text": "Random Forest: Wisdom of the Crowd\n\n\nKey Characteristics\nBootstrap Aggregating (Bagging): - Create many bootstrap samples from training data - Train decision tree on each sample - Use random subset of features at each split - Average predictions across all trees\nFeature Randomness: At each split, consider only \\(\\sqrt{p}\\) randomly selected features (where \\(p\\) = total features)\nKey Innovation: Combines variance reduction (bagging) with feature randomness\n\nMathematical Foundation\nEnsemble Prediction: \\[\\hat{y} = \\frac{1}{B} \\sum_{b=1}^{B} \\hat{f}_b(x)\\]\nWhere \\(\\hat{f}_b\\) is the \\(b\\)-th tree trained on bootstrap sample\n\n\n\nRandom Forest is like having a committee of doctors each looking at different aspects of a patient\nEach “doctor” (tree) sees different patients (bootstrap samples) and focuses on different symptoms (random features)\nThe final diagnosis comes from majority vote - more reliable than any single opinion\nGreat stepping stone between interpretable single trees and complex ensemble methods like XGBoost\nEmphasize that this introduces the key concept of ensemble learning that XGBoost will build upon"
+    "text": "Random Forest: Wisdom of the Crowd\n\n\nKey Characteristics\nBootstrap Aggregating (Bagging):\n\nCreate many bootstrap samples from training data\nUse random subset of features at each bootstrap\nTrain decision tree on each sample\nAverage predictions across all trees\n\nFeature Randomness: At each bootstrap, consider only \\(\\sqrt{p}\\) randomly selected features (where \\(p\\) = total features)\nKey features:\n\nDe-correlated trees: Random feature selection ensures trees are diverse\nVariability reduction: Bagging reduces variance by averaging multiple trees\nRobustness: Handles outliers and noise well\n\nAll these lead to less overfitting\n\nMathematical Foundation\nEnsemble Prediction: \\[\\hat{y} = \\frac{1}{B} \\sum_{b=1}^{B} \\hat{f}_b(x)\\]\nWhere \\(\\hat{f}_b\\) is the \\(b\\)-th tree trained on bootstrap sample\n\n\n\nRandom Forest is like having a committee of doctors each looking at different aspects of a patient\nEach “doctor” (tree) sees different patients (bootstrap samples) and focuses on different symptoms (random features)\nThe final diagnosis comes from majority vote - more reliable than any single opinion\nGreat stepping stone between interpretable single trees and complex ensemble methods like XGBoost\nEmphasize that this introduces the key concept of ensemble learning that XGBoost will build upon"
   },
   {
-    "objectID": "ml_for_epidemiology.html#extreme-gradient-boosting-xgboost",
-    "href": "ml_for_epidemiology.html#extreme-gradient-boosting-xgboost",
+    "objectID": "ml_for_epidemiology.html#extreme-gradient-boosting-xgboost---under-the-hood",
+    "href": "ml_for_epidemiology.html#extreme-gradient-boosting-xgboost---under-the-hood",
     "title": "Machine Learning in Epidemiology",
-    "section": "eXtreme Gradient Boosting (XGBoost)",
-    "text": "eXtreme Gradient Boosting (XGBoost)\nAlgorithm Overview\nXGBoost employs sequential ensemble learning where each tree corrects errors from previous learners, building weak decision trees that collectively form a powerful predictor.\n\n\nKey Characteristics\n\nEnsemble method: Combines multiple weak learners sequentially\nGradient boosting: Each tree learns from previous trees’ errors\nBuilt-in regularization: λ (lambda) prevents overfitting by shrinking similarity scores\nAutomatic pruning: γ (gamma) removes branches that don’t improve gain sufficiently\nBuilt-in feature selection: Automatically prioritizes important variables\nHandles outliers & missing data: Native missing value support without imputation\nComplex relationships: Captures non-linear patterns and interactions\n\n\nLimitations\n\nBlack box nature: Requires post-hoc explanation methods (SHAP)\nComputational intensity: More resources than simpler models\nHyperparameter sensitivity: Multiple parameters (η, λ, γ, max_depth) require tuning\nOverfitting risk: Despite regularization, still needs careful cross-validation"
+    "section": "eXtreme Gradient Boosting (XGBoost) - under the hood",
+    "text": "eXtreme Gradient Boosting (XGBoost) - under the hood\nAlgorithm Overview\nXGBoost employs sequential ensemble learning where each tree corrects errors from previous learners, building weak decision trees that collectively form a powerful predictor.\n\n\nHow XGBoost Works\nStep 1: Start with initial prediction (typically 0.5)\nStep 2: Calculate pseudo-residuals (errors from previous predictions)\nStep 3: Build trees to predict residuals using similarity scores:\n\\(\\text{Similarity} = \\frac{(\\sum \\text{residuals})^2}{\\sum [\\text{previous probabilities} \\times (1 - \\text{previous probabilities})] + \\lambda}\\)\nStep 4: For each splot calculate the gain to find optimal splits:\n\\(\\text{Gain} = \\text{Similarity}_{\\text{left}} + \\text{Similarity}_{\\text{right}} - \\text{Similarity}_{\\text{root}}\\)\nStep 5: Prune using gamma (complexity parameter, if gain &lt; γ, do not split)\nStep 6: Scale by learning rate (η) and repeat\n\nKey Mathematical Concepts\nSimilarity Scores:\n\nWhen residuals are similar, they don’t cancel out → high similarity score.\nWhen residuals are different, they cancel out → low similarity score.\n\nRegularization Effects:\n\nLambda (λ) &gt; 0: Shrinks similarity scores → easier pruning → prevents overfitting\nGamma (γ): Sets minimum gain threshold for splits → controls tree complexity\n\nLearning Rate (η):\n\nTakes “small steps in the right direction”\nempirical evidence shows many small steps outperform few large steps."
   },
   {
     "objectID": "ml_for_epidemiology.html#xgboost---under-the-hood",
     "href": "ml_for_epidemiology.html#xgboost---under-the-hood",
     "title": "Machine Learning in Epidemiology",
     "section": "XGBoost - under the hood",
-    "text": "XGBoost - under the hood\n\n\nHow XGBoost Works\nStep 1: Start with initial prediction (typically 0.5)\nStep 2: Calculate pseudo-residuals (errors from previous predictions)\nStep 3: Build trees to predict residuals using similarity scores: \\(\\text{Similarity} = \\frac{(\\sum \\text{residuals})^2}{\\text{number of residuals} + \\lambda}\\)\nStep 4: Use gain to find optimal splits: \\(\\text{Gain} = \\text{Similarity}_{\\text{left}} + \\text{Similarity}_{\\text{right}} - \\text{Similarity}_{\\text{root}}\\)\nStep 5: Prune using gamma (complexity parameter)\nStep 6: Scale by learning rate (η) and repeat\n\nKey Mathematical Concepts\nSimilarity Scores: When residuals are similar, they don’t cancel out → high similarity score. When residuals are different, they cancel out → low similarity score.\nLearning Rate (η): Takes “small steps in the right direction” - empirical evidence shows many small steps outperform few large steps.\nRegularization Effects:\n\nLambda (λ) &gt; 0: Shrinks similarity scores → easier pruning → prevents overfitting\nGamma (γ): Sets minimum gain threshold for splits → controls tree complexity"
+    "text": "XGBoost - under the hood"
   },
   {
-    "objectID": "ml_for_epidemiology.html#xgboost---under-the-hood-1",
-    "href": "ml_for_epidemiology.html#xgboost---under-the-hood-1",
+    "objectID": "ml_for_epidemiology.html#xgboost",
+    "href": "ml_for_epidemiology.html#xgboost",
     "title": "Machine Learning in Epidemiology",
-    "section": "XGBoost - under the hood",
-    "text": "XGBoost - under the hood"
+    "section": "XGBoost",
+    "text": "XGBoost\n\n\nKey Characteristics\n\nEnsemble method: Combines multiple weak learners sequentially\nGradient boosting: Each tree learns from previous trees’ errors\nBuilt-in regularization: λ (lambda) prevents overfitting by shrinking similarity scores\nAutomatic pruning: γ (gamma) removes branches that don’t improve gain sufficiently\nBuilt-in feature selection: Automatically prioritizes important variables\nHandles outliers & missing data: Native missing value support without imputation\nComplex relationships: Captures non-linear patterns and interactions\n\n\nLimitations\n\nBlack box nature: Requires post-hoc explanation methods (SHAP)\nComputational intensity: More resources than simpler models\nHyperparameter sensitivity: Multiple parameters (η, λ, γ, max_depth and more) require tuning\nOverfitting risk: Despite regularization, still needs careful cross-validation"
   },
   {
     "objectID": "ml_for_epidemiology.html#common-xgboost-hyperparameter",
@@ -249,7 +235,7 @@
     "href": "ml_for_epidemiology.html#neural-networks-the-foundation-of-modern-ai",
     "title": "Machine Learning in Epidemiology",
     "section": "Neural Networks: The Foundation of Modern AI",
-    "text": "Neural Networks: The Foundation of Modern AI\nWhat are Neural Networks?\nNeural networks are computing systems inspired by biological neural networks that learn patterns through interconnected nodes (neurons) organized in layers.\n\n\nKey Characteristics\n\nLayered architecture: Input layer → Hidden layer(s) → Output layer\nWeighted connections: Each connection has a learnable weight\nActivation functions: Non-linear transformations (sigmoid, ReLU, tanh)\nBackpropagation: Algorithm that adjusts weights to minimize prediction errors\nUniversal approximators: Can theoretically learn any continuous function\n\n\nConnection to LLMs\nNeural networks form the foundation of Large Language Models (LLMs):\n\nGPT, ChatGPT, Claude: Built on transformer neural network architectures\nDeep learning: Neural networks with many hidden layers\nAttention mechanisms: Advanced neural network components for processing sequences\nSame principles: Pattern recognition through weighted connections and learning\n\nIn Epidemiology\nCan be used for traditional prediction tasks: - Disease outcome prediction - Risk stratification - Medical image analysis - Time series forecasting (disease outbreaks)"
+    "text": "Neural Networks: The Foundation of Modern AI\nWhat are Neural Networks?\nNeural networks are computing systems inspired by biological neural networks that learn patterns through interconnected nodes (neurons) organized in layers.\n\n\nKey Characteristics\n\nLayered architecture: Input layer → Hidden layer(s) → Output layer\nWeighted connections: Each connection has a learnable weight\nActivation functions: Non-linear transformations (sigmoid, ReLU, tanh)\nBackpropagation: Algorithm that adjusts weights to minimize prediction errors\nUniversal approximators: Can theoretically learn any continuous function\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nConnection to LLMs\n\n\nNeural networks form the foundation of Large Language Models (LLMs) for Deep Learning, “GPT” and “Attention Mechanisms”"
   },
   {
     "objectID": "ml_for_epidemiology.html#neural-networks-strengths-and-limitations",

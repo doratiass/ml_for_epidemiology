@@ -10,7 +10,7 @@
   <meta name="generator" content="quarto-1.8.25">
 
   <meta name="author" content="Dr.&nbsp;Dor Atias, MD-MPH">
-  <meta name="dcterms.date" content="2025-10-10">
+  <meta name="dcterms.date" content="2025-10-11">
   <title>Machine Learning in Epidemiology</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -146,7 +146,7 @@ Dr.&nbsp;Dor Atias, MD-MPH
     </div>
 </div>
 
-  <p class="date">2025-10-10</p>
+  <p class="date">2025-10-11</p>
 </section>
 <section id="learning-objectives" class="slide level2">
 <h2>Learning Objectives</h2>
@@ -752,6 +752,8 @@ Dr.&nbsp;Dor Atias, MD-MPH
 </section>
 <section id="traintest-split-how-to-split" class="slide level2">
 <h2>Train/Test Split: How to Split</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
 <h3 id="common-split-ratios">Common Split Ratios:</h3>
 <ul>
 <li><strong>75/25</strong>: Good balance for moderate sample sizes (n &gt; 1,000)</li>
@@ -765,6 +767,17 @@ Dr.&nbsp;Dor Atias, MD-MPH
 <li><strong>Temporal Data</strong>: Use time-based splits to mimic real-world prediction</li>
 <li><strong>Clustered Data</strong>: Split by site or cluster to avoid leakage</li>
 </ul>
+</div><div class="column" style="width:50%;">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-9-1.png" class="quarto-figure quarto-figure-center"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
 </section>
 <section id="regularization" class="slide level2">
 <h2>Regularization</h2>
@@ -866,7 +879,7 @@ Dr.&nbsp;Dor Atias, MD-MPH
 <section id="lasso-coefficient-comparison-different-penalties" class="slide level2">
 <h2>LASSO Coefficient Comparison: Different Penalties</h2>
 
-<img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-9-1.png" class="r-stretch"><div title="How can we tell whats the best penalty?">
+<img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-10-1.png" class="r-stretch"><div title="How can we tell whats the best penalty?">
 <div class="callout callout-note callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
@@ -876,7 +889,7 @@ Dr.&nbsp;Dor Atias, MD-MPH
 <p><strong>How can we tell whats the best penalty?</strong></p>
 </div>
 <div class="callout-content">
-<p>The best penalty (λ) is typically chosen via cross-validation, selecting the value produce the optimal model performance.</p>
+<p>The best penalty (λ) is typically chosen in hyperparameter tuning via cross-validation, selecting the value produce the optimal model performance.</p>
 </div>
 </div>
 </div>
@@ -953,8 +966,7 @@ Dr.&nbsp;Dor Atias, MD-MPH
 <p><strong>Key Principle</strong></p>
 </div>
 <div class="callout-content">
-<p>The <strong>choice of search space</strong> should align with your <strong>optimization strategy</strong>.<br>
-Different methods explore parameter combinations in distinct ways.</p>
+<p>The <strong>choice of search space</strong> should align with your <strong>optimization strategy</strong>.&nbsp;Different methods explore parameter combinations in distinct ways.</p>
 </div>
 </div>
 </div>
@@ -986,16 +998,12 @@ Different methods explore parameter combinations in distinct ways.</p>
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-11-1.png"></p>
+<p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-12-1.png"></p>
 </figure>
 </div>
 </div>
 </div>
 </div></div>
-</section>
-<section id="how-to-choose-hyperparameter-ranges" class="slide level2">
-<h2>How to Choose Hyperparameter Ranges</h2>
-<p>PLACEHOLDER: Discuss domain knowledge, prior studies, and practical considerations in setting realistic ranges for hyperparameters.</p>
 </section>
 <section id="cross-validation-beyond-simple-splitting" class="slide level2">
 <h2>Cross-Validation: Beyond Simple Splitting</h2>
@@ -1017,26 +1025,22 @@ Different methods explore parameter combinations in distinct ways.</p>
 </div><div class="column" style="width:50%;">
 <p><img data-src="images/cv_test_train.png"></p>
 </div></div>
-</section>
-<section id="why-cross-validation-helps" class="slide level2">
-<h2>Why Cross-Validation Helps</h2>
-<div class="columns">
-<div class="column" style="width:50%;">
-<h3 id="reduces-overfitting-to-validation-set">1. <strong>Reduces Overfitting to Validation Set</strong></h3>
-<ul>
-<li>Single train/validation split might be lucky/unlucky</li>
-<li>CV averages across multiple validation sets</li>
-<li>More robust hyperparameter selection</li>
-</ul>
-<h3 id="better-use-of-limited-data">2. <strong>Better Use of Limited Data</strong></h3>
-<ul>
-<li>Every observation serves as both training and validation data</li>
-<li>Particularly important in epidemiology where data collection is expensive</li>
-</ul>
-<h3 id="provides-uncertainty-estimates">3. <strong>Provides Uncertainty Estimates</strong></h3>
-</div><div class="column" style="width:50%;">
-<p>PALCEHOLDER FOR IMAGE</p>
-</div></div>
+<div title="Key Principle">
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Key Principle</strong></p>
+</div>
+<div class="callout-content">
+<p>Cross-validation improves model reliability by <strong>reducing overfitting</strong>, <strong>maximizing data use</strong>, and <strong>quantifying uncertainty</strong>.<br>
+It averages performance across multiple validation folds, ensuring stable hyperparameter selection even with limited epidemiological data.</p>
+</div>
+</div>
+</div>
+</div>
 </section>
 <section id="decision-trees" class="slide level2">
 <h2>Decision Trees</h2>
@@ -1046,8 +1050,8 @@ Different methods explore parameter combinations in distinct ways.</p>
 <h3 id="key-characteristics-3">Key Characteristics</h3>
 <ul>
 <li><strong>Non-parametric architecture</strong>: No assumptions about data distribution or linear relationships</li>
-<li><strong>Handles mixed data types</strong>: Works with both continuous and categorical predictors natively</li>
 <li><strong>Automatic interaction detection</strong>: Naturally captures variable interactions through hierarchical splits</li>
+<li><strong>Handles mixed data types</strong>: Works with both continuous and categorical predictors natively</li>
 <li><strong>Interpretable</strong>: Easy to understand and explain to clinicians</li>
 </ul>
 <h3 id="decision-trees-hyperparameters">Decision Trees hyperparameters</h3>
@@ -1061,7 +1065,7 @@ Different methods explore parameter combinations in distinct ways.</p>
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-12-1.png"></p>
+<p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-13-1.png"></p>
 </figure>
 </div>
 </div>
@@ -1102,9 +1106,21 @@ Different methods explore parameter combinations in distinct ways.</p>
 <div class="columns">
 <div class="column" style="width:50%;">
 <h3 id="key-characteristics-4">Key Characteristics</h3>
-<p><strong>Bootstrap Aggregating (Bagging):</strong> - Create many bootstrap samples from training data - Train decision tree on each sample - Use random subset of features at each split - Average predictions across all trees</p>
-<p><strong>Feature Randomness:</strong> At each split, consider only <span class="math inline">\(\sqrt{p}\)</span> randomly selected features (where <span class="math inline">\(p\)</span> = total features)</p>
-<p><strong>Key Innovation:</strong> Combines <strong>variance reduction</strong> (bagging) with <strong>feature randomness</strong></p>
+<p><strong>Bootstrap Aggregating (Bagging):</strong></p>
+<ul>
+<li><p>Create many bootstrap samples from training data</p></li>
+<li><p>Use random subset of features at each bootstrap</p></li>
+<li><p>Train decision tree on each sample</p></li>
+<li><p>Average predictions across all trees</p></li>
+</ul>
+<p><strong>Feature Randomness:</strong> At each bootstrap, consider only <span class="math inline">\(\sqrt{p}\)</span> randomly selected features (where <span class="math inline">\(p\)</span> = total features)</p>
+<p><strong>Key features:</strong></p>
+<ul>
+<li><p><strong>De-correlated trees</strong>: Random feature selection ensures trees are diverse</p></li>
+<li><p><strong>Variability reduction</strong>: Bagging reduces variance by averaging multiple trees</p></li>
+<li><p><strong>Robustness</strong>: Handles outliers and noise well</p></li>
+</ul>
+<p>All these lead to <strong>less overfitting</strong></p>
 </div><div class="column" style="width:50%;">
 <h3 id="mathematical-foundation-3">Mathematical Foundation</h3>
 <p><strong>Ensemble Prediction:</strong> <span class="math display">\[\hat{y} = \frac{1}{B} \sum_{b=1}^{B} \hat{f}_b(x)\]</span></p>
@@ -1130,10 +1146,46 @@ Different methods explore parameter combinations in distinct ways.</p>
           display:block!important;
       }</style></aside>
 </section>
-<section id="extreme-gradient-boosting-xgboost" class="slide level2">
-<h2>eXtreme Gradient Boosting (XGBoost)</h2>
+<section id="extreme-gradient-boosting-xgboost---under-the-hood" class="slide level2">
+<h2>eXtreme Gradient Boosting (XGBoost) - under the hood</h2>
 <h3 id="algorithm-overview">Algorithm Overview</h3>
 <p>XGBoost employs <strong>sequential ensemble learning</strong> where each tree <strong>corrects errors</strong> from previous learners, building <strong>weak decision</strong> trees that collectively form a powerful predictor.</p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<h3 id="how-xgboost-works">How XGBoost Works</h3>
+<p><strong>Step 1:</strong> Start with initial prediction (typically 0.5)</p>
+<p><strong>Step 2:</strong> Calculate <strong>pseudo-residuals</strong> (errors from previous predictions)</p>
+<p><strong>Step 3:</strong> Build trees to predict residuals using <strong>similarity scores</strong>:</p>
+<p><span class="math inline">\(\text{Similarity} = \frac{(\sum \text{residuals})^2}{\sum [\text{previous probabilities} \times (1 - \text{previous probabilities})] + \lambda}\)</span></p>
+<p><strong>Step 4:</strong> For each splot calculate the <strong>gain</strong> to find optimal splits:</p>
+<p><span class="math inline">\(\text{Gain} = \text{Similarity}_{\text{left}} + \text{Similarity}_{\text{right}} - \text{Similarity}_{\text{root}}\)</span></p>
+<p><strong>Step 5:</strong> <strong>Prune</strong> using gamma (complexity parameter, if gain &lt; γ, do not split)</p>
+<p><strong>Step 6:</strong> Scale by learning rate (η) and repeat</p>
+</div><div class="column" style="width:50%;">
+<h3 id="key-mathematical-concepts">Key Mathematical Concepts</h3>
+<p><strong>Similarity Scores:</strong></p>
+<ul>
+<li><p>When residuals are <strong>similar</strong>, they don’t cancel out → <strong>high similarity</strong> score.</p></li>
+<li><p>When residuals are <strong>different</strong>, they cancel out → <strong>low similarity</strong> score.</p></li>
+</ul>
+<p><strong>Regularization Effects:</strong></p>
+<ul>
+<li><p><strong>Lambda (λ) &gt; 0</strong>: Shrinks similarity scores → easier pruning → prevents overfitting</p></li>
+<li><p><strong>Gamma (γ)</strong>: Sets minimum gain threshold for splits → controls tree complexity</p></li>
+</ul>
+<p><strong>Learning Rate (η):</strong></p>
+<ul>
+<li><p>Takes “small steps in the right direction”</p></li>
+<li><p>empirical evidence shows many small steps outperform few large steps.</p></li>
+</ul>
+</div></div>
+</section>
+<section id="xgboost---under-the-hood" class="slide level2">
+<h2>XGBoost - under the hood</h2>
+
+<img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-14-1.png" class="r-stretch"></section>
+<section id="xgboost" class="slide level2">
+<h2>XGBoost</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
 <h3 id="key-characteristics-5">Key Characteristics</h3>
@@ -1151,41 +1203,15 @@ Different methods explore parameter combinations in distinct ways.</p>
 <ul>
 <li><strong>Black box nature</strong>: Requires post-hoc explanation methods (SHAP)</li>
 <li><strong>Computational intensity</strong>: More resources than simpler models</li>
-<li><strong>Hyperparameter sensitivity</strong>: Multiple parameters (η, λ, γ, max_depth) require tuning</li>
+<li><strong>Hyperparameter sensitivity</strong>: Multiple parameters (η, λ, γ, max_depth and more) require tuning</li>
 <li><strong>Overfitting risk</strong>: Despite regularization, still needs careful cross-validation</li>
 </ul>
 </div></div>
 </section>
-<section id="xgboost---under-the-hood" class="slide level2">
-<h2>XGBoost - under the hood</h2>
-<div class="columns">
-<div class="column" style="width:50%;">
-<h3 id="how-xgboost-works">How XGBoost Works</h3>
-<p><strong>Step 1:</strong> Start with initial prediction (typically 0.5)</p>
-<p><strong>Step 2:</strong> Calculate <strong>pseudo-residuals</strong> (errors from previous predictions)</p>
-<p><strong>Step 3:</strong> Build trees to predict residuals using <strong>similarity scores</strong>: <span class="math inline">\(\text{Similarity} = \frac{(\sum \text{residuals})^2}{\text{number of residuals} + \lambda}\)</span></p>
-<p><strong>Step 4:</strong> Use <strong>gain</strong> to find optimal splits: <span class="math inline">\(\text{Gain} = \text{Similarity}_{\text{left}} + \text{Similarity}_{\text{right}} - \text{Similarity}_{\text{root}}\)</span></p>
-<p><strong>Step 5:</strong> <strong>Prune</strong> using gamma (complexity parameter)</p>
-<p><strong>Step 6:</strong> Scale by learning rate (η) and repeat</p>
-</div><div class="column" style="width:50%;">
-<h3 id="key-mathematical-concepts">Key Mathematical Concepts</h3>
-<p><strong>Similarity Scores:</strong> When residuals are similar, they don’t cancel out → high similarity score. When residuals are different, they cancel out → low similarity score.</p>
-<p><strong>Learning Rate (η):</strong> Takes “small steps in the right direction” - empirical evidence shows many small steps outperform few large steps.</p>
-<p><strong>Regularization Effects:</strong></p>
-<ul>
-<li><strong>Lambda (λ) &gt; 0</strong>: Shrinks similarity scores → easier pruning → prevents overfitting</li>
-<li><strong>Gamma (γ)</strong>: Sets minimum gain threshold for splits → controls tree complexity</li>
-</ul>
-</div></div>
-</section>
-<section id="xgboost---under-the-hood-1" class="slide level2">
-<h2>XGBoost - under the hood</h2>
-
-<img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-13-1.png" class="r-stretch"></section>
 <section id="common-xgboost-hyperparameter" class="slide level2">
 <h2>Common XGBoost Hyperparameter</h2>
 
-<img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-14-1.png" class="r-stretch"></section>
+<img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-15-1.png" class="r-stretch"></section>
 <section id="neural-networks-the-foundation-of-modern-ai" class="slide level2">
 <h2>Neural Networks: The Foundation of Modern AI</h2>
 <h3 id="what-are-neural-networks">What are Neural Networks?</h3>
@@ -1201,17 +1227,29 @@ Different methods explore parameter combinations in distinct ways.</p>
 <li><strong>Universal approximators</strong>: Can theoretically learn any continuous function</li>
 </ul>
 </div><div class="column" style="width:50%;">
-<h3 id="connection-to-llms">Connection to LLMs</h3>
-<p><strong>Neural networks form the foundation of Large Language Models (LLMs)</strong>:</p>
-<ul>
-<li><strong>GPT, ChatGPT, Claude</strong>: Built on transformer neural network architectures</li>
-<li><strong>Deep learning</strong>: Neural networks with many hidden layers</li>
-<li><strong>Attention mechanisms</strong>: Advanced neural network components for processing sequences</li>
-<li><strong>Same principles</strong>: Pattern recognition through weighted connections and learning</li>
-</ul>
-<h3 id="in-epidemiology">In Epidemiology</h3>
-<p><strong>Can be used for traditional prediction tasks</strong>: - Disease outcome prediction - Risk stratification - Medical image analysis - Time series forecasting (disease outbreaks)</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-16-1.png"></p>
+</figure>
+</div>
+</div>
+</div>
 </div></div>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Connection to LLMs</strong></p>
+</div>
+<div class="callout-content">
+<p>Neural networks form the <strong>foundation of Large Language Models (LLMs)</strong> for <em>Deep Learning</em>, <strong>“GPT”</strong> and <strong>“Attention Mechanisms”</strong></p>
+</div>
+</div>
+</div>
 </section>
 <section id="neural-networks-strengths-and-limitations" class="slide level2">
 <h2>Neural Networks: Strengths and Limitations</h2>
