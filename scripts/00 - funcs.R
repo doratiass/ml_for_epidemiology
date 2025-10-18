@@ -23,6 +23,30 @@ library(readr) # Enables fast reading of CSV and other rectangular data.
 color_pal <- 'Set1' # Color palette to be used in plots.
 
 # Define a consistent ggplot theme for visualizations
+my_theme_shap <- list(
+  theme_minimal(base_size = 14),
+  theme(
+    plot.title = element_text(
+      face = "bold",
+      size = 16,
+      hjust = 0.5,
+      color = "#2c3e50"
+    ),
+    plot.subtitle = element_text(size = 14, hjust = 0.5, color = "#4f5d75"),
+    axis.title = element_text(size = 12, face = "bold", color = "#2c3e50"),
+    axis.text = element_text(color = "#666666"),
+    legend.title = element_text(face = "bold"),
+    panel.grid.major = element_line(color = "gray80"),
+    panel.grid.minor = element_blank(),
+    # Transparent background for slides
+    plot.background = element_rect(fill = "transparent", colour = NA),
+    panel.background = element_rect(fill = NA, colour = NA),
+    legend.background = element_blank(),
+    legend.key = element_rect(fill = NA, colour = NA),
+    strip.background = element_blank()
+  )
+)
+
 my_theme <- list(
   scale_fill_brewer(palette = color_pal),
   scale_color_brewer(palette = color_pal),
@@ -52,7 +76,7 @@ my_theme <- list(
 
 line_size <- 1.2 # Standard thickness for lines in plots.
 leg_size_4 <- 16 # Likely used for setting legend text size in certain plots.
-
+var_num <- 10 # number of variables for SHAP importance plot
 # ============================================================================ #
 # Functions ------------------------------------------------------------
 # ============================================================================ #

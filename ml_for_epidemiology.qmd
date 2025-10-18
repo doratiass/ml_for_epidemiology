@@ -57,8 +57,22 @@ library(rpart)
 library(rpart.plot)
 library(kableExtra)
 library(scam)
+library(shapviz)
+library(xml2)
 # Source functions and load data
 source("scripts/00 - funcs.R")
+# ---------------------------------------------------------------------------- #
+## Define Model-Specific Parameters and Functions -----------------------------
+# ---------------------------------------------------------------------------- #
+thresh_other <- 0.1 # Threshold for grouping infrequent levels to "other_combined"
+thresh_corr <- 0.9 # Correlation threshold for removing highly correlated predictors
+
+ctl_grid <- control_resamples(
+  save_pred = TRUE,
+  save_workflow = TRUE,
+  parallel_over = 'everything'
+)
+
 ```
 
 ```{r}
@@ -66,6 +80,7 @@ source("scripts/00 - funcs.R")
 # Load pre-prepared modeling dataset
 load("data/model_fits.RData")
 load("data/roc_data.RData")
+load("data/shap.RData")
 ```
 
 ## Learning Objectives
@@ -2823,6 +2838,22 @@ XAI methods help us understand:
 
 This is crucial for clinical trust, model debugging, and discovering new insights.
 
+## LASSO Coefficients 
+
+LASSO provides direct interpretability through its coefficients. 
+
+```{r}
+lasso_imp_vars %>%
+  ggplot(aes(x = reorder(var, abs(coef)), y = coef, fill = var)) +
+  geom_col() +
+  scale_x_discrete(labels = vars_label) +
+  labs(x = "", y = "Coefficient") +
+  scale_fill_viridis_d(option = "B") +
+  coord_flip() +
+  my_theme_shap + 
+  theme(legend.position = "none")
+```
+
 ## SHAP (SHapley Additive exPlanations)
 
 SHAP is a leading XAI method based on game theory. It calculates the contribution of each feature to a prediction for each individual observation.
@@ -2839,40 +2870,28 @@ SHAP is a leading XAI method based on game theory. It calculates the contributio
 
 ::::: columns
 ::: {.column width="50%"}
-The SHAP summary plot gives us a global overview of feature importance and effect.
+**Systolic Blood Pressure** is the most important feature.
 
--   Y-axis: Features, ranked by importance.
+-   Low SBP (purple dots) have positive SHAP values, meaning they push the prediction towards becoming a centenarian.
 
--   X-axis: The SHAP value.
+-   High SBP (yellow dots) have negative SHAP values, pushing the prediction away from it.
 
--   Color: The original value of the feature (high or low).
+**Smoking Status** is also important.
+
+-   Being a smoker (yellow dot, since it's a dummy variable) has a negative SHAP value, decreasing the chance of being a centenarian.
 :::
 
 ::: {.column width="50%"}
 ```{r}
-# PLACEHOLDER dor LASSO model SHAP values
-```
-:::
-:::::
-
-## Interpreting the SHAP Summary Plot
-
-::::: columns
-::: {.column width="50%"}
-**Systolic Blood Pressure** ('med_sbp_mean') is the most important feature.
-
--   Low SBP (blue dots) have positive SHAP values, meaning they push the prediction towards becoming a centenarian.
-
--   High SBP (red dots) have negative SHAP values, pushing the prediction away from it.
-
-**Smoking Status** ('med_smoke_status\_@_never') is also important.
-
--   Being a never-smoker (red dot, since it's a dummy variable) has a positive SHAP value, increasing the chance of being a centenarian.
-:::
-
-::: {.column width="50%"}
-```{r}
-# PLACEHOLDER dor LASSO model SHAP values
+#| fig-height: 8
+sv_importance(
+  shap_xgb,
+  kind = "beeswarm",
+  show_numbers = FALSE,
+  max_display = var_num
+) +
+  my_theme_shap +
+  scale_y_discrete(labels = vars_label) 
 ```
 :::
 :::::
@@ -2881,13 +2900,11 @@ The SHAP summary plot gives us a global overview of feature importance and effec
 
 This plot shows how a single feature's value affects its SHAP value across all samples. It helps us understand the relationship between a feature and the prediction outcome.
 
-Here we see a clear negative relationship: as systolic blood pressure increases, its SHAP value decreases, lowering the predicted probability of becoming a centenarian.
+![](images/pdp.png)
 
-```{r}
+# Summary & Take-Home Messages
 
-```
-
-# Key Takeaways
+## Key Takeaways
 
 -   We demonstrated a complete ML workflow for epidemiological prediction (not **causation**) using R and tidymodels.
 

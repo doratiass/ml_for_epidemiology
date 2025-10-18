@@ -140,8 +140,7 @@ mp_1 <- dp_line_1 +
     mapping = aes(x = x_mark, y = max(dp_line_1$data$shap), label = x_mark),
     size = 5
   ) +
-  theme_classic(base_size = 14) +
-  plot_theme
+  theme_classic(base_size = 14)
 
 mp_2 <- dp_line_2 +
   labs(x = vars_label(labels[[2]][[1]])) +
@@ -164,8 +163,7 @@ mp_2 <- dp_line_2 +
     mapping = aes(x = x_mark, y = max(dp_line_2$data$shap), label = x_mark),
     size = 5
   ) +
-  theme_classic(base_size = 14) +
-  plot_theme
+  theme_classic(base_size = 14)
 
 mp_3 <- dp_line_3 +
   labs(x = vars_label(labels[[3]][[1]])) +
@@ -188,8 +186,7 @@ mp_3 <- dp_line_3 +
     mapping = aes(x = x_mark, y = max(dp_line_3$data$shap), label = x_mark),
     size = 5
   ) +
-  theme_classic(base_size = 14) +
-  plot_theme
+  theme_classic(base_size = 14)
 
 mp_4 <- dp_line_4 +
   labs(x = vars_label(labels[[4]][[1]])) +
@@ -212,8 +209,7 @@ mp_4 <- dp_line_4 +
     mapping = aes(x = x_mark, y = max(dp_line_4$data$shap), label = x_mark),
     size = 5
   ) +
-  theme_classic(base_size = 14) +
-  plot_theme
+  theme_classic(base_size = 14)
 
 # ============================================================================ #
 # Assemble Final Figure --------------------------------------------------------
