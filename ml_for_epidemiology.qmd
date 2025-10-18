@@ -18,6 +18,7 @@ format:
     incremental: false
     code-fold: false
     code-tools: true
+    code-link: true
     fig-dpi: 600
     fig-format: svg
     fontsize: 1.2em
@@ -55,61 +56,16 @@ library(RColorBrewer)
 library(rpart)
 library(rpart.plot)
 library(kableExtra)
-
-# Define Model-Specific Parameters and Functions 
-thresh_other <- 0.1 # Threshold for grouping infrequent levels to "other_combined"
-thresh_corr <- 0.9 # Correlation threshold for removing highly correlated predictors
-
-# new_sep_names: Custom function for dummy variable naming
-new_sep_names <- function(var, lvl, ordinal) {
-  dummy_names(var = var, lvl = lvl, ordinal = ordinal, sep = "_@_")
-}
-
-# Set theme for all plots
-my_theme <- list(
-  scale_fill_brewer(palette = "Set1"),
-  scale_color_brewer(palette = "Set1"),
-  theme_minimal(base_size = 14),
-  theme(
-    plot.title = element_text(
-      face = "bold",
-      size = 16,
-      hjust = 0.5,
-      color = "#2c3e50"
-    ),
-    plot.subtitle = element_text(size = 14, hjust = 0.5, color = "#4f5d75"),
-    axis.title = element_text(size = 12, face = "bold", color = "#2c3e50"),
-    axis.text = element_text(color = "#666666"),
-    legend.position = "bottom",
-    legend.title = element_text(face = "bold"),
-    panel.grid.major = element_line(color = "gray80"),
-    panel.grid.minor = element_blank(),
-    # Transparent background for slides
-    plot.background  = element_rect(fill = "transparent", colour = NA),
-    panel.background = element_rect(fill = NA, colour = NA),
-    legend.background = element_blank(),
-    legend.key        = element_rect(fill = NA, colour = NA),
-    strip.background  = element_blank()
-  )
-)
-
-# Standardize parallel processing
-options(future.globals.maxSize = 4 * 1024^3) # 4GB in bytes
-all_cores <- parallel::detectCores()
-#plan(multisession, workers = all_cores - 2)
-ctl_grid <- control_resamples(
-  save_pred = TRUE,
-  save_workflow = TRUE,
-  parallel_over = 'everything'
-)
+library(scam)
+# Source functions and load data
+source("scripts/00 - funcs.R")
 ```
 
 ```{r}
 #| include: false 
-# Source functions and load data
-source("scripts/00 - funcs.R")
 # Load pre-prepared modeling dataset
 load("data/model_fits.RData")
+load("data/roc_data.RData")
 ```
 
 ## Learning Objectives
@@ -1391,9 +1347,6 @@ Emphasize that hyperparameter tuning is like being a chef - you need to adjust t
 -   **Space-Filling Designs**: Systematically samples combinations to cover the search space **evenly** without redundancy.
     -   Good for: When you want **efficient coverage** without exhaustive evaluation
     -   Common in model tuning with limited runs
--   **Bayesian Optimization**: Builds a probabilistic model (e.g., Gaussian Process) of performance across the space and **updates** it iteratively to focus on promising regions.
-    -   Good for: Each evaluation is **computationally expensive** (e.g., large datasets)
-    -   Smart, data-driven exploration balancing exploration and exploitation.
 
 ::: {.callout-tip title="Key Principle"}
 The **choice of search space** should align with your **optimization strategy**. Different methods explore parameter combinations in distinct ways.
@@ -1724,24 +1677,11 @@ Decision trees are intuitive but prone to overfitting and thus rarely used alone
 
 -   Create many bootstrap samples from training data
 
--   Use random subset of features at each bootstrap
-
 -   Train decision tree on each sample
 
 -   Average predictions across all trees
 
 **Feature Randomness:** At each bootstrap, consider only $\sqrt{p}$ randomly selected features (where $p$ = total features)
-
-**Key features:**
-
--  **De-correlated trees**: Random feature selection ensures trees are diverse
-
--  **Variability reduction**: Bagging reduces variance by averaging multiple trees
-
--  **Robustness**: Handles outliers and noise well
-
-All these lead to **less overfitting**
-
 :::
 
 ::: {.column width="50%"}
@@ -1752,6 +1692,14 @@ All these lead to **less overfitting**
 Where $\hat{f}_b$ is the $b$-th tree trained on bootstrap sample
 :::
 :::::
+
+-   **De-correlated trees**: Random feature selection ensures trees are diverse
+
+-   **Variability reduction**: Bagging reduces variance by averaging multiple trees
+
+-   **Robustness**: Handles outliers and noise well
+
+All these lead to **less overfitting**
 
 ::: notes
 -   Random Forest is like having a committee of doctors each looking at different aspects of a patient
@@ -1767,50 +1715,53 @@ Where $\hat{f}_b$ is the $b$-th tree trained on bootstrap sample
 
 XGBoost employs **sequential ensemble learning** where each tree **corrects errors** from previous learners, building **weak decision** trees that collectively form a powerful predictor.
 
-::::: columns
-::: {.column width="50%"}
 ### How XGBoost Works
 
 **Step 1:** Start with initial prediction (typically 0.5)
 
 **Step 2:** Calculate **pseudo-residuals** (errors from previous predictions)
 
-**Step 3:** Build trees to predict residuals using **similarity scores**: 
+**Step 3:** Build trees to predict residuals using **similarity scores**:
 
 $\text{Similarity} = \frac{(\sum \text{residuals})^2}{\sum [\text{previous probabilities} \times (1 - \text{previous probabilities})] + \lambda}$
 
-**Step 4:** For each splot calculate the **gain** to find optimal splits: 
+**Step 4:** For each split calculate the **gain** to find optimal splits:
 
 $\text{Gain} = \text{Similarity}_{\text{left}} + \text{Similarity}_{\text{right}} - \text{Similarity}_{\text{root}}$
 
-**Step 5:** **Prune** using gamma (complexity parameter, if gain < γ, do not split)
+**Step 5:** **Prune** using gamma (complexity parameter, if gain \< γ, do not split)
 
 **Step 6:** Scale by learning rate (η) and repeat
-:::
 
-::: {.column width="50%"}
+## eXtreme Gradient Boosting (XGBoost) - under the hood
+
 ### Key Mathematical Concepts
 
-**Similarity Scores:** 
+:::::: columns
+::: {.column width="33.3%"}
+**Similarity Scores:**
 
--  When residuals are **similar**, they don't cancel out → **high similarity** score. 
+-   When residuals are **similar**, they don't cancel out → **high similarity** score.
 
--  When residuals are **different**, they cancel out → **low similarity** score.
+-   When residuals are **different**, they cancel out → **low similarity** score.
+:::
 
+::: {.column width="33.3%"}
 **Regularization Effects:**
 
 -   **Lambda (λ) \> 0**: Shrinks similarity scores → easier pruning → prevents overfitting
 
 -   **Gamma (γ)**: Sets minimum gain threshold for splits → controls tree complexity
-
-**Learning Rate (η):** 
-
--  Takes "small steps in the right direction" 
-
--  empirical evidence shows many small steps outperform few large steps.
-
 :::
-:::::
+
+::: {.column width="33.3%"}
+**Learning Rate (η):**
+
+-   Takes "small steps in the right direction"
+
+-   empirical evidence shows many small steps outperform few large steps.
+:::
+::::::
 
 ## XGBoost - under the hood
 
@@ -2134,7 +2085,6 @@ ggplot() +
 :::
 
 ::: {.column width="50%"}
-
 ```{r}
 # --- Layer sizes (edit as needed) ---
 layers <- c(Input = 2, Hidden1 = 4, Hidden2 = 4, Output = 2)
@@ -2274,6 +2224,7 @@ ggplot() +
 
 ::: callout-tip
 ### Connection to LLMs
+
 Neural networks form the **foundation of Large Language Models (LLMs)** for *Deep Learning*, **"GPT"** and **"Attention Mechanisms"**
 :::
 
@@ -2306,17 +2257,13 @@ Neural networks form the **foundation of Large Language Models (LLMs)** for *Dee
 -   **Interpretability trade-offs**: Neural networks are "black boxes" - harder to understand than logistic regression or trees
 -   **Sample efficiency**: Often need very large datasets to perform well
 -   **Overfitting prone**: Can memorize patterns in smaller datasets
-
-### Practical Recommendation:
-
-**For most epidemiological prediction tasks, start with simpler methods (logistic regression, XGBoost) before considering neural networks**
 :::
 :::::
 
 ::: callout-note
 ## Key Takeaway
 
-While neural networks power modern AI breakthroughs like LLMs, they're not always the best choice for epidemiological prediction. **Match your method to your data type and research question.**
+While neural networks power modern AI breakthroughs like LLMs, they're not always the best choice for epidemiological prediction. **For most epidemiological prediction tasks, start with simpler methods (logistic regression, XGBoost) before considering neural networks.**
 :::
 
 ## Performance Metrics: Choosing the Right Measure
@@ -2345,7 +2292,62 @@ The choice of performance metric should align with your **clinical goals** and t
 :::
 
 ::: {.column width="50%"}
-PALCEHOLDER FOR IMAGE - ROC curve
+```{r}
+#| fig-height: 8
+lasso_roc <- final_lasso_fit %>%
+  collect_predictions() %>%
+  roc_curve(outcome, .pred_centenarian, event_level = "second") %>%
+  mutate(
+    model = paste0(
+      roc_bootstrap[1, 1],
+      " - ",
+      sprintf(roc_bootstrap[1, 2], fmt = '%#.3f'),
+      " (",
+      sprintf(roc_bootstrap[1, 4, drop = TRUE], fmt = '%#.3f'),
+      "-",
+      sprintf(roc_bootstrap[1, 3, drop = TRUE], fmt = '%#.3f'),
+      ")"
+    ),
+    inx = 1
+  )
+
+xgb_roc <- final_xgb_fit %>%
+  collect_predictions() %>%
+  roc_curve(outcome, .pred_centenarian, event_level = "second") %>%
+  mutate(
+    model = paste0(
+      roc_bootstrap[2, 1],
+      " - ",
+      sprintf(roc_bootstrap[2, 2], fmt = '%#.3f'),
+      " (",
+      sprintf(roc_bootstrap[2, 4, drop = TRUE], fmt = '%#.3f'),
+      "-",
+      sprintf(roc_bootstrap[2, 3, drop = TRUE], fmt = '%#.3f'),
+      ")"
+    ),
+    inx = 2
+  )
+
+  rbind(lasso_roc, xgb_roc) %>%
+  ggplot(aes(x = 1 - specificity, y = sensitivity, color = model)) +
+  geom_abline(
+    lty = 2,
+    alpha = 0.5,
+    color = "gray50",
+    linewidth = line_size
+  ) +
+  geom_path(linewidth = line_size) +
+  geom_point(aes(x = 0.5, y = 0.2 - 0.05 * inx), shape = 15, size = 3) +
+  geom_text(
+    aes(x = 0.53, y = 0.2 - 0.05 * inx, label = model, size = 15),
+    color = "black",
+    hjust = 0,
+    check_overlap = TRUE
+  ) +
+  coord_equal() +
+  my_theme +
+  theme(legend.position = "none", legend.title = element_blank())
+```
 :::
 :::::
 
@@ -2363,7 +2365,57 @@ PALCEHOLDER FOR IMAGE - ROC curve
 :::
 
 ::: {.column width="50%"}
-PALCEHOLDER FOR IMAGE - PR curve
+```{r}
+#| fig-height: 8
+lasso_pr <- final_lasso_fit %>%
+  collect_predictions() %>%
+  pr_curve(outcome, .pred_centenarian, event_level = "second") %>%
+  mutate(
+    model = paste0(
+      pr_bootstrap[1, 1],
+      " - ",
+      sprintf(pr_bootstrap[1, 2], fmt = '%#.3f'),
+      " (",
+      sprintf(pr_bootstrap[1, 4, drop = TRUE], fmt = '%#.3f'),
+      "-",
+      sprintf(pr_bootstrap[1, 3, drop = TRUE], fmt = '%#.3f'),
+      ")"
+    ),
+    inx = 1
+  )
+
+xgb_pr <- final_xgb_fit %>%
+  collect_predictions() %>%
+  pr_curve(outcome, .pred_centenarian, event_level = "second") %>%
+  mutate(
+    model = paste0(
+      pr_bootstrap[2, 1],
+      " - ",
+      sprintf(pr_bootstrap[2, 2], fmt = '%#.3f'),
+      " (",
+      sprintf(pr_bootstrap[2, 4, drop = TRUE], fmt = '%#.3f'),
+      "-",
+      sprintf(pr_bootstrap[2, 3, drop = TRUE], fmt = '%#.3f'),
+      ")"
+    ),
+    inx = 2
+  )
+
+rbind(lasso_pr, xgb_pr) %>%
+  filter(!is.infinite(.threshold)) %>%
+  ggplot(aes(x = recall, y = precision, color = model)) +
+  geom_path() +
+  geom_point(aes(x = 0.5, y = 1 - 0.05 * inx), shape = 15, size = 3) +
+  geom_text(
+    aes(x = 0.53, y = 1 - 0.05 * inx, label = model, size = 15),
+    color = "black",
+    hjust = 0,
+    check_overlap = TRUE
+  ) +
+  coord_equal() +
+  my_theme +
+  theme(legend.position = "none", legend.title = element_blank())
+```
 :::
 :::::
 
@@ -2421,19 +2473,40 @@ If your model predicts 20% risk, do 20% of those patients actually develop the o
 
 ## Calibration Metrics: "Are the predicted probabilities accurate?"
 
-::::: columns
-::: {.column width="50%"}
-### **Calibration Intercept and Slope**
+```{r}
+cal_train <- cal_scam_plot(
+  list(final_lasso_fit, final_xgb_fit),
+  list(lasso_train_fit, xgb_train_fit),
+  split = "train",
+  plat = TRUE
+) +
+  my_theme +
+  theme(legend.position = "none")  
+
+cal_test <- cal_scam_plot(
+  list(final_lasso_fit, final_xgb_fit),
+  list(lasso_train_fit, xgb_train_fit),
+  split = "test",
+  plat = TRUE
+) +
+  my_theme +
+  theme(legend.position = "none")  
+
+ggarrange(
+  cal_train,
+  cal_test,
+  ncol = 2,
+  nrow = 1
+)
+```
+
+::: callout-tip
+## **Calibration Intercept and Slope**
 
 -   **Perfect calibration**: Intercept = 0, Slope = 1
--   **Slope \> 1**: Overconfident predictions (too extreme)
--   **Slope \< 1**: Underconfident predictions (too conservative)
+-   **Slope \> 1**: Under estimation of risk
+-   **Slope \< 1**: Over estimation of risk
 :::
-
-::: {.column width="50%"}
-PALCEHOLDER FOR IMAGE - Calibration plot
-:::
-:::::
 
 ## Model Comparison Summary
 
@@ -2444,11 +2517,386 @@ PALCEHOLDER FOR IMAGE - Calibration plot
 |:-----------------|:------------------|:-----------------|:-----------------|
 | **Variable selection** | Manual; relies on researcher’s expertise. | Automatically shrinks some coefficients to zero. | Selects variables by contribution to the loss function during training. |
 | **Interactions** | Must be prespecified by the researcher. | Same as LR. | Captured automatically within tree structures. |
-| **Linearity** | Assumes linearity (extendable via polynomials/splines). | Similar to LR; allows some non-linearity. | Handles non-linearity well; invariant to monotonic transformations. |
 | **Missing data** | Requires imputation or removal before modeling. | Same as LR. | Handles missing data natively via optimal split direction. |
-| **Variable transformation** | Continuous variables may need scaling; categorical require one-hot encoding. | Same as LR. | Only categorical variables require one-hot encoding. |
+| **Variable transformation** | Assumes linearity (extendable via polynomials/splines); Continuous variables may need scaling; categorical require one-hot encoding. | Same as LR. | Only categorical variables require one-hot encoding. |
 | **Overfitting** | Low risk but no built-in control. | Reduces overfitting via coefficient shrinkage. | Controlled by internal regularization and sequential weak learners. |
 | **Interpretability** | High interpretability. | High interpretability. | Low; requires explainable AI tools (e.g., SHAP). |
 | **Large number of variables** | Inefficient when *p \> N*. | Handles high-dimensional data (*p \> N*). | Handles high-dimensional and complex data well. |
-| **Large number of samples** | Computationally efficient. | Moderate computational cost. | Computationally intensive. |
 :::
+
+# ML Workflow in Practice
+
+## Step 1: Setting Up
+
+First, we load the necessary packages and our synthetic dataset. Using the `tidymodels` framework helps keep our code clean and organized.
+
+::: {style="font-size:1.6em"}
+```{r}
+#| echo: true
+#| eval: false
+# Load Required Packages
+library(tidyverse)
+library(tidymodels)
+source("scripts/00 - funcs.R")
+tidymodels_prefer()
+
+# Load synthetic data and prepare for modeling
+load("data/syn_data.RData")
+ml_df <- syn %>%
+  mutate(id = row_number(), .before = dmg_admission_age) %>% # Add ID column for realism
+  mutate(
+    outcome = factor(outcome, levels = c("not_centenarian", "centenarian"))
+  ) %>% # Ensure correct outcome reference level
+  mutate_if(is.logical, as.factor) # Convert logicals to factors for modeling
+```
+:::
+## Step 2: Data Splitting & Resampling
+
+We split our data into a **training set** (to build the model) and a **test set** (to evaluate it). We also create 10-fold cross-validation (CV) resamples from the training data for robust hyperparameter tuning.
+
+::: {style="font-size:1.6em"}
+```{r}
+#| echo: true
+#| eval: false
+set.seed(2020)
+# Create stratified train/test split
+df_split <- initial_split(ml_df, strata = outcome)
+df_train <- training(df_split)
+df_test <- testing(df_split)
+
+# Create cross-validation folds from the training data
+df_train_cv <- vfold_cv(df_train, v = 10, strata = outcome)
+```
+:::
+## Step 3: Data Preprocessing with recipes
+
+A `recipe` is a powerful tidymodels object that defines all our preprocessing steps. These steps are only learned from the training data and then consistently applied to any other data (like the test set or new data), preventing **data leakage**.
+
+::: {style="font-size:1.6em"}
+```{r}
+#| echo: true
+#| code-fold: show
+#| eval: false
+lasso_rec <- recipe(
+  outcome ~ .,
+  data = df_train,
+  strings_as_factors = FALSE
+) %>%
+  update_role(id, new_role = "ID") %>% # Remove ID variables from predictors
+  step_rm(!!all_of(miss_10_vars)) %>% # Remove variables with >10% missing data
+  step_impute_knn(all_predictors(), neighbors = 3) %>% # Handle missing data with KNN imputation
+  step_date(
+    all_date_predictors(),
+    keep_original_cols = FALSE,
+    features = "month"
+  ) %>% # Convert dates to month
+  step_other(
+    all_nominal_predictors(),
+    threshold = thresh_other,
+    other = "other_combined"
+  ) %>% # Group infrequent categorical levels
+  step_dummy(all_nominal_predictors(), naming = new_sep_names) %>% # Create dummy variables
+  step_zv(all_numeric_predictors()) %>% # Remove zero variance predictors
+  step_corr(
+    all_numeric_predictors(),
+    threshold = thresh_corr,
+    method = "spearman"
+  ) %>% # Remove highly correlated variables
+  step_normalize(all_numeric_predictors())   # Normalize numeric variables (Important for LASSO!)
+```
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| eval: false
+xgb_rec <- recipe(outcome ~ ., data = df_train, strings_as_factors = FALSE) %>%
+  # Remove ID variables from predictors
+  update_role(id, new_role = "ID") %>%
+  step_date(
+    all_date_predictors(),
+    keep_original_cols = FALSE,
+    features = "month"
+  ) %>% # Convert dates to month
+  step_integer(all_ordered_predictors()) %>% # Convert ordered factors to integers
+  step_other(
+    all_nominal_predictors(),
+    threshold = thresh_other,
+    other = "other_combined"
+  ) %>% # Group infrequent categorical levels
+  step_unknown(all_nominal_predictors()) %>% # Create Unknown category for missing categorical data
+  step_dummy(all_nominal_predictors(), naming = new_sep_names) %>%   # Create dummy variables
+  step_zv(all_numeric_predictors()) %>%   # Remove zero variance predictors
+  step_corr(
+    all_numeric_predictors(),
+    threshold = thresh_corr,
+    method = "spearman"
+  )   # Remove highly correlated variables
+```
+:::
+## Step 4: Model Specification & Tuning
+
+We define our models using the `parsnip` package. Note the `penalty = tune()` and `trees = tune()`, etc. These are placeholders that tell tidymodels we want to find the best values for these hyperparameters during tuning.
+
+::: {style="font-size:1.6em"}
+```{r}
+#| echo: true
+#| eval: false
+lasso_spec <- logistic_reg(penalty = tune(), mixture = 1) %>%
+  set_engine("glmnet") %>%
+  set_mode('classification')
+
+xgb_spec <- boost_tree(
+  trees = tune(), # Number of boosting iterations (models to ensemble)
+  tree_depth = tune(), # Maximum depth of each tree (controls model complexity)
+  min_n = tune(), # Minimum samples required in a node before splitting
+  loss_reduction = tune(), # Minimum loss reduction required for splits (regularization)
+  sample_size = tune(), # Proportion of training data used for each tree
+  mtry = tune(), # Number of predictors randomly sampled at each split
+  learn_rate = tune() # Learning rate (controls overfitting)
+) %>%
+  set_engine("xgboost") %>%
+  set_mode("classification") # Classification task - XGBoost can also do regression
+```
+:::
+
+## Step 5: Building the workflow
+
+A `workflow` object bundles our recipe and model specification. This is a convenient container that makes it easy to apply the same preprocessing and model fitting steps consistently.
+
+::: {style="font-size:1.6em"}
+```{r}
+#| echo: true
+#| eval: false
+# LASSO Workflow
+lasso_wf <- workflow() %>%
+  add_model(lasso_spec) %>% # Add model
+  add_recipe(lasso_rec) # Add recipe with preprocessing steps
+
+# XGBoost Workflow
+xgb_wf <- workflow() %>% 
+  add_model(xgb_spec)  %>%# Add model
+  add_recipe(xgb_rec) # Add recipe with preprocessing steps
+```
+:::
+
+## Step 6: Hyperparameter Tuning
+
+Now we find the optimal hyperparameters using our cross-validation folds.
+
+-   For LASSO, we test 100 different values for the penalty (λ).
+
+-   For XGBoost, we use a `grid_space_filling` design to efficiently test 500 different combinations of its many hyperparameters.
+
+The `tune_grid` function automates the process of fitting the model on each CV fold for each hyperparameter combination and evaluating the performance.
+
+::: {style="font-size:1.6em"}
+
+```{r}
+#| echo: true
+#| code-fold: show
+#| eval: false
+# Create grid of hyperparameter values for tuning
+# Using space-filling design for efficient coverage of hyperparameter space
+xgb_grid <- grid_space_filling(
+  trees(),
+  tree_depth(),
+  min_n(),
+  loss_reduction(),
+  sample_size = sample_prop(),
+  finalize(mtry(), df_train),
+  learn_rate(),
+  size = 500
+)
+
+# Tune hyperparameters using cross-validation and parallel processing
+all_cores <- parallel::detectCores()
+plan(multisession, workers = all_cores - 1)
+set.seed(2020)
+xgb_res <- tune_grid(
+  xgb_wf,
+  resamples = df_train_cv,
+  grid = xgb_grid,
+  metrics = metric_set(roc_auc, pr_auc), # Evaluate using ROC-AUC and PR-AUC
+  control = ctl_grid
+)
+plan(sequential) # Return to sequential processing
+```
+```{r}
+#| echo: true
+#| code-fold: true
+#| eval: false
+# Create grid of penalty values for tuning
+lambda_grid <- grid_regular(penalty(), levels = 100)
+
+# Tune hyperparameters using cross-validation and parallel processing
+all_cores <- parallel::detectCores()
+plan(multisession, workers = all_cores - 1)
+set.seed(2020)
+lasso_res <- tune_grid(
+  lasso_wf,
+  resamples = df_train_cv, # Use defined CV folds
+  grid = lambda_grid, # Use defined grid of penalty values
+  metrics = metric_set(roc_auc, pr_auc), # Evaluate using ROC-AUC and PR-AUC
+  control = ctl_grid_lasso # Use parallel processing controls
+)
+plan(sequential) # Return to sequential processing
+```
+:::
+
+## Step 6: Tuning Results
+
+Visualizing the tuning results helps us understand how hyperparameters affect performance. The plot shows the ROC AUC for each penalty value tested for the LASSO model. We want to pick the penalty that gives the highest AUC.
+
+::::: columns
+::: {.column width="50%"}
+```{r}
+lasso_res %>%
+  autoplot()
+```
+:::
+
+::: {.column width="50%"}
+```{r}
+xgb_res %>%
+  autoplot()
+```
+:::
+:::::
+
+## Step 7: Finalizing and Fitting
+
+After tuning, we select the best hyperparameters and finalize our workflow.
+
+Then, we use `last_fit()` which does two things:
+
+1.  Fits the final model on the entire training set.
+
+2.  Evaluates this final model on the unseen testing set.
+
+This provides an unbiased estimate of how our model will perform on new data.
+
+::: {style="font-size:1.6em"}
+```{r}
+#| echo: true
+#| eval: false
+
+# Select best hyperparameters based on ROC AUC
+lasso_best_auc <- select_best(lasso_res, metric = "roc_auc")
+xgb_best_auc <- select_best(xgb_res, metric = "roc_auc")
+
+# Finalize workflows
+final_lasso <- finalize_workflow(lasso_wf, lasso_best_auc)
+final_xgb <- finalize_workflow(xgb_wf, xgb_best_auc)
+
+# Perform the final fit on the train/test split
+final_lasso_fit <- final_lasso %>% last_fit(df_split)
+final_xgb_fit <- final_xgb %>% last_fit(df_split)
+```
+::: 
+
+## Step 8: Final Model Evaluation
+
+The `collect_metrics()` function shows the performance on the hold-out test set. We can see that the XGBoost model achieved a higher ROC AUC and PR AUC compared to the LASSO model.
+
+```{r}
+#| code-fold: false
+# Show metrics for LASSO
+collect_metrics(final_lasso_fit)
+
+# Show metrics for XGBoost
+collect_metrics(final_xgb_fit)
+```
+
+# Explainable AI: Opening the Black Box
+
+## Why We Need Explainable AI (XAI)
+
+While models like XGBoost are powerful, their complexity makes them "black boxes." We can't just look at coefficients to understand them.
+
+XAI methods help us understand:
+
+-   What features are most important? (Global interpretation)
+
+-   Why did the model make a specific prediction for a single patient? (Local interpretation)
+
+-   How does a feature's value affect the prediction? (Feature effects)
+
+This is crucial for clinical trust, model debugging, and discovering new insights.
+
+## SHAP (SHapley Additive exPlanations)
+
+SHAP is a leading XAI method based on game theory. It calculates the contribution of each feature to a prediction for each individual observation.
+
+-   **Analogy**: Imagine the model prediction is a team's final score. SHAP tells you how much "credit" each player (feature) deserves for that score, considering all possible combinations of players.
+
+-   **Output**: A SHAP value for every feature for every prediction.
+
+    -   **Positive** SHAP value: Pushes the prediction **towards the outcome** (centenarian).
+
+    -   **Negative** SHAP value: Pushes the prediction **away from the outcome**.
+
+## SHAP Summary Plot
+
+::::: columns
+::: {.column width="50%"}
+The SHAP summary plot gives us a global overview of feature importance and effect.
+
+-   Y-axis: Features, ranked by importance.
+
+-   X-axis: The SHAP value.
+
+-   Color: The original value of the feature (high or low).
+:::
+
+::: {.column width="50%"}
+```{r}
+# PLACEHOLDER dor LASSO model SHAP values
+```
+:::
+:::::
+
+## Interpreting the SHAP Summary Plot
+
+::::: columns
+::: {.column width="50%"}
+**Systolic Blood Pressure** ('med_sbp_mean') is the most important feature.
+
+-   Low SBP (blue dots) have positive SHAP values, meaning they push the prediction towards becoming a centenarian.
+
+-   High SBP (red dots) have negative SHAP values, pushing the prediction away from it.
+
+**Smoking Status** ('med_smoke_status\_@_never') is also important.
+
+-   Being a never-smoker (red dot, since it's a dummy variable) has a positive SHAP value, increasing the chance of being a centenarian.
+:::
+
+::: {.column width="50%"}
+```{r}
+# PLACEHOLDER dor LASSO model SHAP values
+```
+:::
+:::::
+
+## SHAP Dependence Plot
+
+This plot shows how a single feature's value affects its SHAP value across all samples. It helps us understand the relationship between a feature and the prediction outcome.
+
+Here we see a clear negative relationship: as systolic blood pressure increases, its SHAP value decreases, lowering the predicted probability of becoming a centenarian.
+
+```{r}
+
+```
+
+# Key Takeaways
+
+-   We demonstrated a complete ML workflow for epidemiological prediction (not **causation**) using R and tidymodels.
+
+-   The tidymodels framework provides a structured and safe workflow for building predictive models.
+
+-   Preprocessing is crucial step to ensure data quality and model performance.
+
+-   Cross-validation is essential for robustly tuning hyperparameters and avoiding overfitting.
+
+-   More complex models like XGBoost can outperform simpler models like LASSO, but at the cost of interpretability.
+
+-   Explainable AI methods like SHAP are vital for understanding and trusting complex "black box" models in a clinical context.

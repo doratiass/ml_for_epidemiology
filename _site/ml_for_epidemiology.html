@@ -10,7 +10,7 @@
   <meta name="generator" content="quarto-1.8.25">
 
   <meta name="author" content="Dr.&nbsp;Dor Atias, MD-MPH">
-  <meta name="dcterms.date" content="2025-10-11">
+  <meta name="dcterms.date" content="2025-10-18">
   <title>Machine Learning in Epidemiology</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -29,6 +29,72 @@
       margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
       vertical-align: middle;
     }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </style>
   <link rel="stylesheet" href="site_libs/revealjs/dist/theme/quarto-90e3b8fd6a10ecdc1972d3bbffe56c76.css">
   <link href="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
@@ -146,7 +212,7 @@ Dr.&nbsp;Dor Atias, MD-MPH
     </div>
 </div>
 
-  <p class="date">2025-10-11</p>
+  <p class="date">2025-10-18</p>
 </section>
 <section id="learning-objectives" class="slide level2">
 <h2>Learning Objectives</h2>
@@ -950,11 +1016,6 @@ Dr.&nbsp;Dor Atias, MD-MPH
 <li>Good for: When you want <strong>efficient coverage</strong> without exhaustive evaluation</li>
 <li>Common in model tuning with limited runs</li>
 </ul></li>
-<li><strong>Bayesian Optimization</strong>: Builds a probabilistic model (e.g., Gaussian Process) of performance across the space and <strong>updates</strong> it iteratively to focus on promising regions.
-<ul>
-<li>Good for: Each evaluation is <strong>computationally expensive</strong> (e.g., large datasets)</li>
-<li>Smart, data-driven exploration balancing exploration and exploitation.</li>
-</ul></li>
 </ul>
 <div title="Key Principle">
 <div class="callout callout-tip callout-titled callout-style-default">
@@ -1109,23 +1170,21 @@ It averages performance across multiple validation folds, ensuring stable hyperp
 <p><strong>Bootstrap Aggregating (Bagging):</strong></p>
 <ul>
 <li><p>Create many bootstrap samples from training data</p></li>
-<li><p>Use random subset of features at each bootstrap</p></li>
 <li><p>Train decision tree on each sample</p></li>
 <li><p>Average predictions across all trees</p></li>
 </ul>
 <p><strong>Feature Randomness:</strong> At each bootstrap, consider only <span class="math inline">\(\sqrt{p}\)</span> randomly selected features (where <span class="math inline">\(p\)</span> = total features)</p>
-<p><strong>Key features:</strong></p>
+</div><div class="column" style="width:50%;">
+<h3 id="mathematical-foundation-3">Mathematical Foundation</h3>
+<p><strong>Ensemble Prediction:</strong> <span class="math display">\[\hat{y} = \frac{1}{B} \sum_{b=1}^{B} \hat{f}_b(x)\]</span></p>
+<p>Where <span class="math inline">\(\hat{f}_b\)</span> is the <span class="math inline">\(b\)</span>-th tree trained on bootstrap sample</p>
+</div></div>
 <ul>
 <li><p><strong>De-correlated trees</strong>: Random feature selection ensures trees are diverse</p></li>
 <li><p><strong>Variability reduction</strong>: Bagging reduces variance by averaging multiple trees</p></li>
 <li><p><strong>Robustness</strong>: Handles outliers and noise well</p></li>
 </ul>
 <p>All these lead to <strong>less overfitting</strong></p>
-</div><div class="column" style="width:50%;">
-<h3 id="mathematical-foundation-3">Mathematical Foundation</h3>
-<p><strong>Ensemble Prediction:</strong> <span class="math display">\[\hat{y} = \frac{1}{B} \sum_{b=1}^{B} \hat{f}_b(x)\]</span></p>
-<p>Where <span class="math inline">\(\hat{f}_b\)</span> is the <span class="math inline">\(b\)</span>-th tree trained on bootstrap sample</p>
-</div></div>
 <aside class="notes">
 <ul>
 <li>Random Forest is like having a committee of doctors each looking at different aspects of a patient</li>
@@ -1150,29 +1209,33 @@ It averages performance across multiple validation folds, ensuring stable hyperp
 <h2>eXtreme Gradient Boosting (XGBoost) - under the hood</h2>
 <h3 id="algorithm-overview">Algorithm Overview</h3>
 <p>XGBoost employs <strong>sequential ensemble learning</strong> where each tree <strong>corrects errors</strong> from previous learners, building <strong>weak decision</strong> trees that collectively form a powerful predictor.</p>
-<div class="columns">
-<div class="column" style="width:50%;">
 <h3 id="how-xgboost-works">How XGBoost Works</h3>
 <p><strong>Step 1:</strong> Start with initial prediction (typically 0.5)</p>
 <p><strong>Step 2:</strong> Calculate <strong>pseudo-residuals</strong> (errors from previous predictions)</p>
 <p><strong>Step 3:</strong> Build trees to predict residuals using <strong>similarity scores</strong>:</p>
 <p><span class="math inline">\(\text{Similarity} = \frac{(\sum \text{residuals})^2}{\sum [\text{previous probabilities} \times (1 - \text{previous probabilities})] + \lambda}\)</span></p>
-<p><strong>Step 4:</strong> For each splot calculate the <strong>gain</strong> to find optimal splits:</p>
+<p><strong>Step 4:</strong> For each split calculate the <strong>gain</strong> to find optimal splits:</p>
 <p><span class="math inline">\(\text{Gain} = \text{Similarity}_{\text{left}} + \text{Similarity}_{\text{right}} - \text{Similarity}_{\text{root}}\)</span></p>
 <p><strong>Step 5:</strong> <strong>Prune</strong> using gamma (complexity parameter, if gain &lt; γ, do not split)</p>
 <p><strong>Step 6:</strong> Scale by learning rate (η) and repeat</p>
-</div><div class="column" style="width:50%;">
+</section>
+<section id="extreme-gradient-boosting-xgboost---under-the-hood-1" class="slide level2">
+<h2>eXtreme Gradient Boosting (XGBoost) - under the hood</h2>
 <h3 id="key-mathematical-concepts">Key Mathematical Concepts</h3>
+<div class="columns">
+<div class="column" style="width:33.3%;">
 <p><strong>Similarity Scores:</strong></p>
 <ul>
 <li><p>When residuals are <strong>similar</strong>, they don’t cancel out → <strong>high similarity</strong> score.</p></li>
 <li><p>When residuals are <strong>different</strong>, they cancel out → <strong>low similarity</strong> score.</p></li>
 </ul>
+</div><div class="column" style="width:33.3%;">
 <p><strong>Regularization Effects:</strong></p>
 <ul>
 <li><p><strong>Lambda (λ) &gt; 0</strong>: Shrinks similarity scores → easier pruning → prevents overfitting</p></li>
 <li><p><strong>Gamma (γ)</strong>: Sets minimum gain threshold for splits → controls tree complexity</p></li>
 </ul>
+</div><div class="column" style="width:33.3%;">
 <p><strong>Learning Rate (η):</strong></p>
 <ul>
 <li><p>Takes “small steps in the right direction”</p></li>
@@ -1279,8 +1342,6 @@ It averages performance across multiple validation folds, ensuring stable hyperp
 <li><strong>Sample efficiency</strong>: Often need very large datasets to perform well</li>
 <li><strong>Overfitting prone</strong>: Can memorize patterns in smaller datasets</li>
 </ul>
-<h3 id="practical-recommendation">Practical Recommendation:</h3>
-<p><strong>For most epidemiological prediction tasks, start with simpler methods (logistic regression, XGBoost) before considering neural networks</strong></p>
 </div></div>
 <div class="callout callout-note callout-titled callout-style-default">
 <div class="callout-body">
@@ -1291,7 +1352,7 @@ It averages performance across multiple validation folds, ensuring stable hyperp
 <p><strong>Key Takeaway</strong></p>
 </div>
 <div class="callout-content">
-<p>While neural networks power modern AI breakthroughs like LLMs, they’re not always the best choice for epidemiological prediction. <strong>Match your method to your data type and research question.</strong></p>
+<p>While neural networks power modern AI breakthroughs like LLMs, they’re not always the best choice for epidemiological prediction. <strong>For most epidemiological prediction tasks, start with simpler methods (logistic regression, XGBoost) before considering neural networks.</strong></p>
 </div>
 </div>
 </div>
@@ -1320,7 +1381,15 @@ It averages performance across multiple validation folds, ensuring stable hyperp
 <li><strong>Ranges</strong>: &lt;0.6 poor, 0.6-0.7 fair, 0.7-0.8 good, 0.8-0.9 very good, &gt;0.9 excellent</li>
 </ul>
 </div><div class="column" style="width:50%;">
-<p>PALCEHOLDER FOR IMAGE - ROC curve</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-17-1.png"></p>
+</figure>
+</div>
+</div>
+</div>
 </div></div>
 </section>
 <section id="discrimination-metrics-can-the-model-rank-patients-by-risk-1" class="slide level2">
@@ -1336,7 +1405,15 @@ It averages performance across multiple validation folds, ensuring stable hyperp
 <li><strong>Ranges</strong>: Higher is better; Cutoffs depend on outcome prevalence</li>
 </ul>
 </div><div class="column" style="width:50%;">
-<p>PALCEHOLDER FOR IMAGE - PR curve</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-18-1.png"></p>
+</figure>
+</div>
+</div>
+</div>
 </div></div>
 </section>
 <section id="classification-metrics-at-a-specific-threshold-how-well-do-we-classify" class="slide level2">
@@ -1390,17 +1467,24 @@ It averages performance across multiple validation folds, ensuring stable hyperp
 </section>
 <section id="calibration-metrics-are-the-predicted-probabilities-accurate-1" class="slide level2">
 <h2>Calibration Metrics: “Are the predicted probabilities accurate?”</h2>
-<div class="columns">
-<div class="column" style="width:50%;">
-<h3 id="calibration-intercept-and-slope"><strong>Calibration Intercept and Slope</strong></h3>
+
+<img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-19-1.png" class="r-stretch"><div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong><strong>Calibration Intercept and Slope</strong></strong></p>
+</div>
+<div class="callout-content">
 <ul>
 <li><strong>Perfect calibration</strong>: Intercept = 0, Slope = 1</li>
-<li><strong>Slope &gt; 1</strong>: Overconfident predictions (too extreme)</li>
-<li><strong>Slope &lt; 1</strong>: Underconfident predictions (too conservative)</li>
+<li><strong>Slope &gt; 1</strong>: Under estimation of risk</li>
+<li><strong>Slope &lt; 1</strong>: Over estimation of risk</li>
 </ul>
-</div><div class="column" style="width:50%;">
-<p>PALCEHOLDER FOR IMAGE - Calibration plot</p>
-</div></div>
+</div>
+</div>
+</div>
 </section>
 <section id="model-comparison-summary" class="slide level2">
 <h2>Model Comparison Summary</h2>
@@ -1440,55 +1524,399 @@ Table&nbsp;1
 <td style="text-align: left;">Captured automatically within tree structures.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;"><strong>Linearity</strong></td>
-<td style="text-align: left;">Assumes linearity (extendable via polynomials/splines).</td>
-<td style="text-align: left;">Similar to LR; allows some non-linearity.</td>
-<td style="text-align: left;">Handles non-linearity well; invariant to monotonic transformations.</td>
-</tr>
-<tr class="even">
 <td style="text-align: left;"><strong>Missing data</strong></td>
 <td style="text-align: left;">Requires imputation or removal before modeling.</td>
 <td style="text-align: left;">Same as LR.</td>
 <td style="text-align: left;">Handles missing data natively via optimal split direction.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;"><strong>Variable transformation</strong></td>
-<td style="text-align: left;">Continuous variables may need scaling; categorical require one-hot encoding.</td>
+<td style="text-align: left;">Assumes linearity (extendable via polynomials/splines); Continuous variables may need scaling; categorical require one-hot encoding.</td>
 <td style="text-align: left;">Same as LR.</td>
 <td style="text-align: left;">Only categorical variables require one-hot encoding.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;"><strong>Overfitting</strong></td>
 <td style="text-align: left;">Low risk but no built-in control.</td>
 <td style="text-align: left;">Reduces overfitting via coefficient shrinkage.</td>
 <td style="text-align: left;">Controlled by internal regularization and sequential weak learners.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;"><strong>Interpretability</strong></td>
 <td style="text-align: left;">High interpretability.</td>
 <td style="text-align: left;">High interpretability.</td>
 <td style="text-align: left;">Low; requires explainable AI tools (e.g., SHAP).</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;"><strong>Large number of variables</strong></td>
 <td style="text-align: left;">Inefficient when <em>p &gt; N</em>.</td>
 <td style="text-align: left;">Handles high-dimensional data (<em>p &gt; N</em>).</td>
 <td style="text-align: left;">Handles high-dimensional and complex data well.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><strong>Large number of samples</strong></td>
-<td style="text-align: left;">Computationally efficient.</td>
-<td style="text-align: left;">Moderate computational cost.</td>
-<td style="text-align: left;">Computationally intensive.</td>
 </tr>
 </tbody>
 </table>
 </div>
 </figure>
 </div>
-
-
 </section></section>
+<section>
+<section id="ml-workflow-in-practice" class="title-slide slide level1 center">
+<h1>ML Workflow in Practice</h1>
+
+</section>
+<section id="step-1-setting-up" class="slide level2">
+<h2>Step 1: Setting Up</h2>
+<p>First, we load the necessary packages and our synthetic dataset. Using the <code>tidymodels</code> framework helps keep our code clean and organized.</p>
+<div style="font-size:1.6em">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="co"># Load Required Packages</span></span>
+<span id="cb1-2"><a></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-3"><a></a><span class="fu">library</span>(tidymodels)</span>
+<span id="cb1-4"><a></a><span class="fu">source</span>(<span class="st">"scripts/00 - funcs.R"</span>)</span>
+<span id="cb1-5"><a></a><span class="fu">tidymodels_prefer</span>()</span>
+<span id="cb1-6"><a></a></span>
+<span id="cb1-7"><a></a><span class="co"># Load synthetic data and prepare for modeling</span></span>
+<span id="cb1-8"><a></a><span class="fu">load</span>(<span class="st">"data/syn_data.RData"</span>)</span>
+<span id="cb1-9"><a></a>ml_df <span class="ot">&lt;-</span> syn <span class="sc">%&gt;%</span></span>
+<span id="cb1-10"><a></a>  <span class="fu">mutate</span>(<span class="at">id =</span> <span class="fu">row_number</span>(), <span class="at">.before =</span> dmg_admission_age) <span class="sc">%&gt;%</span> <span class="co"># Add ID column for realism</span></span>
+<span id="cb1-11"><a></a>  <span class="fu">mutate</span>(</span>
+<span id="cb1-12"><a></a>    <span class="at">outcome =</span> <span class="fu">factor</span>(outcome, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"not_centenarian"</span>, <span class="st">"centenarian"</span>))</span>
+<span id="cb1-13"><a></a>  ) <span class="sc">%&gt;%</span> <span class="co"># Ensure correct outcome reference level</span></span>
+<span id="cb1-14"><a></a>  <span class="fu">mutate_if</span>(is.logical, as.factor) <span class="co"># Convert logicals to factors for modeling</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</section>
+<section id="step-2-data-splitting-resampling" class="slide level2">
+<h2>Step 2: Data Splitting &amp; Resampling</h2>
+<p>We split our data into a <strong>training set</strong> (to build the model) and a <strong>test set</strong> (to evaluate it). We also create 10-fold cross-validation (CV) resamples from the training data for robust hyperparameter tuning.</p>
+<div style="font-size:1.6em">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a><span class="fu">set.seed</span>(<span class="dv">2020</span>)</span>
+<span id="cb2-2"><a></a><span class="co"># Create stratified train/test split</span></span>
+<span id="cb2-3"><a></a>df_split <span class="ot">&lt;-</span> <span class="fu">initial_split</span>(ml_df, <span class="at">strata =</span> outcome)</span>
+<span id="cb2-4"><a></a>df_train <span class="ot">&lt;-</span> <span class="fu">training</span>(df_split)</span>
+<span id="cb2-5"><a></a>df_test <span class="ot">&lt;-</span> <span class="fu">testing</span>(df_split)</span>
+<span id="cb2-6"><a></a></span>
+<span id="cb2-7"><a></a><span class="co"># Create cross-validation folds from the training data</span></span>
+<span id="cb2-8"><a></a>df_train_cv <span class="ot">&lt;-</span> <span class="fu">vfold_cv</span>(df_train, <span class="at">v =</span> <span class="dv">10</span>, <span class="at">strata =</span> outcome)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</section>
+<section id="step-3-data-preprocessing-with-recipes" class="slide level2">
+<h2>Step 3: Data Preprocessing with recipes</h2>
+<p>A <code>recipe</code> is a powerful tidymodels object that defines all our preprocessing steps. These steps are only learned from the training data and then consistently applied to any other data (like the test set or new data), preventing <strong>data leakage</strong>.</p>
+<div style="font-size:1.6em">
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>lasso_rec <span class="ot">&lt;-</span> <span class="fu">recipe</span>(</span>
+<span id="cb3-2"><a></a>  outcome <span class="sc">~</span> .,</span>
+<span id="cb3-3"><a></a>  <span class="at">data =</span> df_train,</span>
+<span id="cb3-4"><a></a>  <span class="at">strings_as_factors =</span> <span class="cn">FALSE</span></span>
+<span id="cb3-5"><a></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb3-6"><a></a>  <span class="fu">update_role</span>(id, <span class="at">new_role =</span> <span class="st">"ID"</span>) <span class="sc">%&gt;%</span> <span class="co"># Remove ID variables from predictors</span></span>
+<span id="cb3-7"><a></a>  <span class="fu">step_rm</span>(<span class="sc">!!</span><span class="fu">all_of</span>(miss_10_vars)) <span class="sc">%&gt;%</span> <span class="co"># Remove variables with &gt;10% missing data</span></span>
+<span id="cb3-8"><a></a>  <span class="fu">step_impute_knn</span>(<span class="fu">all_predictors</span>(), <span class="at">neighbors =</span> <span class="dv">3</span>) <span class="sc">%&gt;%</span> <span class="co"># Handle missing data with KNN imputation</span></span>
+<span id="cb3-9"><a></a>  <span class="fu">step_date</span>(</span>
+<span id="cb3-10"><a></a>    <span class="fu">all_date_predictors</span>(),</span>
+<span id="cb3-11"><a></a>    <span class="at">keep_original_cols =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb3-12"><a></a>    <span class="at">features =</span> <span class="st">"month"</span></span>
+<span id="cb3-13"><a></a>  ) <span class="sc">%&gt;%</span> <span class="co"># Convert dates to month</span></span>
+<span id="cb3-14"><a></a>  <span class="fu">step_other</span>(</span>
+<span id="cb3-15"><a></a>    <span class="fu">all_nominal_predictors</span>(),</span>
+<span id="cb3-16"><a></a>    <span class="at">threshold =</span> thresh_other,</span>
+<span id="cb3-17"><a></a>    <span class="at">other =</span> <span class="st">"other_combined"</span></span>
+<span id="cb3-18"><a></a>  ) <span class="sc">%&gt;%</span> <span class="co"># Group infrequent categorical levels</span></span>
+<span id="cb3-19"><a></a>  <span class="fu">step_dummy</span>(<span class="fu">all_nominal_predictors</span>(), <span class="at">naming =</span> new_sep_names) <span class="sc">%&gt;%</span> <span class="co"># Create dummy variables</span></span>
+<span id="cb3-20"><a></a>  <span class="fu">step_zv</span>(<span class="fu">all_numeric_predictors</span>()) <span class="sc">%&gt;%</span> <span class="co"># Remove zero variance predictors</span></span>
+<span id="cb3-21"><a></a>  <span class="fu">step_corr</span>(</span>
+<span id="cb3-22"><a></a>    <span class="fu">all_numeric_predictors</span>(),</span>
+<span id="cb3-23"><a></a>    <span class="at">threshold =</span> thresh_corr,</span>
+<span id="cb3-24"><a></a>    <span class="at">method =</span> <span class="st">"spearman"</span></span>
+<span id="cb3-25"><a></a>  ) <span class="sc">%&gt;%</span> <span class="co"># Remove highly correlated variables</span></span>
+<span id="cb3-26"><a></a>  <span class="fu">step_normalize</span>(<span class="fu">all_numeric_predictors</span>())   <span class="co"># Normalize numeric variables (Important for LASSO!)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a>xgb_rec <span class="ot">&lt;-</span> <span class="fu">recipe</span>(outcome <span class="sc">~</span> ., <span class="at">data =</span> df_train, <span class="at">strings_as_factors =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb4-2"><a></a>  <span class="co"># Remove ID variables from predictors</span></span>
+<span id="cb4-3"><a></a>  <span class="fu">update_role</span>(id, <span class="at">new_role =</span> <span class="st">"ID"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb4-4"><a></a>  <span class="fu">step_date</span>(</span>
+<span id="cb4-5"><a></a>    <span class="fu">all_date_predictors</span>(),</span>
+<span id="cb4-6"><a></a>    <span class="at">keep_original_cols =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb4-7"><a></a>    <span class="at">features =</span> <span class="st">"month"</span></span>
+<span id="cb4-8"><a></a>  ) <span class="sc">%&gt;%</span> <span class="co"># Convert dates to month</span></span>
+<span id="cb4-9"><a></a>  <span class="fu">step_integer</span>(<span class="fu">all_ordered_predictors</span>()) <span class="sc">%&gt;%</span> <span class="co"># Convert ordered factors to integers</span></span>
+<span id="cb4-10"><a></a>  <span class="fu">step_other</span>(</span>
+<span id="cb4-11"><a></a>    <span class="fu">all_nominal_predictors</span>(),</span>
+<span id="cb4-12"><a></a>    <span class="at">threshold =</span> thresh_other,</span>
+<span id="cb4-13"><a></a>    <span class="at">other =</span> <span class="st">"other_combined"</span></span>
+<span id="cb4-14"><a></a>  ) <span class="sc">%&gt;%</span> <span class="co"># Group infrequent categorical levels</span></span>
+<span id="cb4-15"><a></a>  <span class="fu">step_unknown</span>(<span class="fu">all_nominal_predictors</span>()) <span class="sc">%&gt;%</span> <span class="co"># Create Unknown category for missing categorical data</span></span>
+<span id="cb4-16"><a></a>  <span class="fu">step_dummy</span>(<span class="fu">all_nominal_predictors</span>(), <span class="at">naming =</span> new_sep_names) <span class="sc">%&gt;%</span>   <span class="co"># Create dummy variables</span></span>
+<span id="cb4-17"><a></a>  <span class="fu">step_zv</span>(<span class="fu">all_numeric_predictors</span>()) <span class="sc">%&gt;%</span>   <span class="co"># Remove zero variance predictors</span></span>
+<span id="cb4-18"><a></a>  <span class="fu">step_corr</span>(</span>
+<span id="cb4-19"><a></a>    <span class="fu">all_numeric_predictors</span>(),</span>
+<span id="cb4-20"><a></a>    <span class="at">threshold =</span> thresh_corr,</span>
+<span id="cb4-21"><a></a>    <span class="at">method =</span> <span class="st">"spearman"</span></span>
+<span id="cb4-22"><a></a>  )   <span class="co"># Remove highly correlated variables</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</div>
+</section>
+<section id="step-4-model-specification-tuning" class="slide level2">
+<h2>Step 4: Model Specification &amp; Tuning</h2>
+<p>We define our models using the <code>parsnip</code> package. Note the <code>penalty = tune()</code> and <code>trees = tune()</code>, etc. These are placeholders that tell tidymodels we want to find the best values for these hyperparameters during tuning.</p>
+<div style="font-size:1.6em">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a>lasso_spec <span class="ot">&lt;-</span> <span class="fu">logistic_reg</span>(<span class="at">penalty =</span> <span class="fu">tune</span>(), <span class="at">mixture =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb5-2"><a></a>  <span class="fu">set_engine</span>(<span class="st">"glmnet"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb5-3"><a></a>  <span class="fu">set_mode</span>(<span class="st">'classification'</span>)</span>
+<span id="cb5-4"><a></a></span>
+<span id="cb5-5"><a></a>xgb_spec <span class="ot">&lt;-</span> <span class="fu">boost_tree</span>(</span>
+<span id="cb5-6"><a></a>  <span class="at">trees =</span> <span class="fu">tune</span>(), <span class="co"># Number of boosting iterations (models to ensemble)</span></span>
+<span id="cb5-7"><a></a>  <span class="at">tree_depth =</span> <span class="fu">tune</span>(), <span class="co"># Maximum depth of each tree (controls model complexity)</span></span>
+<span id="cb5-8"><a></a>  <span class="at">min_n =</span> <span class="fu">tune</span>(), <span class="co"># Minimum samples required in a node before splitting</span></span>
+<span id="cb5-9"><a></a>  <span class="at">loss_reduction =</span> <span class="fu">tune</span>(), <span class="co"># Minimum loss reduction required for splits (regularization)</span></span>
+<span id="cb5-10"><a></a>  <span class="at">sample_size =</span> <span class="fu">tune</span>(), <span class="co"># Proportion of training data used for each tree</span></span>
+<span id="cb5-11"><a></a>  <span class="at">mtry =</span> <span class="fu">tune</span>(), <span class="co"># Number of predictors randomly sampled at each split</span></span>
+<span id="cb5-12"><a></a>  <span class="at">learn_rate =</span> <span class="fu">tune</span>() <span class="co"># Learning rate (controls overfitting)</span></span>
+<span id="cb5-13"><a></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb5-14"><a></a>  <span class="fu">set_engine</span>(<span class="st">"xgboost"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb5-15"><a></a>  <span class="fu">set_mode</span>(<span class="st">"classification"</span>) <span class="co"># Classification task - XGBoost can also do regression</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</section>
+<section id="step-5-building-the-workflow" class="slide level2">
+<h2>Step 5: Building the workflow</h2>
+<p>A <code>workflow</code> object bundles our recipe and model specification. This is a convenient container that makes it easy to apply the same preprocessing and model fitting steps consistently.</p>
+<div style="font-size:1.6em">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a><span class="co"># LASSO Workflow</span></span>
+<span id="cb6-2"><a></a>lasso_wf <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb6-3"><a></a>  <span class="fu">add_model</span>(lasso_spec) <span class="sc">%&gt;%</span> <span class="co"># Add model</span></span>
+<span id="cb6-4"><a></a>  <span class="fu">add_recipe</span>(lasso_rec) <span class="co"># Add recipe with preprocessing steps</span></span>
+<span id="cb6-5"><a></a></span>
+<span id="cb6-6"><a></a><span class="co"># XGBoost Workflow</span></span>
+<span id="cb6-7"><a></a>xgb_wf <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb6-8"><a></a>  <span class="fu">add_model</span>(xgb_spec)  <span class="sc">%&gt;%</span><span class="co"># Add model</span></span>
+<span id="cb6-9"><a></a>  <span class="fu">add_recipe</span>(xgb_rec) <span class="co"># Add recipe with preprocessing steps</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</section>
+<section id="step-6-hyperparameter-tuning" class="slide level2">
+<h2>Step 6: Hyperparameter Tuning</h2>
+<p>Now we find the optimal hyperparameters using our cross-validation folds.</p>
+<ul>
+<li><p>For LASSO, we test 100 different values for the penalty (λ).</p></li>
+<li><p>For XGBoost, we use a <code>grid_space_filling</code> design to efficiently test 500 different combinations of its many hyperparameters.</p></li>
+</ul>
+<p>The <code>tune_grid</code> function automates the process of fitting the model on each CV fold for each hyperparameter combination and evaluating the performance.</p>
+<div style="font-size:1.6em">
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a><span class="co"># Create grid of hyperparameter values for tuning</span></span>
+<span id="cb7-2"><a></a><span class="co"># Using space-filling design for efficient coverage of hyperparameter space</span></span>
+<span id="cb7-3"><a></a>xgb_grid <span class="ot">&lt;-</span> <span class="fu">grid_space_filling</span>(</span>
+<span id="cb7-4"><a></a>  <span class="fu">trees</span>(),</span>
+<span id="cb7-5"><a></a>  <span class="fu">tree_depth</span>(),</span>
+<span id="cb7-6"><a></a>  <span class="fu">min_n</span>(),</span>
+<span id="cb7-7"><a></a>  <span class="fu">loss_reduction</span>(),</span>
+<span id="cb7-8"><a></a>  <span class="at">sample_size =</span> <span class="fu">sample_prop</span>(),</span>
+<span id="cb7-9"><a></a>  <span class="fu">finalize</span>(<span class="fu">mtry</span>(), df_train),</span>
+<span id="cb7-10"><a></a>  <span class="fu">learn_rate</span>(),</span>
+<span id="cb7-11"><a></a>  <span class="at">size =</span> <span class="dv">500</span></span>
+<span id="cb7-12"><a></a>)</span>
+<span id="cb7-13"><a></a></span>
+<span id="cb7-14"><a></a><span class="co"># Tune hyperparameters using cross-validation and parallel processing</span></span>
+<span id="cb7-15"><a></a>all_cores <span class="ot">&lt;-</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>()</span>
+<span id="cb7-16"><a></a><span class="fu">plan</span>(multisession, <span class="at">workers =</span> all_cores <span class="sc">-</span> <span class="dv">1</span>)</span>
+<span id="cb7-17"><a></a><span class="fu">set.seed</span>(<span class="dv">2020</span>)</span>
+<span id="cb7-18"><a></a>xgb_res <span class="ot">&lt;-</span> <span class="fu">tune_grid</span>(</span>
+<span id="cb7-19"><a></a>  xgb_wf,</span>
+<span id="cb7-20"><a></a>  <span class="at">resamples =</span> df_train_cv,</span>
+<span id="cb7-21"><a></a>  <span class="at">grid =</span> xgb_grid,</span>
+<span id="cb7-22"><a></a>  <span class="at">metrics =</span> <span class="fu">metric_set</span>(roc_auc, pr_auc), <span class="co"># Evaluate using ROC-AUC and PR-AUC</span></span>
+<span id="cb7-23"><a></a>  <span class="at">control =</span> ctl_grid</span>
+<span id="cb7-24"><a></a>)</span>
+<span id="cb7-25"><a></a><span class="fu">plan</span>(sequential) <span class="co"># Return to sequential processing</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a><span class="co"># Create grid of penalty values for tuning</span></span>
+<span id="cb8-2"><a></a>lambda_grid <span class="ot">&lt;-</span> <span class="fu">grid_regular</span>(<span class="fu">penalty</span>(), <span class="at">levels =</span> <span class="dv">100</span>)</span>
+<span id="cb8-3"><a></a></span>
+<span id="cb8-4"><a></a><span class="co"># Tune hyperparameters using cross-validation and parallel processing</span></span>
+<span id="cb8-5"><a></a>all_cores <span class="ot">&lt;-</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>()</span>
+<span id="cb8-6"><a></a><span class="fu">plan</span>(multisession, <span class="at">workers =</span> all_cores <span class="sc">-</span> <span class="dv">1</span>)</span>
+<span id="cb8-7"><a></a><span class="fu">set.seed</span>(<span class="dv">2020</span>)</span>
+<span id="cb8-8"><a></a>lasso_res <span class="ot">&lt;-</span> <span class="fu">tune_grid</span>(</span>
+<span id="cb8-9"><a></a>  lasso_wf,</span>
+<span id="cb8-10"><a></a>  <span class="at">resamples =</span> df_train_cv, <span class="co"># Use defined CV folds</span></span>
+<span id="cb8-11"><a></a>  <span class="at">grid =</span> lambda_grid, <span class="co"># Use defined grid of penalty values</span></span>
+<span id="cb8-12"><a></a>  <span class="at">metrics =</span> <span class="fu">metric_set</span>(roc_auc, pr_auc), <span class="co"># Evaluate using ROC-AUC and PR-AUC</span></span>
+<span id="cb8-13"><a></a>  <span class="at">control =</span> ctl_grid_lasso <span class="co"># Use parallel processing controls</span></span>
+<span id="cb8-14"><a></a>)</span>
+<span id="cb8-15"><a></a><span class="fu">plan</span>(sequential) <span class="co"># Return to sequential processing</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</div>
+</section>
+<section id="step-6-tuning-results" class="slide level2">
+<h2>Step 6: Tuning Results</h2>
+<p>Visualizing the tuning results helps us understand how hyperparameters affect performance. The plot shows the ROC AUC for each penalty value tested for the LASSO model. We want to pick the penalty that gives the highest AUC.</p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-28-1.png"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-29-1.png"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="step-7-finalizing-and-fitting" class="slide level2">
+<h2>Step 7: Finalizing and Fitting</h2>
+<p>After tuning, we select the best hyperparameters and finalize our workflow.</p>
+<p>Then, we use <code>last_fit()</code> which does two things:</p>
+<ol type="1">
+<li><p>Fits the final model on the entire training set.</p></li>
+<li><p>Evaluates this final model on the unseen testing set.</p></li>
+</ol>
+<p>This provides an unbiased estimate of how our model will perform on new data.</p>
+<div style="font-size:1.6em">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a><span class="co"># Select best hyperparameters based on ROC AUC</span></span>
+<span id="cb9-2"><a></a>lasso_best_auc <span class="ot">&lt;-</span> <span class="fu">select_best</span>(lasso_res, <span class="at">metric =</span> <span class="st">"roc_auc"</span>)</span>
+<span id="cb9-3"><a></a>xgb_best_auc <span class="ot">&lt;-</span> <span class="fu">select_best</span>(xgb_res, <span class="at">metric =</span> <span class="st">"roc_auc"</span>)</span>
+<span id="cb9-4"><a></a></span>
+<span id="cb9-5"><a></a><span class="co"># Finalize workflows</span></span>
+<span id="cb9-6"><a></a>final_lasso <span class="ot">&lt;-</span> <span class="fu">finalize_workflow</span>(lasso_wf, lasso_best_auc)</span>
+<span id="cb9-7"><a></a>final_xgb <span class="ot">&lt;-</span> <span class="fu">finalize_workflow</span>(xgb_wf, xgb_best_auc)</span>
+<span id="cb9-8"><a></a></span>
+<span id="cb9-9"><a></a><span class="co"># Perform the final fit on the train/test split</span></span>
+<span id="cb9-10"><a></a>final_lasso_fit <span class="ot">&lt;-</span> final_lasso <span class="sc">%&gt;%</span> <span class="fu">last_fit</span>(df_split)</span>
+<span id="cb9-11"><a></a>final_xgb_fit <span class="ot">&lt;-</span> final_xgb <span class="sc">%&gt;%</span> <span class="fu">last_fit</span>(df_split)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</section>
+<section id="step-8-final-model-evaluation" class="slide level2">
+<h2>Step 8: Final Model Evaluation</h2>
+<p>The <code>collect_metrics()</code> function shows the performance on the hold-out test set. We can see that the XGBoost model achieved a higher ROC AUC and PR AUC compared to the LASSO model.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 4
+  .metric     .estimator .estimate .config        
+  &lt;chr&gt;       &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;          
+1 accuracy    binary        0.933  pre0_mod0_post0
+2 roc_auc     binary        0.632  pre0_mod0_post0
+3 brier_class binary        0.0619 pre0_mod0_post0</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 4
+  .metric     .estimator .estimate .config        
+  &lt;chr&gt;       &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;          
+1 accuracy    binary        0.933  pre0_mod0_post0
+2 roc_auc     binary        0.696  pre0_mod0_post0
+3 brier_class binary        0.0677 pre0_mod0_post0</code></pre>
+</div>
+</div>
+</section></section>
+<section>
+<section id="explainable-ai-opening-the-black-box" class="title-slide slide level1 center">
+<h1>Explainable AI: Opening the Black Box</h1>
+
+</section>
+<section id="why-we-need-explainable-ai-xai" class="slide level2">
+<h2>Why We Need Explainable AI (XAI)</h2>
+<p>While models like XGBoost are powerful, their complexity makes them “black boxes.” We can’t just look at coefficients to understand them.</p>
+<p>XAI methods help us understand:</p>
+<ul>
+<li><p>What features are most important? (Global interpretation)</p></li>
+<li><p>Why did the model make a specific prediction for a single patient? (Local interpretation)</p></li>
+<li><p>How does a feature’s value affect the prediction? (Feature effects)</p></li>
+</ul>
+<p>This is crucial for clinical trust, model debugging, and discovering new insights.</p>
+</section>
+<section id="shap-shapley-additive-explanations" class="slide level2">
+<h2>SHAP (SHapley Additive exPlanations)</h2>
+<p>SHAP is a leading XAI method based on game theory. It calculates the contribution of each feature to a prediction for each individual observation.</p>
+<ul>
+<li><p><strong>Analogy</strong>: Imagine the model prediction is a team’s final score. SHAP tells you how much “credit” each player (feature) deserves for that score, considering all possible combinations of players.</p></li>
+<li><p><strong>Output</strong>: A SHAP value for every feature for every prediction.</p>
+<ul>
+<li><p><strong>Positive</strong> SHAP value: Pushes the prediction <strong>towards the outcome</strong> (centenarian).</p></li>
+<li><p><strong>Negative</strong> SHAP value: Pushes the prediction <strong>away from the outcome</strong>.</p></li>
+</ul></li>
+</ul>
+</section>
+<section id="shap-summary-plot" class="slide level2">
+<h2>SHAP Summary Plot</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p>The SHAP summary plot gives us a global overview of feature importance and effect.</p>
+<ul>
+<li><p>Y-axis: Features, ranked by importance.</p></li>
+<li><p>X-axis: The SHAP value.</p></li>
+<li><p>Color: The original value of the feature (high or low).</p></li>
+</ul>
+</div><div class="column" style="width:50%;">
+
+</div></div>
+</section>
+<section id="interpreting-the-shap-summary-plot" class="slide level2">
+<h2>Interpreting the SHAP Summary Plot</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><strong>Systolic Blood Pressure</strong> (‘med_sbp_mean’) is the most important feature.</p>
+<ul>
+<li><p>Low SBP (blue dots) have positive SHAP values, meaning they push the prediction towards becoming a centenarian.</p></li>
+<li><p>High SBP (red dots) have negative SHAP values, pushing the prediction away from it.</p></li>
+</ul>
+<p><strong>Smoking Status</strong> (‘med_smoke_status_<span class="citation" data-cites="_never">@_never</span>’) is also important.</p>
+<ul>
+<li>Being a never-smoker (red dot, since it’s a dummy variable) has a positive SHAP value, increasing the chance of being a centenarian.</li>
+</ul>
+</div><div class="column" style="width:50%;">
+
+</div></div>
+</section>
+<section id="shap-dependence-plot" class="slide level2">
+<h2>SHAP Dependence Plot</h2>
+<p>This plot shows how a single feature’s value affects its SHAP value across all samples. It helps us understand the relationship between a feature and the prediction outcome.</p>
+<p>Here we see a clear negative relationship: as systolic blood pressure increases, its SHAP value decreases, lowering the predicted probability of becoming a centenarian.</p>
+</section></section>
+<section id="key-takeaways" class="title-slide slide level1 center">
+<h1>Key Takeaways</h1>
+<ul>
+<li><p>We demonstrated a complete ML workflow for epidemiological prediction (not <strong>causation</strong>) using R and tidymodels.</p></li>
+<li><p>The tidymodels framework provides a structured and safe workflow for building predictive models.</p></li>
+<li><p>Preprocessing is crucial step to ensure data quality and model performance.</p></li>
+<li><p>Cross-validation is essential for robustly tuning hyperparameters and avoiding overfitting.</p></li>
+<li><p>More complex models like XGBoost can outperform simpler models like LASSO, but at the cost of interpretability.</p></li>
+<li><p>Explainable AI methods like SHAP are vital for understanding and trusting complex “black box” models in a clinical context.</p></li>
+</ul>
+
+
+</section>
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <p><img src="images/logo.png" class="slide-logo"></p>

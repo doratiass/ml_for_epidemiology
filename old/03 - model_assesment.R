@@ -21,9 +21,9 @@ cat("\f")
 # ============================================================================ #
 # Summarise Metrics ------------------------------------------------------------
 # ============================================================================ #
-model_list <- list(final_log_fit, final_lasso_fit, final_xgb_fit)
-train_model_list <- list(log_train_fit, lasso_train_fit, xgb_train_fit)
-model_names <- c("Logistic reg", "LASSO", "XGBoost")
+model_list <- list(final_lasso_fit, final_xgb_fit)
+train_model_list <- list(lasso_train_fit, xgb_train_fit)
+model_names <- c("LASSO", "XGBoost")
 sum_models_list <- list()
 
 for (i in 1:length(model_list)) {
@@ -64,26 +64,9 @@ sum_models %>%
 # ============================================================================ #
 # Build ROC Curves -------------------------------------------------------------
 # ============================================================================ #
-log_roc <- final_log_fit %>%
-  collect_predictions() %>%
-  roc_curve(outcome, .pred_centenarian) %>%
-  mutate(
-    model = paste0(
-      roc_bootstrap[2, 1],
-      " - ",
-      sprintf(roc_bootstrap[2, 2], fmt = '%#.3f'),
-      " (",
-      sprintf(roc_bootstrap[2, 4, drop = TRUE], fmt = '%#.3f'),
-      "-",
-      sprintf(roc_bootstrap[2, 3, drop = TRUE], fmt = '%#.3f'),
-      ")"
-    ),
-    inx = 1
-  )
-
 lasso_roc <- final_lasso_fit %>%
   collect_predictions() %>%
-  roc_curve(outcome, .pred_centenarian) %>%
+  roc_curve(outcome, .pred_centenarian, event_level = "second") %>%
   mutate(
     model = paste0(
       roc_bootstrap[1, 1],
@@ -95,49 +78,32 @@ lasso_roc <- final_lasso_fit %>%
       sprintf(roc_bootstrap[1, 3, drop = TRUE], fmt = '%#.3f'),
       ")"
     ),
-    inx = 2
+    inx = 1
   )
 
 xgb_roc <- final_xgb_fit %>%
   collect_predictions() %>%
-  roc_curve(outcome, .pred_centenarian) %>%
+  roc_curve(outcome, .pred_centenarian, event_level = "second") %>%
   mutate(
     model = paste0(
-      roc_bootstrap[3, 1],
+      roc_bootstrap[2, 1],
       " - ",
-      sprintf(roc_bootstrap[3, 2], fmt = '%#.3f'),
+      sprintf(roc_bootstrap[2, 2], fmt = '%#.3f'),
       " (",
-      sprintf(roc_bootstrap[3, 4, drop = TRUE], fmt = '%#.3f'),
+      sprintf(roc_bootstrap[2, 4, drop = TRUE], fmt = '%#.3f'),
       "-",
-      sprintf(roc_bootstrap[3, 3, drop = TRUE], fmt = '%#.3f'),
+      sprintf(roc_bootstrap[2, 3, drop = TRUE], fmt = '%#.3f'),
       ")"
     ),
-    inx = 3
+    inx = 2
   )
 
 # ============================================================================ #
 # Build PR Curves --------------------------------------------------------------
 # ============================================================================ #
-log_pr <- final_log_fit %>%
-  collect_predictions() %>%
-  pr_curve(outcome, .pred_centenarian) %>%
-  mutate(
-    model = paste0(
-      pr_bootstrap[2, 1],
-      " - ",
-      sprintf(pr_bootstrap[2, 2], fmt = '%#.3f'),
-      " (",
-      sprintf(pr_bootstrap[2, 4, drop = TRUE], fmt = '%#.3f'),
-      "-",
-      sprintf(pr_bootstrap[2, 3, drop = TRUE], fmt = '%#.3f'),
-      ")"
-    ),
-    inx = 1
-  )
-
 lasso_pr <- final_lasso_fit %>%
   collect_predictions() %>%
-  pr_curve(outcome, .pred_centenarian) %>%
+  pr_curve(outcome, .pred_centenarian, event_level = "second") %>%
   mutate(
     model = paste0(
       pr_bootstrap[1, 1],
@@ -149,24 +115,24 @@ lasso_pr <- final_lasso_fit %>%
       sprintf(pr_bootstrap[1, 3, drop = TRUE], fmt = '%#.3f'),
       ")"
     ),
-    inx = 2
+    inx = 1
   )
 
 xgb_pr <- final_xgb_fit %>%
   collect_predictions() %>%
-  pr_curve(outcome, .pred_centenarian) %>%
+  pr_curve(outcome, .pred_centenarian, event_level = "second") %>%
   mutate(
     model = paste0(
-      pr_bootstrap[3, 1],
+      pr_bootstrap[2, 1],
       " - ",
-      sprintf(pr_bootstrap[3, 2], fmt = '%#.3f'),
+      sprintf(pr_bootstrap[2, 2], fmt = '%#.3f'),
       " (",
-      sprintf(pr_bootstrap[3, 4, drop = TRUE], fmt = '%#.3f'),
+      sprintf(pr_bootstrap[2, 4, drop = TRUE], fmt = '%#.3f'),
       "-",
-      sprintf(pr_bootstrap[3, 3, drop = TRUE], fmt = '%#.3f'),
+      sprintf(pr_bootstrap[2, 3, drop = TRUE], fmt = '%#.3f'),
       ")"
     ),
-    inx = 3
+    inx = 2
   )
 
 # ============================================================================ #
@@ -175,7 +141,7 @@ xgb_pr <- final_xgb_fit %>%
 # ---------------------------------------------------------------------------- #
 ## ROC Plot -------------------------------------------------------------------
 # ---------------------------------------------------------------------------- #
-roc_plot <- rbind(log_roc, lasso_roc, xgb_roc) %>%
+roc_plot <- rbind(lasso_roc, xgb_roc) %>%
   ggplot(aes(x = 1 - specificity, y = sensitivity, color = model)) +
   geom_abline(
     lty = 2,
@@ -192,15 +158,13 @@ roc_plot <- rbind(log_roc, lasso_roc, xgb_roc) %>%
     check_overlap = TRUE
   ) +
   coord_equal() +
-  theme_bw() +
-  plot_theme +
-  scale_color_brewer(palette = color_pal) +
+  my_theme +
   theme(legend.position = "none", legend.title = element_blank())
 
 # ---------------------------------------------------------------------------- #
 ## PR Plot --------------------------------------------------------------------
 # ---------------------------------------------------------------------------- #
-pr_plot <- rbind(log_pr, lasso_pr, xgb_pr) %>%
+pr_plot <- rbind(lasso_pr, xgb_pr) %>%
   filter(!is.infinite(.threshold)) %>%
   ggplot(aes(x = recall, y = precision, color = model)) +
   geom_path() +
@@ -212,31 +176,27 @@ pr_plot <- rbind(log_pr, lasso_pr, xgb_pr) %>%
     check_overlap = TRUE
   ) +
   coord_equal() +
-  theme_bw() +
-  plot_theme +
-  scale_color_brewer(palette = color_pal) +
+  my_theme +
   theme(legend.position = "none", legend.title = element_blank())
 
 # ---------------------------------------------------------------------------- #
 ## Calibration Plots ----------------------------------------------------------
 # ---------------------------------------------------------------------------- #
-cal_train <- cal_scam_plot_three(
-  list(final_log_fit, final_lasso_fit, final_xgb_fit),
-  list(log_train_fit, lasso_train_fit, xgb_train_fit),
+cal_train <- cal_scam_plot(
+  list(final_lasso_fit, final_xgb_fit),
+  list(lasso_train_fit, xgb_train_fit),
   split = "train",
   plat = TRUE
 ) +
-  plot_theme +
-  scale_color_brewer(palette = color_pal)
+  my_theme
 
-cal_test <- cal_scam_plot_three(
-  list(final_log_fit, final_lasso_fit, final_xgb_fit),
-  list(log_train_fit, lasso_train_fit, xgb_train_fit),
+cal_test <- cal_scam_plot(
+  list(final_lasso_fit, final_xgb_fit),
+  list(lasso_train_fit, xgb_train_fit),
   split = "test",
   plat = TRUE
 ) +
-  plot_theme +
-  scale_color_brewer(palette = color_pal)
+  my_theme
 
 # ============================================================================ #
 # Final Plot -------------------------------------------------------------------
@@ -256,22 +216,8 @@ sums_plot
 # ============================================================================ #
 # Save Outputs -----------------------------------------------------------------
 # ============================================================================ #
-ggsave(
-  filename = file.path("graphs", "fig1.pdf"),
-  plot = ggplot2::last_plot(),
-  width = 35,
-  height = 35,
-  dpi = 300,
-  units = "cm",
-  bg = "white"
-)
-
 save(
-  log_roc,
-  lasso_roc,
-  xgb_roc,
-  log_pr,
-  lasso_pr,
-  xgb_pr,
-  file = "raw_data/roc_data.RData"
+  roc_bootstrap,
+  pr_bootstrap,
+  file = "data/roc_data.RData"
 )

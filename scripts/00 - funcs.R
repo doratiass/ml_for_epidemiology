@@ -20,18 +20,35 @@ library(readr) # Enables fast reading of CSV and other rectangular data.
 # ============================================================================ #
 # Theme definitions ------------------------------------------------------------
 # ============================================================================ #
-# Define a consistent ggplot theme for visualizations
-plot_theme <- theme(
-  # Optionally, set the font family for text (commented out here).
-  # text = element_text(family = "Gill Sans"),
-  plot.title = element_text(size = 25, hjust = 0.5), # Large, centered plot titles.
-  axis.title = element_text(size = 17), # Axis title text size.
-  axis.text = element_text(size = 15), # Axis tick label size.
-  legend.text = element_text(size = 15), # Legend text size.
-  strip.text = element_text(size = 15)
-) # Facet label text size.
-
 color_pal <- 'Set1' # Color palette to be used in plots.
+
+# Define a consistent ggplot theme for visualizations
+my_theme <- list(
+  scale_fill_brewer(palette = color_pal),
+  scale_color_brewer(palette = color_pal),
+  theme_minimal(base_size = 14),
+  theme(
+    plot.title = element_text(
+      face = "bold",
+      size = 16,
+      hjust = 0.5,
+      color = "#2c3e50"
+    ),
+    plot.subtitle = element_text(size = 14, hjust = 0.5, color = "#4f5d75"),
+    axis.title = element_text(size = 12, face = "bold", color = "#2c3e50"),
+    axis.text = element_text(color = "#666666"),
+    legend.position = "bottom",
+    legend.title = element_text(face = "bold"),
+    panel.grid.major = element_line(color = "gray80"),
+    panel.grid.minor = element_blank(),
+    # Transparent background for slides
+    plot.background = element_rect(fill = "transparent", colour = NA),
+    panel.background = element_rect(fill = NA, colour = NA),
+    legend.background = element_blank(),
+    legend.key = element_rect(fill = NA, colour = NA),
+    strip.background = element_blank()
+  )
+)
 
 line_size <- 1.2 # Standard thickness for lines in plots.
 leg_size_4 <- 16 # Likely used for setting legend text size in certain plots.
@@ -39,6 +56,11 @@ leg_size_4 <- 16 # Likely used for setting legend text size in certain plots.
 # ============================================================================ #
 # Functions ------------------------------------------------------------
 # ============================================================================ #
+# new_sep_names: Custom function for dummy variable naming
+new_sep_names <- function(var, lvl, ordinal) {
+  dummy_names(var = var, lvl = lvl, ordinal = ordinal, sep = "_@_")
+}
+
 # Load a dictionary mapping variable codes to descriptive names.
 # The CSV file should contain columns: 'var' (code) and 'name' (description).
 vars_dict <- read_csv("data/vars_dict.csv", show_col_types = FALSE)
@@ -225,7 +247,7 @@ int_labeler <- function(x) {
 # -----------------------------------------------------------------------------#
 bootstrap_pr <- function(splits) {
   x <- analysis(splits) # Extract the analysis (training) set.
-  pr_auc(x, outcome, .pred_centenarian)$.estimate # Calculate and return the PR AUC.
+  pr_auc(x, outcome, .pred_centenarian, event_level = "second")$.estimate # Calculate and return the PR AUC.
 }
 
 # -----------------------------------------------------------------------------#
@@ -246,7 +268,7 @@ bootstrap_pr <- function(splits) {
 # -----------------------------------------------------------------------------#
 bootstrap_roc <- function(splits) {
   x <- analysis(splits) # Extract the analysis (training) set.
-  roc_auc(x, outcome, .pred_centenarian)$.estimate # Calculate and return the ROC AUC.
+  roc_auc(x, outcome, .pred_centenarian, event_level = "second")$.estimate # Calculate and return the ROC AUC.
 }
 
 # -----------------------------------------------------------------------------#
@@ -420,7 +442,7 @@ cal_plot_three <- function(
 }
 
 # -----------------------------------------------------------------------------#
-# Function: cal_scam_plot_three
+# Function: cal_scam_plot
 #
 # Purpose:
 #   - Generates calibration plots for the three models using Shape Constrained
@@ -444,7 +466,7 @@ cal_plot_three <- function(
 #   - A ggplot object visualizing the SCAM-based calibration curves along with
 #     annotations.
 # -----------------------------------------------------------------------------#
-cal_scam_plot_three <- function(
+cal_scam_plot <- function(
   final_fit,
   train_fit,
   split = c("train", "test"),
@@ -467,14 +489,6 @@ cal_scam_plot_three <- function(
     family = binomial
   )
 
-  scam_model_3 <- scam(
-    outcome ~ s(.pred_centenarian, bs = "mpi", m = 1),
-    data = train_fit[[3]] %>%
-      collect_predictions() %>%
-      mutate(outcome = if_else(outcome == "centenarian", 1, 0)),
-    family = binomial
-  )
-
   if (split == "train") {
     if (plat) {
       # For training set with Platt scaling: apply SCAM predictions.
@@ -482,32 +496,25 @@ cal_scam_plot_three <- function(
         train_fit[[1]] %>%
           collect_predictions() %>%
           add_predictions(scam_model_1, type = "response") %>%
-          mutate(model = "Logistic reg"),
+          mutate(model = "LASSO"),
         train_fit[[2]] %>%
           collect_predictions() %>%
           add_predictions(scam_model_2, type = "response") %>%
-          mutate(model = "LASSO"),
-        train_fit[[3]] %>%
-          collect_predictions() %>%
-          add_predictions(scam_model_3, type = "response") %>%
           mutate(model = "XGBoost")
       ) %>%
-        mutate(model = fct_relevel(model, "LASSO", "Logistic reg", "XGBoost"))
+        mutate(model = fct_relevel(model, "LASSO", "XGBoost"))
     } else {
       # For training set without recalibration.
       df <- bind_rows(
         train_fit[[1]] %>%
           collect_predictions() %>%
-          mutate(model = "Logistic reg"),
-        train_fit[[2]] %>%
-          collect_predictions() %>%
           mutate(model = "LASSO"),
-        train_fit[[3]] %>%
+        train_fit[[2]] %>%
           collect_predictions() %>%
           mutate(model = "XGBoost")
       ) %>%
         rename(pred = .pred_centenarian) %>% # Rename for consistency.
-        mutate(model = fct_relevel(model, "LASSO", "Logistic reg", "XGBoost"))
+        mutate(model = fct_relevel(model, "LASSO", "XGBoost"))
     }
   } else if (split == "test") {
     if (plat) {
@@ -516,32 +523,25 @@ cal_scam_plot_three <- function(
         final_fit[[1]] %>%
           collect_predictions() %>%
           add_predictions(scam_model_1, type = "response") %>%
-          mutate(model = "Logistic reg"),
+          mutate(model = "LASSO"),
         final_fit[[2]] %>%
           collect_predictions() %>%
           add_predictions(scam_model_2, type = "response") %>%
-          mutate(model = "LASSO"),
-        final_fit[[3]] %>%
-          collect_predictions() %>%
-          add_predictions(scam_model_3, type = "response") %>%
           mutate(model = "XGBoost")
       ) %>%
-        mutate(model = fct_relevel(model, "LASSO", "Logistic reg", "XGBoost"))
+        mutate(model = fct_relevel(model, "LASSO", "XGBoost"))
     } else {
       # For test set without recalibration.
       df <- bind_rows(
         final_fit[[1]] %>%
           collect_predictions() %>%
-          mutate(model = "Logistic reg"),
-        final_fit[[2]] %>%
-          collect_predictions() %>%
           mutate(model = "LASSO"),
-        final_fit[[3]] %>%
+        final_fit[[1]] %>%
           collect_predictions() %>%
           mutate(model = "XGBoost")
       ) %>%
         rename(pred = .pred_centenarian) %>% # Rename for consistency.
-        mutate(model = fct_relevel(model, "LASSO", "Logistic reg", "XGBoost"))
+        mutate(model = fct_relevel(model, "LASSO", "XGBoost"))
     }
   }
 
@@ -577,14 +577,14 @@ cal_scam_plot_three <- function(
         ", slope ",
         sprintf(slope, fmt = '%#.2f')
       ),
-      inx = c(2, 1, 3)
+      inx = c(1, 2)
     )
 
   # Define plot title based on whether Platt scaling is applied.
   title <- ifelse(
     plat,
-    paste("Calibration plot -", split, "set - platt scaling"),
-    paste("Calibration plot -", split, "set")
+    paste(split, "set - platt scaling"),
+    paste(split, "set")
   )
 
   # Create the calibration plot using ggplot2.
@@ -601,23 +601,19 @@ cal_scam_plot_three <- function(
     geom_abline(intercept = 0, slope = 1, linetype = "longdash") + # Reference line for perfect calibration.
     geom_point(
       data = plot_txt,
-      aes(x = 0.5, y = 0.2 - 0.05 * inx),
+      aes(x = 0.3, y = 0.2 - 0.05 * inx),
       shape = 15,
       size = 3
     ) + # Annotation points.
     geom_text(
       data = plot_txt,
-      aes(x = 0.53, y = 0.2 - 0.05 * inx, label = txt, size = 15),
+      aes(x = 0.33, y = 0.2 - 0.05 * inx, label = txt, size = 6),
       color = "black",
       hjust = 0
     ) + # Annotation text with coefficients.
-    labs(x = "Predicted risk", y = "Observed proportion") +
+    labs(title = title, x = "Predicted risk", y = "Observed proportion") +
     theme_bw() +
-    coord_equal(xlim = c(0, 1), ylim = c(0, 1)) +
-    theme(
-      legend.position = "none",
-      legend.title = element_blank()
-    ) -> plot # Save the ggplot object.
+    coord_equal(xlim = c(0, 1), ylim = c(0, 1)) -> plot # Save the ggplot object.
 
   return(plot) # Return the calibration plot.
 }

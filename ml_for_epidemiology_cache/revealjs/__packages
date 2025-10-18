@@ -36,6 +36,7 @@ RColorBrewer
 rpart
 rpart.plot
 kableExtra
+scam
 modelr
 nlme
 mgcv
