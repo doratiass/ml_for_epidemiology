@@ -158,7 +158,7 @@
     "href": "ml_for_epidemiology.html#hyperparameters-how-to-tune-them",
     "title": "Machine Learning in Epidemiology",
     "section": "Hyperparameters: How to Tune Them?",
-    "text": "Hyperparameters: How to Tune Them?\nStep 1: Define the Search Space\n\nGrid Search: Exhaustively tests all combinations in a pre-defined grid of hyperparameters.\n\nGood for: The parameter ranges are small, well-understood, and computationally cheap to evaluate.\nExample: Testing λ values [0.001, 0.01, 0.1, 1.0, 10.0]\n\nRandom Search: Randomly samples parameter combinations uniformly across the search space.\n\nThe space is large, but only a subset is worth exploring\nOften finds near-optimal results faster than grid search\n\nSpace-Filling Designs: Systematically samples combinations to cover the search space evenly without redundancy.\n\nGood for: When you want efficient coverage without exhaustive evaluation\nCommon in model tuning with limited runs\n\nBayesian Optimization: Builds a probabilistic model (e.g., Gaussian Process) of performance across the space and updates it iteratively to focus on promising regions.\n\nGood for: Each evaluation is computationally expensive (e.g., large datasets)\nSmart, data-driven exploration balancing exploration and exploitation.\n\n\n\n\n\n\n\n\n\nKey Principle\n\n\nThe choice of search space should align with your optimization strategy. Different methods explore parameter combinations in distinct ways."
+    "text": "Hyperparameters: How to Tune Them?\nStep 1: Define the Search Space\n\nGrid Search: Exhaustively tests all combinations in a pre-defined grid of hyperparameters.\n\nGood for: The parameter ranges are small, well-understood, and computationally cheap to evaluate.\nExample: Testing λ values [0.001, 0.01, 0.1, 1.0, 10.0]\n\nRandom Search: Randomly samples parameter combinations uniformly across the search space.\n\nThe space is large, but only a subset is worth exploring\nOften finds near-optimal results faster than grid search\n\nSpace-Filling Designs: Systematically samples combinations to cover the search space evenly without redundancy.\n\nGood for: When you want efficient coverage without exhaustive evaluation\nCommon in model tuning with limited runs\n\n\n\n\n\n\n\n\n\nKey Principle\n\n\nThe choice of search space should align with your optimization strategy. Different methods explore parameter combinations in distinct ways."
   },
   {
     "objectID": "ml_for_epidemiology.html#hyperparameters-visualizing-the-search-space",
@@ -200,14 +200,21 @@
     "href": "ml_for_epidemiology.html#random-forest-wisdom-of-the-crowd",
     "title": "Machine Learning in Epidemiology",
     "section": "Random Forest: Wisdom of the Crowd",
-    "text": "Random Forest: Wisdom of the Crowd\n\n\nKey Characteristics\nBootstrap Aggregating (Bagging):\n\nCreate many bootstrap samples from training data\nUse random subset of features at each bootstrap\nTrain decision tree on each sample\nAverage predictions across all trees\n\nFeature Randomness: At each bootstrap, consider only \\(\\sqrt{p}\\) randomly selected features (where \\(p\\) = total features)\nKey features:\n\nDe-correlated trees: Random feature selection ensures trees are diverse\nVariability reduction: Bagging reduces variance by averaging multiple trees\nRobustness: Handles outliers and noise well\n\nAll these lead to less overfitting\n\nMathematical Foundation\nEnsemble Prediction: \\[\\hat{y} = \\frac{1}{B} \\sum_{b=1}^{B} \\hat{f}_b(x)\\]\nWhere \\(\\hat{f}_b\\) is the \\(b\\)-th tree trained on bootstrap sample\n\n\n\nRandom Forest is like having a committee of doctors each looking at different aspects of a patient\nEach “doctor” (tree) sees different patients (bootstrap samples) and focuses on different symptoms (random features)\nThe final diagnosis comes from majority vote - more reliable than any single opinion\nGreat stepping stone between interpretable single trees and complex ensemble methods like XGBoost\nEmphasize that this introduces the key concept of ensemble learning that XGBoost will build upon"
+    "text": "Random Forest: Wisdom of the Crowd\n\n\nKey Characteristics\nBootstrap Aggregating (Bagging):\n\nCreate many bootstrap samples from training data\nTrain decision tree on each sample\nAverage predictions across all trees\n\nFeature Randomness: At each bootstrap, consider only \\(\\sqrt{p}\\) randomly selected features (where \\(p\\) = total features)\n\nMathematical Foundation\nEnsemble Prediction: \\[\\hat{y} = \\frac{1}{B} \\sum_{b=1}^{B} \\hat{f}_b(x)\\]\nWhere \\(\\hat{f}_b\\) is the \\(b\\)-th tree trained on bootstrap sample\n\n\nDe-correlated trees: Random feature selection ensures trees are diverse\nVariability reduction: Bagging reduces variance by averaging multiple trees\nRobustness: Handles outliers and noise well\n\nAll these lead to less overfitting\n\n\nRandom Forest is like having a committee of doctors each looking at different aspects of a patient\nEach “doctor” (tree) sees different patients (bootstrap samples) and focuses on different symptoms (random features)\nThe final diagnosis comes from majority vote - more reliable than any single opinion\nGreat stepping stone between interpretable single trees and complex ensemble methods like XGBoost\nEmphasize that this introduces the key concept of ensemble learning that XGBoost will build upon"
   },
   {
     "objectID": "ml_for_epidemiology.html#extreme-gradient-boosting-xgboost---under-the-hood",
     "href": "ml_for_epidemiology.html#extreme-gradient-boosting-xgboost---under-the-hood",
     "title": "Machine Learning in Epidemiology",
     "section": "eXtreme Gradient Boosting (XGBoost) - under the hood",
-    "text": "eXtreme Gradient Boosting (XGBoost) - under the hood\nAlgorithm Overview\nXGBoost employs sequential ensemble learning where each tree corrects errors from previous learners, building weak decision trees that collectively form a powerful predictor.\n\n\nHow XGBoost Works\nStep 1: Start with initial prediction (typically 0.5)\nStep 2: Calculate pseudo-residuals (errors from previous predictions)\nStep 3: Build trees to predict residuals using similarity scores:\n\\(\\text{Similarity} = \\frac{(\\sum \\text{residuals})^2}{\\sum [\\text{previous probabilities} \\times (1 - \\text{previous probabilities})] + \\lambda}\\)\nStep 4: For each splot calculate the gain to find optimal splits:\n\\(\\text{Gain} = \\text{Similarity}_{\\text{left}} + \\text{Similarity}_{\\text{right}} - \\text{Similarity}_{\\text{root}}\\)\nStep 5: Prune using gamma (complexity parameter, if gain &lt; γ, do not split)\nStep 6: Scale by learning rate (η) and repeat\n\nKey Mathematical Concepts\nSimilarity Scores:\n\nWhen residuals are similar, they don’t cancel out → high similarity score.\nWhen residuals are different, they cancel out → low similarity score.\n\nRegularization Effects:\n\nLambda (λ) &gt; 0: Shrinks similarity scores → easier pruning → prevents overfitting\nGamma (γ): Sets minimum gain threshold for splits → controls tree complexity\n\nLearning Rate (η):\n\nTakes “small steps in the right direction”\nempirical evidence shows many small steps outperform few large steps."
+    "text": "eXtreme Gradient Boosting (XGBoost) - under the hood\nAlgorithm Overview\nXGBoost employs sequential ensemble learning where each tree corrects errors from previous learners, building weak decision trees that collectively form a powerful predictor.\nHow XGBoost Works\nStep 1: Start with initial prediction (typically 0.5)\nStep 2: Calculate pseudo-residuals (errors from previous predictions)\nStep 3: Build trees to predict residuals using similarity scores:\n\\(\\text{Similarity} = \\frac{(\\sum \\text{residuals})^2}{\\sum [\\text{previous probabilities} \\times (1 - \\text{previous probabilities})] + \\lambda}\\)\nStep 4: For each split calculate the gain to find optimal splits:\n\\(\\text{Gain} = \\text{Similarity}_{\\text{left}} + \\text{Similarity}_{\\text{right}} - \\text{Similarity}_{\\text{root}}\\)\nStep 5: Prune using gamma (complexity parameter, if gain &lt; γ, do not split)\nStep 6: Scale by learning rate (η) and repeat"
+  },
+  {
+    "objectID": "ml_for_epidemiology.html#extreme-gradient-boosting-xgboost---under-the-hood-1",
+    "href": "ml_for_epidemiology.html#extreme-gradient-boosting-xgboost---under-the-hood-1",
+    "title": "Machine Learning in Epidemiology",
+    "section": "eXtreme Gradient Boosting (XGBoost) - under the hood",
+    "text": "eXtreme Gradient Boosting (XGBoost) - under the hood\nKey Mathematical Concepts\n\n\nSimilarity Scores:\n\nWhen residuals are similar, they don’t cancel out → high similarity score.\nWhen residuals are different, they cancel out → low similarity score.\n\n\nRegularization Effects:\n\nLambda (λ) &gt; 0: Shrinks similarity scores → easier pruning → prevents overfitting\nGamma (γ): Sets minimum gain threshold for splits → controls tree complexity\n\n\nLearning Rate (η):\n\nTakes “small steps in the right direction”\nempirical evidence shows many small steps outperform few large steps."
   },
   {
     "objectID": "ml_for_epidemiology.html#xgboost---under-the-hood",
@@ -242,7 +249,7 @@
     "href": "ml_for_epidemiology.html#neural-networks-strengths-and-limitations",
     "title": "Machine Learning in Epidemiology",
     "section": "Neural Networks: Strengths and Limitations",
-    "text": "Neural Networks: Strengths and Limitations\n\n\nExcellent Performance On:\n\nImages/Video: Medical imaging, radiology, pathology slides\nSound/Audio: Heart murmurs, lung sounds, speech patterns\nText/Language: Clinical notes, literature mining, patient communications\nSequential data: Time series, patient trajectories, treatment sequences\n\nWhy They Excel Here:\n\nSpatial patterns: Convolutional layers detect local features\nTemporal patterns: Recurrent layers capture sequences\nHierarchical learning: Lower layers learn simple patterns, higher layers combine them\nEnd-to-end learning: Automatically learn optimal feature representations\n\n\nUsually Not as Good on Tabular Data\nEpidemiological datasets are typically tabular:\n\nLimited spatial/temporal structure: Most epidemiological data lacks the spatial or sequential patterns that neural networks excel at\nFeature engineering matters more: Traditional ML methods often perform better with well-engineered features\nInterpretability trade-offs: Neural networks are “black boxes” - harder to understand than logistic regression or trees\nSample efficiency: Often need very large datasets to perform well\nOverfitting prone: Can memorize patterns in smaller datasets\n\nPractical Recommendation:\nFor most epidemiological prediction tasks, start with simpler methods (logistic regression, XGBoost) before considering neural networks\n\n\n\n\n\n\n\nKey Takeaway\n\n\nWhile neural networks power modern AI breakthroughs like LLMs, they’re not always the best choice for epidemiological prediction. Match your method to your data type and research question."
+    "text": "Neural Networks: Strengths and Limitations\n\n\nExcellent Performance On:\n\nImages/Video: Medical imaging, radiology, pathology slides\nSound/Audio: Heart murmurs, lung sounds, speech patterns\nText/Language: Clinical notes, literature mining, patient communications\nSequential data: Time series, patient trajectories, treatment sequences\n\nWhy They Excel Here:\n\nSpatial patterns: Convolutional layers detect local features\nTemporal patterns: Recurrent layers capture sequences\nHierarchical learning: Lower layers learn simple patterns, higher layers combine them\nEnd-to-end learning: Automatically learn optimal feature representations\n\n\nUsually Not as Good on Tabular Data\nEpidemiological datasets are typically tabular:\n\nLimited spatial/temporal structure: Most epidemiological data lacks the spatial or sequential patterns that neural networks excel at\nFeature engineering matters more: Traditional ML methods often perform better with well-engineered features\nInterpretability trade-offs: Neural networks are “black boxes” - harder to understand than logistic regression or trees\nSample efficiency: Often need very large datasets to perform well\nOverfitting prone: Can memorize patterns in smaller datasets\n\n\n\n\n\n\n\n\nKey Takeaway\n\n\nWhile neural networks power modern AI breakthroughs like LLMs, they’re not always the best choice for epidemiological prediction. For most epidemiological prediction tasks, start with simpler methods (logistic regression, XGBoost) before considering neural networks."
   },
   {
     "objectID": "ml_for_epidemiology.html#performance-metrics-choosing-the-right-measure",
@@ -256,14 +263,14 @@
     "href": "ml_for_epidemiology.html#discrimination-metrics-can-the-model-rank-patients-by-risk",
     "title": "Machine Learning in Epidemiology",
     "section": "Discrimination Metrics: “Can the model rank patients by risk?”",
-    "text": "Discrimination Metrics: “Can the model rank patients by risk?”\n\n\nROC-AUC (Area Under Receiver Operating Characteristic Curve)\n\nRange: 0.5 (random guessing) to 1.0 (perfect discrimination)\nInterpretation: Probability that model ranks a random case higher than a random control\nGood for: Balanced outcomes, general screening tools\nClinical use: Risk stratification, identifying high-risk patients\nRanges: &lt;0.6 poor, 0.6-0.7 fair, 0.7-0.8 good, 0.8-0.9 very good, &gt;0.9 excellent\n\n\nPALCEHOLDER FOR IMAGE - ROC curve"
+    "text": "Discrimination Metrics: “Can the model rank patients by risk?”\n\n\nROC-AUC (Area Under Receiver Operating Characteristic Curve)\n\nRange: 0.5 (random guessing) to 1.0 (perfect discrimination)\nInterpretation: Probability that model ranks a random case higher than a random control\nGood for: Balanced outcomes, general screening tools\nClinical use: Risk stratification, identifying high-risk patients\nRanges: &lt;0.6 poor, 0.6-0.7 fair, 0.7-0.8 good, 0.8-0.9 very good, &gt;0.9 excellent"
   },
   {
     "objectID": "ml_for_epidemiology.html#discrimination-metrics-can-the-model-rank-patients-by-risk-1",
     "href": "ml_for_epidemiology.html#discrimination-metrics-can-the-model-rank-patients-by-risk-1",
     "title": "Machine Learning in Epidemiology",
     "section": "Discrimination Metrics: “Can the model rank patients by risk?”",
-    "text": "Discrimination Metrics: “Can the model rank patients by risk?”\n\n\nPrecision-Recall AUC\n\nBetter than ROC-AUC when outcome is rare (&lt; 10% prevalence)\nPrecision: Of those flagged as high-risk, how many truly are? (PPV)\nRecall: Of all true cases, how many did we catch? (Sensitivity)\nClinical use: Rare disease screening, adverse event prediction\nRanges: Higher is better; Cutoffs depend on outcome prevalence\n\n\nPALCEHOLDER FOR IMAGE - PR curve"
+    "text": "Discrimination Metrics: “Can the model rank patients by risk?”\n\n\nPrecision-Recall AUC\n\nBetter than ROC-AUC when outcome is rare (&lt; 10% prevalence)\nPrecision: Of those flagged as high-risk, how many truly are? (PPV)\nRecall: Of all true cases, how many did we catch? (Sensitivity)\nClinical use: Rare disease screening, adverse event prediction\nRanges: Higher is better; Cutoffs depend on outcome prevalence"
   },
   {
     "objectID": "ml_for_epidemiology.html#classification-metrics-at-a-specific-threshold-how-well-do-we-classify",
@@ -284,13 +291,111 @@
     "href": "ml_for_epidemiology.html#calibration-metrics-are-the-predicted-probabilities-accurate-1",
     "title": "Machine Learning in Epidemiology",
     "section": "Calibration Metrics: “Are the predicted probabilities accurate?”",
-    "text": "Calibration Metrics: “Are the predicted probabilities accurate?”\n\n\nCalibration Intercept and Slope\n\nPerfect calibration: Intercept = 0, Slope = 1\nSlope &gt; 1: Overconfident predictions (too extreme)\nSlope &lt; 1: Underconfident predictions (too conservative)\n\n\nPALCEHOLDER FOR IMAGE - Calibration plot"
+    "text": "Calibration Metrics: “Are the predicted probabilities accurate?”\n\n\n\n\n\n\n\nCalibration Intercept and Slope\n\n\n\nPerfect calibration: Intercept = 0, Slope = 1\nSlope &gt; 1: Under estimation of risk\nSlope &lt; 1: Over estimation of risk"
   },
   {
     "objectID": "ml_for_epidemiology.html#model-comparison-summary",
     "href": "ml_for_epidemiology.html#model-comparison-summary",
     "title": "Machine Learning in Epidemiology",
     "section": "Model Comparison Summary",
-    "text": "Model Comparison Summary\n\n\n\nTable 1\n\n\nTable 1. Comparison of data analysis algorithms\n\n\n\n\n\n\n\n\n\nAspect\nLogistic Regression (LR)\nLASSO\nXGBoost\n\n\n\n\nVariable selection\nManual; relies on researcher’s expertise.\nAutomatically shrinks some coefficients to zero.\nSelects variables by contribution to the loss function during training.\n\n\nInteractions\nMust be prespecified by the researcher.\nSame as LR.\nCaptured automatically within tree structures.\n\n\nLinearity\nAssumes linearity (extendable via polynomials/splines).\nSimilar to LR; allows some non-linearity.\nHandles non-linearity well; invariant to monotonic transformations.\n\n\nMissing data\nRequires imputation or removal before modeling.\nSame as LR.\nHandles missing data natively via optimal split direction.\n\n\nVariable transformation\nContinuous variables may need scaling; categorical require one-hot encoding.\nSame as LR.\nOnly categorical variables require one-hot encoding.\n\n\nOverfitting\nLow risk but no built-in control.\nReduces overfitting via coefficient shrinkage.\nControlled by internal regularization and sequential weak learners.\n\n\nInterpretability\nHigh interpretability.\nHigh interpretability.\nLow; requires explainable AI tools (e.g., SHAP).\n\n\nLarge number of variables\nInefficient when p &gt; N.\nHandles high-dimensional data (p &gt; N).\nHandles high-dimensional and complex data well.\n\n\nLarge number of samples\nComputationally efficient.\nModerate computational cost.\nComputationally intensive."
+    "text": "Model Comparison Summary\n\n\n\nTable 1\n\n\nTable 1. Comparison of data analysis algorithms\n\n\n\n\n\n\n\n\n\nAspect\nLogistic Regression (LR)\nLASSO\nXGBoost\n\n\n\n\nVariable selection\nManual; relies on researcher’s expertise.\nAutomatically shrinks some coefficients to zero.\nSelects variables by contribution to the loss function during training.\n\n\nInteractions\nMust be prespecified by the researcher.\nSame as LR.\nCaptured automatically within tree structures.\n\n\nMissing data\nRequires imputation or removal before modeling.\nSame as LR.\nHandles missing data natively via optimal split direction.\n\n\nVariable transformation\nAssumes linearity (extendable via polynomials/splines); Continuous variables may need scaling; categorical require one-hot encoding.\nSame as LR.\nOnly categorical variables require one-hot encoding.\n\n\nOverfitting\nLow risk but no built-in control.\nReduces overfitting via coefficient shrinkage.\nControlled by internal regularization and sequential weak learners.\n\n\nInterpretability\nHigh interpretability.\nHigh interpretability.\nLow; requires explainable AI tools (e.g., SHAP).\n\n\nLarge number of variables\nInefficient when p &gt; N.\nHandles high-dimensional data (p &gt; N).\nHandles high-dimensional and complex data well."
+  },
+  {
+    "objectID": "ml_for_epidemiology.html#step-1-setting-up",
+    "href": "ml_for_epidemiology.html#step-1-setting-up",
+    "title": "Machine Learning in Epidemiology",
+    "section": "Step 1: Setting Up",
+    "text": "Step 1: Setting Up\nFirst, we load the necessary packages and our synthetic dataset. Using the tidymodels framework helps keep our code clean and organized.\n\n\n# Load Required Packages\nlibrary(tidyverse)\nlibrary(tidymodels)\nsource(\"scripts/00 - funcs.R\")\ntidymodels_prefer()\n\n# Load synthetic data and prepare for modeling\nload(\"data/syn_data.RData\")\nml_df &lt;- syn %&gt;%\n  mutate(id = row_number(), .before = dmg_admission_age) %&gt;% # Add ID column for realism\n  mutate(\n    outcome = factor(outcome, levels = c(\"not_centenarian\", \"centenarian\"))\n  ) %&gt;% # Ensure correct outcome reference level\n  mutate_if(is.logical, as.factor) # Convert logicals to factors for modeling"
+  },
+  {
+    "objectID": "ml_for_epidemiology.html#step-2-data-splitting-resampling",
+    "href": "ml_for_epidemiology.html#step-2-data-splitting-resampling",
+    "title": "Machine Learning in Epidemiology",
+    "section": "Step 2: Data Splitting & Resampling",
+    "text": "Step 2: Data Splitting & Resampling\nWe split our data into a training set (to build the model) and a test set (to evaluate it). We also create 10-fold cross-validation (CV) resamples from the training data for robust hyperparameter tuning.\n\n\nset.seed(2020)\n# Create stratified train/test split\ndf_split &lt;- initial_split(ml_df, strata = outcome)\ndf_train &lt;- training(df_split)\ndf_test &lt;- testing(df_split)\n\n# Create cross-validation folds from the training data\ndf_train_cv &lt;- vfold_cv(df_train, v = 10, strata = outcome)"
+  },
+  {
+    "objectID": "ml_for_epidemiology.html#step-3-data-preprocessing-with-recipes",
+    "href": "ml_for_epidemiology.html#step-3-data-preprocessing-with-recipes",
+    "title": "Machine Learning in Epidemiology",
+    "section": "Step 3: Data Preprocessing with recipes",
+    "text": "Step 3: Data Preprocessing with recipes\nA recipe is a powerful tidymodels object that defines all our preprocessing steps. These steps are only learned from the training data and then consistently applied to any other data (like the test set or new data), preventing data leakage.\n\n\n\nCode\nlasso_rec &lt;- recipe(\n  outcome ~ .,\n  data = df_train,\n  strings_as_factors = FALSE\n) %&gt;%\n  update_role(id, new_role = \"ID\") %&gt;% # Remove ID variables from predictors\n  step_rm(!!all_of(miss_10_vars)) %&gt;% # Remove variables with &gt;10% missing data\n  step_impute_knn(all_predictors(), neighbors = 3) %&gt;% # Handle missing data with KNN imputation\n  step_date(\n    all_date_predictors(),\n    keep_original_cols = FALSE,\n    features = \"month\"\n  ) %&gt;% # Convert dates to month\n  step_other(\n    all_nominal_predictors(),\n    threshold = thresh_other,\n    other = \"other_combined\"\n  ) %&gt;% # Group infrequent categorical levels\n  step_dummy(all_nominal_predictors(), naming = new_sep_names) %&gt;% # Create dummy variables\n  step_zv(all_numeric_predictors()) %&gt;% # Remove zero variance predictors\n  step_corr(\n    all_numeric_predictors(),\n    threshold = thresh_corr,\n    method = \"spearman\"\n  ) %&gt;% # Remove highly correlated variables\n  step_normalize(all_numeric_predictors())   # Normalize numeric variables (Important for LASSO!)\n\n\n\n\nCode\nxgb_rec &lt;- recipe(outcome ~ ., data = df_train, strings_as_factors = FALSE) %&gt;%\n  # Remove ID variables from predictors\n  update_role(id, new_role = \"ID\") %&gt;%\n  step_date(\n    all_date_predictors(),\n    keep_original_cols = FALSE,\n    features = \"month\"\n  ) %&gt;% # Convert dates to month\n  step_integer(all_ordered_predictors()) %&gt;% # Convert ordered factors to integers\n  step_other(\n    all_nominal_predictors(),\n    threshold = thresh_other,\n    other = \"other_combined\"\n  ) %&gt;% # Group infrequent categorical levels\n  step_unknown(all_nominal_predictors()) %&gt;% # Create Unknown category for missing categorical data\n  step_dummy(all_nominal_predictors(), naming = new_sep_names) %&gt;%   # Create dummy variables\n  step_zv(all_numeric_predictors()) %&gt;%   # Remove zero variance predictors\n  step_corr(\n    all_numeric_predictors(),\n    threshold = thresh_corr,\n    method = \"spearman\"\n  )   # Remove highly correlated variables"
+  },
+  {
+    "objectID": "ml_for_epidemiology.html#step-4-model-specification-tuning",
+    "href": "ml_for_epidemiology.html#step-4-model-specification-tuning",
+    "title": "Machine Learning in Epidemiology",
+    "section": "Step 4: Model Specification & Tuning",
+    "text": "Step 4: Model Specification & Tuning\nWe define our models using the parsnip package. Note the penalty = tune() and trees = tune(), etc. These are placeholders that tell tidymodels we want to find the best values for these hyperparameters during tuning.\n\n\nlasso_spec &lt;- logistic_reg(penalty = tune(), mixture = 1) %&gt;%\n  set_engine(\"glmnet\") %&gt;%\n  set_mode('classification')\n\nxgb_spec &lt;- boost_tree(\n  trees = tune(), # Number of boosting iterations (models to ensemble)\n  tree_depth = tune(), # Maximum depth of each tree (controls model complexity)\n  min_n = tune(), # Minimum samples required in a node before splitting\n  loss_reduction = tune(), # Minimum loss reduction required for splits (regularization)\n  sample_size = tune(), # Proportion of training data used for each tree\n  mtry = tune(), # Number of predictors randomly sampled at each split\n  learn_rate = tune() # Learning rate (controls overfitting)\n) %&gt;%\n  set_engine(\"xgboost\") %&gt;%\n  set_mode(\"classification\") # Classification task - XGBoost can also do regression"
+  },
+  {
+    "objectID": "ml_for_epidemiology.html#step-5-building-the-workflow",
+    "href": "ml_for_epidemiology.html#step-5-building-the-workflow",
+    "title": "Machine Learning in Epidemiology",
+    "section": "Step 5: Building the workflow",
+    "text": "Step 5: Building the workflow\nA workflow object bundles our recipe and model specification. This is a convenient container that makes it easy to apply the same preprocessing and model fitting steps consistently.\n\n\n# LASSO Workflow\nlasso_wf &lt;- workflow() %&gt;%\n  add_model(lasso_spec) %&gt;% # Add model\n  add_recipe(lasso_rec) # Add recipe with preprocessing steps\n\n# XGBoost Workflow\nxgb_wf &lt;- workflow() %&gt;% \n  add_model(xgb_spec)  %&gt;%# Add model\n  add_recipe(xgb_rec) # Add recipe with preprocessing steps"
+  },
+  {
+    "objectID": "ml_for_epidemiology.html#step-6-hyperparameter-tuning",
+    "href": "ml_for_epidemiology.html#step-6-hyperparameter-tuning",
+    "title": "Machine Learning in Epidemiology",
+    "section": "Step 6: Hyperparameter Tuning",
+    "text": "Step 6: Hyperparameter Tuning\nNow we find the optimal hyperparameters using our cross-validation folds.\n\nFor LASSO, we test 100 different values for the penalty (λ).\nFor XGBoost, we use a grid_space_filling design to efficiently test 500 different combinations of its many hyperparameters.\n\nThe tune_grid function automates the process of fitting the model on each CV fold for each hyperparameter combination and evaluating the performance.\n\n\n\nCode\n# Create grid of hyperparameter values for tuning\n# Using space-filling design for efficient coverage of hyperparameter space\nxgb_grid &lt;- grid_space_filling(\n  trees(),\n  tree_depth(),\n  min_n(),\n  loss_reduction(),\n  sample_size = sample_prop(),\n  finalize(mtry(), df_train),\n  learn_rate(),\n  size = 500\n)\n\n# Tune hyperparameters using cross-validation and parallel processing\nall_cores &lt;- parallel::detectCores()\nplan(multisession, workers = all_cores - 1)\nset.seed(2020)\nxgb_res &lt;- tune_grid(\n  xgb_wf,\n  resamples = df_train_cv,\n  grid = xgb_grid,\n  metrics = metric_set(roc_auc, pr_auc), # Evaluate using ROC-AUC and PR-AUC\n  control = ctl_grid\n)\nplan(sequential) # Return to sequential processing\n\n\n\n\nCode\n# Create grid of penalty values for tuning\nlambda_grid &lt;- grid_regular(penalty(), levels = 100)\n\n# Tune hyperparameters using cross-validation and parallel processing\nall_cores &lt;- parallel::detectCores()\nplan(multisession, workers = all_cores - 1)\nset.seed(2020)\nlasso_res &lt;- tune_grid(\n  lasso_wf,\n  resamples = df_train_cv, # Use defined CV folds\n  grid = lambda_grid, # Use defined grid of penalty values\n  metrics = metric_set(roc_auc, pr_auc), # Evaluate using ROC-AUC and PR-AUC\n  control = ctl_grid_lasso # Use parallel processing controls\n)\nplan(sequential) # Return to sequential processing"
+  },
+  {
+    "objectID": "ml_for_epidemiology.html#step-6-tuning-results",
+    "href": "ml_for_epidemiology.html#step-6-tuning-results",
+    "title": "Machine Learning in Epidemiology",
+    "section": "Step 6: Tuning Results",
+    "text": "Step 6: Tuning Results\nVisualizing the tuning results helps us understand how hyperparameters affect performance. The plot shows the ROC AUC for each penalty value tested for the LASSO model. We want to pick the penalty that gives the highest AUC."
+  },
+  {
+    "objectID": "ml_for_epidemiology.html#step-7-finalizing-and-fitting",
+    "href": "ml_for_epidemiology.html#step-7-finalizing-and-fitting",
+    "title": "Machine Learning in Epidemiology",
+    "section": "Step 7: Finalizing and Fitting",
+    "text": "Step 7: Finalizing and Fitting\nAfter tuning, we select the best hyperparameters and finalize our workflow.\nThen, we use last_fit() which does two things:\n\nFits the final model on the entire training set.\nEvaluates this final model on the unseen testing set.\n\nThis provides an unbiased estimate of how our model will perform on new data.\n\n\n# Select best hyperparameters based on ROC AUC\nlasso_best_auc &lt;- select_best(lasso_res, metric = \"roc_auc\")\nxgb_best_auc &lt;- select_best(xgb_res, metric = \"roc_auc\")\n\n# Finalize workflows\nfinal_lasso &lt;- finalize_workflow(lasso_wf, lasso_best_auc)\nfinal_xgb &lt;- finalize_workflow(xgb_wf, xgb_best_auc)\n\n# Perform the final fit on the train/test split\nfinal_lasso_fit &lt;- final_lasso %&gt;% last_fit(df_split)\nfinal_xgb_fit &lt;- final_xgb %&gt;% last_fit(df_split)"
+  },
+  {
+    "objectID": "ml_for_epidemiology.html#step-8-final-model-evaluation",
+    "href": "ml_for_epidemiology.html#step-8-final-model-evaluation",
+    "title": "Machine Learning in Epidemiology",
+    "section": "Step 8: Final Model Evaluation",
+    "text": "Step 8: Final Model Evaluation\nThe collect_metrics() function shows the performance on the hold-out test set. We can see that the XGBoost model achieved a higher ROC AUC and PR AUC compared to the LASSO model.\n\n\n# A tibble: 3 × 4\n  .metric     .estimator .estimate .config        \n  &lt;chr&gt;       &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;          \n1 accuracy    binary        0.933  pre0_mod0_post0\n2 roc_auc     binary        0.632  pre0_mod0_post0\n3 brier_class binary        0.0619 pre0_mod0_post0\n\n\n# A tibble: 3 × 4\n  .metric     .estimator .estimate .config        \n  &lt;chr&gt;       &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;          \n1 accuracy    binary        0.933  pre0_mod0_post0\n2 roc_auc     binary        0.696  pre0_mod0_post0\n3 brier_class binary        0.0677 pre0_mod0_post0"
+  },
+  {
+    "objectID": "ml_for_epidemiology.html#why-we-need-explainable-ai-xai",
+    "href": "ml_for_epidemiology.html#why-we-need-explainable-ai-xai",
+    "title": "Machine Learning in Epidemiology",
+    "section": "Why We Need Explainable AI (XAI)",
+    "text": "Why We Need Explainable AI (XAI)\nWhile models like XGBoost are powerful, their complexity makes them “black boxes.” We can’t just look at coefficients to understand them.\nXAI methods help us understand:\n\nWhat features are most important? (Global interpretation)\nWhy did the model make a specific prediction for a single patient? (Local interpretation)\nHow does a feature’s value affect the prediction? (Feature effects)\n\nThis is crucial for clinical trust, model debugging, and discovering new insights."
+  },
+  {
+    "objectID": "ml_for_epidemiology.html#shap-shapley-additive-explanations",
+    "href": "ml_for_epidemiology.html#shap-shapley-additive-explanations",
+    "title": "Machine Learning in Epidemiology",
+    "section": "SHAP (SHapley Additive exPlanations)",
+    "text": "SHAP (SHapley Additive exPlanations)\nSHAP is a leading XAI method based on game theory. It calculates the contribution of each feature to a prediction for each individual observation.\n\nAnalogy: Imagine the model prediction is a team’s final score. SHAP tells you how much “credit” each player (feature) deserves for that score, considering all possible combinations of players.\nOutput: A SHAP value for every feature for every prediction.\n\nPositive SHAP value: Pushes the prediction towards the outcome (centenarian).\nNegative SHAP value: Pushes the prediction away from the outcome."
+  },
+  {
+    "objectID": "ml_for_epidemiology.html#shap-summary-plot",
+    "href": "ml_for_epidemiology.html#shap-summary-plot",
+    "title": "Machine Learning in Epidemiology",
+    "section": "SHAP Summary Plot",
+    "text": "SHAP Summary Plot\n\n\nThe SHAP summary plot gives us a global overview of feature importance and effect.\n\nY-axis: Features, ranked by importance.\nX-axis: The SHAP value.\nColor: The original value of the feature (high or low)."
+  },
+  {
+    "objectID": "ml_for_epidemiology.html#interpreting-the-shap-summary-plot",
+    "href": "ml_for_epidemiology.html#interpreting-the-shap-summary-plot",
+    "title": "Machine Learning in Epidemiology",
+    "section": "Interpreting the SHAP Summary Plot",
+    "text": "Interpreting the SHAP Summary Plot\n\n\nSystolic Blood Pressure (‘med_sbp_mean’) is the most important feature.\n\nLow SBP (blue dots) have positive SHAP values, meaning they push the prediction towards becoming a centenarian.\nHigh SBP (red dots) have negative SHAP values, pushing the prediction away from it.\n\nSmoking Status (‘med_smoke_status_@_never’) is also important.\n\nBeing a never-smoker (red dot, since it’s a dummy variable) has a positive SHAP value, increasing the chance of being a centenarian."
+  },
+  {
+    "objectID": "ml_for_epidemiology.html#shap-dependence-plot",
+    "href": "ml_for_epidemiology.html#shap-dependence-plot",
+    "title": "Machine Learning in Epidemiology",
+    "section": "SHAP Dependence Plot",
+    "text": "SHAP Dependence Plot\nThis plot shows how a single feature’s value affects its SHAP value across all samples. It helps us understand the relationship between a feature and the prediction outcome.\nHere we see a clear negative relationship: as systolic blood pressure increases, its SHAP value decreases, lowering the predicted probability of becoming a centenarian."
   }
 ]
