@@ -10,7 +10,7 @@
   <meta name="generator" content="quarto-1.8.25">
 
   <meta name="author" content="Dr.&nbsp;Dor Atias, MD-MPH">
-  <meta name="dcterms.date" content="2025-10-18">
+  <meta name="dcterms.date" content="2025-10-19">
   <title>Machine Learning in Epidemiology</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -212,7 +212,7 @@ Dr.&nbsp;Dor Atias, MD-MPH
     </div>
 </div>
 
-  <p class="date">2025-10-18</p>
+  <p class="date">2025-10-19</p>
 </section>
 <section id="learning-objectives" class="slide level2">
 <h2>Learning Objectives</h2>
@@ -1856,6 +1856,11 @@ Table&nbsp;1
 </ul>
 <p>This is crucial for clinical trust, model debugging, and discovering new insights.</p>
 </section>
+<section id="lasso-coefficients" class="slide level2">
+<h2>LASSO Coefficients</h2>
+<p>LASSO provides direct interpretability through its coefficients.</p>
+
+<img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-32-1.png" class="r-stretch"></section>
 <section id="shap-shapley-additive-explanations" class="slide level2">
 <h2>SHAP (SHapley Additive exPlanations)</h2>
 <p>SHAP is a leading XAI method based on game theory. It calculates the contribution of each feature to a prediction for each individual observation.</p>
@@ -1872,40 +1877,39 @@ Table&nbsp;1
 <h2>SHAP Summary Plot</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
-<p>The SHAP summary plot gives us a global overview of feature importance and effect.</p>
+<p><strong>Systolic Blood Pressure</strong> is the most important feature.</p>
 <ul>
-<li><p>Y-axis: Features, ranked by importance.</p></li>
-<li><p>X-axis: The SHAP value.</p></li>
-<li><p>Color: The original value of the feature (high or low).</p></li>
+<li><p>Low SBP (purple dots) have positive SHAP values, meaning they push the prediction towards becoming a centenarian.</p></li>
+<li><p>High SBP (yellow dots) have negative SHAP values, pushing the prediction away from it.</p></li>
+</ul>
+<p><strong>Smoking Status</strong> is also important.</p>
+<ul>
+<li>Being a smoker (yellow dot, since it’s a dummy variable) has a negative SHAP value, decreasing the chance of being a centenarian.</li>
 </ul>
 </div><div class="column" style="width:50%;">
-
-</div></div>
-</section>
-<section id="interpreting-the-shap-summary-plot" class="slide level2">
-<h2>Interpreting the SHAP Summary Plot</h2>
-<div class="columns">
-<div class="column" style="width:50%;">
-<p><strong>Systolic Blood Pressure</strong> (‘med_sbp_mean’) is the most important feature.</p>
-<ul>
-<li><p>Low SBP (blue dots) have positive SHAP values, meaning they push the prediction towards becoming a centenarian.</p></li>
-<li><p>High SBP (red dots) have negative SHAP values, pushing the prediction away from it.</p></li>
-</ul>
-<p><strong>Smoking Status</strong> (‘med_smoke_status_<span class="citation" data-cites="_never">@_never</span>’) is also important.</p>
-<ul>
-<li>Being a never-smoker (red dot, since it’s a dummy variable) has a positive SHAP value, increasing the chance of being a centenarian.</li>
-</ul>
-</div><div class="column" style="width:50%;">
-
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-33-1.png"></p>
+</figure>
+</div>
+</div>
+</div>
 </div></div>
 </section>
 <section id="shap-dependence-plot" class="slide level2">
 <h2>SHAP Dependence Plot</h2>
 <p>This plot shows how a single feature’s value affects its SHAP value across all samples. It helps us understand the relationship between a feature and the prediction outcome.</p>
-<p>Here we see a clear negative relationship: as systolic blood pressure increases, its SHAP value decreases, lowering the predicted probability of becoming a centenarian.</p>
-</section></section>
-<section id="key-takeaways" class="title-slide slide level1 center">
-<h1>Key Takeaways</h1>
+
+<img data-src="images/pdp.png" class="r-stretch"></section></section>
+<section>
+<section id="summary-take-home-messages" class="title-slide slide level1 center">
+<h1>Summary &amp; Take-Home Messages</h1>
+
+</section>
+<section id="key-takeaways" class="slide level2">
+<h2>Key Takeaways</h2>
 <ul>
 <li><p>We demonstrated a complete ML workflow for epidemiological prediction (not <strong>causation</strong>) using R and tidymodels.</p></li>
 <li><p>The tidymodels framework provides a structured and safe workflow for building predictive models.</p></li>
@@ -1916,7 +1920,7 @@ Table&nbsp;1
 </ul>
 
 
-</section>
+</section></section>
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <p><img src="images/logo.png" class="slide-logo"></p>

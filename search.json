@@ -371,6 +371,13 @@
     "text": "Why We Need Explainable AI (XAI)\nWhile models like XGBoost are powerful, their complexity makes them “black boxes.” We can’t just look at coefficients to understand them.\nXAI methods help us understand:\n\nWhat features are most important? (Global interpretation)\nWhy did the model make a specific prediction for a single patient? (Local interpretation)\nHow does a feature’s value affect the prediction? (Feature effects)\n\nThis is crucial for clinical trust, model debugging, and discovering new insights."
   },
   {
+    "objectID": "ml_for_epidemiology.html#lasso-coefficients",
+    "href": "ml_for_epidemiology.html#lasso-coefficients",
+    "title": "Machine Learning in Epidemiology",
+    "section": "LASSO Coefficients",
+    "text": "LASSO Coefficients\nLASSO provides direct interpretability through its coefficients."
+  },
+  {
     "objectID": "ml_for_epidemiology.html#shap-shapley-additive-explanations",
     "href": "ml_for_epidemiology.html#shap-shapley-additive-explanations",
     "title": "Machine Learning in Epidemiology",
@@ -382,20 +389,20 @@
     "href": "ml_for_epidemiology.html#shap-summary-plot",
     "title": "Machine Learning in Epidemiology",
     "section": "SHAP Summary Plot",
-    "text": "SHAP Summary Plot\n\n\nThe SHAP summary plot gives us a global overview of feature importance and effect.\n\nY-axis: Features, ranked by importance.\nX-axis: The SHAP value.\nColor: The original value of the feature (high or low)."
-  },
-  {
-    "objectID": "ml_for_epidemiology.html#interpreting-the-shap-summary-plot",
-    "href": "ml_for_epidemiology.html#interpreting-the-shap-summary-plot",
-    "title": "Machine Learning in Epidemiology",
-    "section": "Interpreting the SHAP Summary Plot",
-    "text": "Interpreting the SHAP Summary Plot\n\n\nSystolic Blood Pressure (‘med_sbp_mean’) is the most important feature.\n\nLow SBP (blue dots) have positive SHAP values, meaning they push the prediction towards becoming a centenarian.\nHigh SBP (red dots) have negative SHAP values, pushing the prediction away from it.\n\nSmoking Status (‘med_smoke_status_@_never’) is also important.\n\nBeing a never-smoker (red dot, since it’s a dummy variable) has a positive SHAP value, increasing the chance of being a centenarian."
+    "text": "SHAP Summary Plot\n\n\nSystolic Blood Pressure is the most important feature.\n\nLow SBP (purple dots) have positive SHAP values, meaning they push the prediction towards becoming a centenarian.\nHigh SBP (yellow dots) have negative SHAP values, pushing the prediction away from it.\n\nSmoking Status is also important.\n\nBeing a smoker (yellow dot, since it’s a dummy variable) has a negative SHAP value, decreasing the chance of being a centenarian."
   },
   {
     "objectID": "ml_for_epidemiology.html#shap-dependence-plot",
     "href": "ml_for_epidemiology.html#shap-dependence-plot",
     "title": "Machine Learning in Epidemiology",
     "section": "SHAP Dependence Plot",
-    "text": "SHAP Dependence Plot\nThis plot shows how a single feature’s value affects its SHAP value across all samples. It helps us understand the relationship between a feature and the prediction outcome.\nHere we see a clear negative relationship: as systolic blood pressure increases, its SHAP value decreases, lowering the predicted probability of becoming a centenarian."
+    "text": "SHAP Dependence Plot\nThis plot shows how a single feature’s value affects its SHAP value across all samples. It helps us understand the relationship between a feature and the prediction outcome."
+  },
+  {
+    "objectID": "ml_for_epidemiology.html#key-takeaways",
+    "href": "ml_for_epidemiology.html#key-takeaways",
+    "title": "Machine Learning in Epidemiology",
+    "section": "Key Takeaways",
+    "text": "Key Takeaways\n\nWe demonstrated a complete ML workflow for epidemiological prediction (not causation) using R and tidymodels.\nThe tidymodels framework provides a structured and safe workflow for building predictive models.\nPreprocessing is crucial step to ensure data quality and model performance.\nCross-validation is essential for robustly tuning hyperparameters and avoiding overfitting.\nMore complex models like XGBoost can outperform simpler models like LASSO, but at the cost of interpretability.\nExplainable AI methods like SHAP are vital for understanding and trusting complex “black box” models in a clinical context."
   }
 ]
