@@ -1706,69 +1706,77 @@ Table&nbsp;1
 </div>
 </div>
 </section>
-<section id="step-6-hyperparameter-tuning" class="slide level2">
-<h2>Step 6: Hyperparameter Tuning</h2>
+<section id="step-6-hyperparameter-tuning---define-grind" class="slide level2">
+<h2>Step 6: Hyperparameter Tuning - define grind</h2>
 <p>Now we find the optimal hyperparameters using our cross-validation folds.</p>
 <ul>
 <li><p>For LASSO, we test 100 different values for the penalty (λ).</p></li>
 <li><p>For XGBoost, we use a <code>grid_space_filling</code> design to efficiently test 500 different combinations of its many hyperparameters.</p></li>
 </ul>
+<div style="font-size:1.6em">
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a><span class="co"># Create grid of penalty values for tuning</span></span>
+<span id="cb7-2"><a></a>lambda_grid <span class="ot">&lt;-</span> <span class="fu">grid_regular</span>(<span class="fu">penalty</span>(), <span class="at">levels =</span> <span class="dv">100</span>)</span>
+<span id="cb7-3"><a></a></span>
+<span id="cb7-4"><a></a><span class="co"># Using space-filling design for efficient coverage of hyperparameter space</span></span>
+<span id="cb7-5"><a></a>xgb_grid <span class="ot">&lt;-</span> <span class="fu">grid_space_filling</span>(</span>
+<span id="cb7-6"><a></a>  <span class="fu">trees</span>(),</span>
+<span id="cb7-7"><a></a>  <span class="fu">tree_depth</span>(),</span>
+<span id="cb7-8"><a></a>  <span class="fu">min_n</span>(),</span>
+<span id="cb7-9"><a></a>  <span class="fu">loss_reduction</span>(),</span>
+<span id="cb7-10"><a></a>  <span class="at">sample_size =</span> <span class="fu">sample_prop</span>(),</span>
+<span id="cb7-11"><a></a>  <span class="fu">finalize</span>(<span class="fu">mtry</span>(), df_train),</span>
+<span id="cb7-12"><a></a>  <span class="fu">learn_rate</span>(),</span>
+<span id="cb7-13"><a></a>  <span class="at">size =</span> <span class="dv">500</span></span>
+<span id="cb7-14"><a></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</div>
+</section>
+<section id="step-6-hyperparameter-tuning---define-grind-1" class="slide level2">
+<h2>Step 6: Hyperparameter Tuning - define grind</h2>
 <p>The <code>tune_grid</code> function automates the process of fitting the model on each CV fold for each hyperparameter combination and evaluating the performance.</p>
 <div style="font-size:1.6em">
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a><span class="co"># Create grid of hyperparameter values for tuning</span></span>
-<span id="cb7-2"><a></a><span class="co"># Using space-filling design for efficient coverage of hyperparameter space</span></span>
-<span id="cb7-3"><a></a>xgb_grid <span class="ot">&lt;-</span> <span class="fu">grid_space_filling</span>(</span>
-<span id="cb7-4"><a></a>  <span class="fu">trees</span>(),</span>
-<span id="cb7-5"><a></a>  <span class="fu">tree_depth</span>(),</span>
-<span id="cb7-6"><a></a>  <span class="fu">min_n</span>(),</span>
-<span id="cb7-7"><a></a>  <span class="fu">loss_reduction</span>(),</span>
-<span id="cb7-8"><a></a>  <span class="at">sample_size =</span> <span class="fu">sample_prop</span>(),</span>
-<span id="cb7-9"><a></a>  <span class="fu">finalize</span>(<span class="fu">mtry</span>(), df_train),</span>
-<span id="cb7-10"><a></a>  <span class="fu">learn_rate</span>(),</span>
-<span id="cb7-11"><a></a>  <span class="at">size =</span> <span class="dv">500</span></span>
-<span id="cb7-12"><a></a>)</span>
-<span id="cb7-13"><a></a></span>
-<span id="cb7-14"><a></a><span class="co"># Tune hyperparameters using cross-validation and parallel processing</span></span>
-<span id="cb7-15"><a></a>all_cores <span class="ot">&lt;-</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>()</span>
-<span id="cb7-16"><a></a><span class="fu">plan</span>(multisession, <span class="at">workers =</span> all_cores <span class="sc">-</span> <span class="dv">1</span>)</span>
-<span id="cb7-17"><a></a><span class="fu">set.seed</span>(<span class="dv">2020</span>)</span>
-<span id="cb7-18"><a></a>xgb_res <span class="ot">&lt;-</span> <span class="fu">tune_grid</span>(</span>
-<span id="cb7-19"><a></a>  xgb_wf,</span>
-<span id="cb7-20"><a></a>  <span class="at">resamples =</span> df_train_cv,</span>
-<span id="cb7-21"><a></a>  <span class="at">grid =</span> xgb_grid,</span>
-<span id="cb7-22"><a></a>  <span class="at">metrics =</span> <span class="fu">metric_set</span>(roc_auc, pr_auc), <span class="co"># Evaluate using ROC-AUC and PR-AUC</span></span>
-<span id="cb7-23"><a></a>  <span class="at">control =</span> ctl_grid</span>
-<span id="cb7-24"><a></a>)</span>
-<span id="cb7-25"><a></a><span class="fu">plan</span>(sequential) <span class="co"># Return to sequential processing</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a><span class="co"># Tune hyperparameters using cross-validation and parallel processing</span></span>
+<span id="cb8-2"><a></a>all_cores <span class="ot">&lt;-</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>()</span>
+<span id="cb8-3"><a></a><span class="fu">plan</span>(multisession, <span class="at">workers =</span> all_cores <span class="sc">-</span> <span class="dv">1</span>)</span>
+<span id="cb8-4"><a></a><span class="fu">set.seed</span>(<span class="dv">2020</span>)</span>
+<span id="cb8-5"><a></a>lasso_res <span class="ot">&lt;-</span> <span class="fu">tune_grid</span>(</span>
+<span id="cb8-6"><a></a>  lasso_wf,</span>
+<span id="cb8-7"><a></a>  <span class="at">resamples =</span> df_train_cv, <span class="co"># Use defined CV folds</span></span>
+<span id="cb8-8"><a></a>  <span class="at">grid =</span> lambda_grid, <span class="co"># Use defined grid of penalty values</span></span>
+<span id="cb8-9"><a></a>  <span class="at">metrics =</span> <span class="fu">metric_set</span>(roc_auc, pr_auc), <span class="co"># Evaluate using ROC-AUC and PR-AUC</span></span>
+<span id="cb8-10"><a></a>  <span class="at">control =</span> ctl_grid_lasso <span class="co"># Use parallel processing controls</span></span>
+<span id="cb8-11"><a></a>)</span>
+<span id="cb8-12"><a></a><span class="fu">plan</span>(sequential) <span class="co"># Return to sequential processing</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a><span class="co"># Create grid of penalty values for tuning</span></span>
-<span id="cb8-2"><a></a>lambda_grid <span class="ot">&lt;-</span> <span class="fu">grid_regular</span>(<span class="fu">penalty</span>(), <span class="at">levels =</span> <span class="dv">100</span>)</span>
-<span id="cb8-3"><a></a></span>
-<span id="cb8-4"><a></a><span class="co"># Tune hyperparameters using cross-validation and parallel processing</span></span>
-<span id="cb8-5"><a></a>all_cores <span class="ot">&lt;-</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>()</span>
-<span id="cb8-6"><a></a><span class="fu">plan</span>(multisession, <span class="at">workers =</span> all_cores <span class="sc">-</span> <span class="dv">1</span>)</span>
-<span id="cb8-7"><a></a><span class="fu">set.seed</span>(<span class="dv">2020</span>)</span>
-<span id="cb8-8"><a></a>lasso_res <span class="ot">&lt;-</span> <span class="fu">tune_grid</span>(</span>
-<span id="cb8-9"><a></a>  lasso_wf,</span>
-<span id="cb8-10"><a></a>  <span class="at">resamples =</span> df_train_cv, <span class="co"># Use defined CV folds</span></span>
-<span id="cb8-11"><a></a>  <span class="at">grid =</span> lambda_grid, <span class="co"># Use defined grid of penalty values</span></span>
-<span id="cb8-12"><a></a>  <span class="at">metrics =</span> <span class="fu">metric_set</span>(roc_auc, pr_auc), <span class="co"># Evaluate using ROC-AUC and PR-AUC</span></span>
-<span id="cb8-13"><a></a>  <span class="at">control =</span> ctl_grid_lasso <span class="co"># Use parallel processing controls</span></span>
-<span id="cb8-14"><a></a>)</span>
-<span id="cb8-15"><a></a><span class="fu">plan</span>(sequential) <span class="co"># Return to sequential processing</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a><span class="co"># Tune hyperparameters using cross-validation and parallel processing</span></span>
+<span id="cb9-2"><a></a>all_cores <span class="ot">&lt;-</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>()</span>
+<span id="cb9-3"><a></a><span class="fu">plan</span>(multisession, <span class="at">workers =</span> all_cores <span class="sc">-</span> <span class="dv">1</span>)</span>
+<span id="cb9-4"><a></a><span class="fu">set.seed</span>(<span class="dv">2020</span>)</span>
+<span id="cb9-5"><a></a>xgb_res <span class="ot">&lt;-</span> <span class="fu">tune_grid</span>(</span>
+<span id="cb9-6"><a></a>  xgb_wf,</span>
+<span id="cb9-7"><a></a>  <span class="at">resamples =</span> df_train_cv,</span>
+<span id="cb9-8"><a></a>  <span class="at">grid =</span> xgb_grid,</span>
+<span id="cb9-9"><a></a>  <span class="at">metrics =</span> <span class="fu">metric_set</span>(roc_auc, pr_auc), <span class="co"># Evaluate using ROC-AUC and PR-AUC</span></span>
+<span id="cb9-10"><a></a>  <span class="at">control =</span> ctl_grid</span>
+<span id="cb9-11"><a></a>)</span>
+<span id="cb9-12"><a></a><span class="fu">plan</span>(sequential) <span class="co"># Return to sequential processing</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </div>
 </section>
-<section id="step-6-tuning-results" class="slide level2">
-<h2>Step 6: Tuning Results</h2>
+<section id="step-6-hyperparameter-tuning---tuning-results" class="slide level2">
+<h2>Step 6: Hyperparameter Tuning - Tuning Results</h2>
 <p>Visualizing the tuning results helps us understand how hyperparameters affect performance. The plot shows the ROC AUC for each penalty value tested for the LASSO model. We want to pick the penalty that gives the highest AUC.</p>
 <div class="columns">
 <div class="column" style="width:50%;">
@@ -1776,7 +1784,7 @@ Table&nbsp;1
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-28-1.png"></p>
+<p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-29-1.png"></p>
 </figure>
 </div>
 </div>
@@ -1786,7 +1794,7 @@ Table&nbsp;1
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-29-1.png"></p>
+<p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-30-1.png"></p>
 </figure>
 </div>
 </div>
@@ -1804,17 +1812,17 @@ Table&nbsp;1
 <p>This provides an unbiased estimate of how our model will perform on new data.</p>
 <div style="font-size:1.6em">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a><span class="co"># Select best hyperparameters based on ROC AUC</span></span>
-<span id="cb9-2"><a></a>lasso_best_auc <span class="ot">&lt;-</span> <span class="fu">select_best</span>(lasso_res, <span class="at">metric =</span> <span class="st">"roc_auc"</span>)</span>
-<span id="cb9-3"><a></a>xgb_best_auc <span class="ot">&lt;-</span> <span class="fu">select_best</span>(xgb_res, <span class="at">metric =</span> <span class="st">"roc_auc"</span>)</span>
-<span id="cb9-4"><a></a></span>
-<span id="cb9-5"><a></a><span class="co"># Finalize workflows</span></span>
-<span id="cb9-6"><a></a>final_lasso <span class="ot">&lt;-</span> <span class="fu">finalize_workflow</span>(lasso_wf, lasso_best_auc)</span>
-<span id="cb9-7"><a></a>final_xgb <span class="ot">&lt;-</span> <span class="fu">finalize_workflow</span>(xgb_wf, xgb_best_auc)</span>
-<span id="cb9-8"><a></a></span>
-<span id="cb9-9"><a></a><span class="co"># Perform the final fit on the train/test split</span></span>
-<span id="cb9-10"><a></a>final_lasso_fit <span class="ot">&lt;-</span> final_lasso <span class="sc">%&gt;%</span> <span class="fu">last_fit</span>(df_split)</span>
-<span id="cb9-11"><a></a>final_xgb_fit <span class="ot">&lt;-</span> final_xgb <span class="sc">%&gt;%</span> <span class="fu">last_fit</span>(df_split)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a><span class="co"># Select best hyperparameters based on ROC AUC</span></span>
+<span id="cb10-2"><a></a>lasso_best_auc <span class="ot">&lt;-</span> <span class="fu">select_best</span>(lasso_res, <span class="at">metric =</span> <span class="st">"roc_auc"</span>)</span>
+<span id="cb10-3"><a></a>xgb_best_auc <span class="ot">&lt;-</span> <span class="fu">select_best</span>(xgb_res, <span class="at">metric =</span> <span class="st">"roc_auc"</span>)</span>
+<span id="cb10-4"><a></a></span>
+<span id="cb10-5"><a></a><span class="co"># Finalize workflows</span></span>
+<span id="cb10-6"><a></a>final_lasso <span class="ot">&lt;-</span> <span class="fu">finalize_workflow</span>(lasso_wf, lasso_best_auc)</span>
+<span id="cb10-7"><a></a>final_xgb <span class="ot">&lt;-</span> <span class="fu">finalize_workflow</span>(xgb_wf, xgb_best_auc)</span>
+<span id="cb10-8"><a></a></span>
+<span id="cb10-9"><a></a><span class="co"># Perform the final fit on the train/test split</span></span>
+<span id="cb10-10"><a></a>final_lasso_fit <span class="ot">&lt;-</span> final_lasso <span class="sc">%&gt;%</span> <span class="fu">last_fit</span>(df_split)</span>
+<span id="cb10-11"><a></a>final_xgb_fit <span class="ot">&lt;-</span> final_xgb <span class="sc">%&gt;%</span> <span class="fu">last_fit</span>(df_split)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 </section>
@@ -1822,21 +1830,33 @@ Table&nbsp;1
 <h2>Step 8: Final Model Evaluation</h2>
 <p>The <code>collect_metrics()</code> function shows the performance on the hold-out test set. We can see that the XGBoost model achieved a higher ROC AUC and PR AUC compared to the LASSO model.</p>
 <div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 3 × 4
-  .metric     .estimator .estimate .config        
-  &lt;chr&gt;       &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;          
-1 accuracy    binary        0.933  pre0_mod0_post0
-2 roc_auc     binary        0.632  pre0_mod0_post0
-3 brier_class binary        0.0619 pre0_mod0_post0</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 3 × 4
-  .metric     .estimator .estimate .config        
-  &lt;chr&gt;       &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;          
-1 accuracy    binary        0.933  pre0_mod0_post0
-2 roc_auc     binary        0.696  pre0_mod0_post0
-3 brier_class binary        0.0677 pre0_mod0_post0</code></pre>
+<div class="cell-output-display">
+<table class="table table-striped table-hover table-condensed caption-top" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Metric</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">LASSO</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">XGBoost</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Accuracy</td>
+<td style="text-align: right;">0.933</td>
+<td style="text-align: right;">0.933</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Brier Score</td>
+<td style="text-align: right;">0.062</td>
+<td style="text-align: right;">0.068</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ROC AUC</td>
+<td style="text-align: right;">0.632</td>
+<td style="text-align: right;">0.696</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </section></section>
@@ -1860,7 +1880,7 @@ Table&nbsp;1
 <h2>LASSO Coefficients</h2>
 <p>LASSO provides direct interpretability through its coefficients.</p>
 
-<img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-32-1.png" class="r-stretch"></section>
+<img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-33-1.png" class="r-stretch"></section>
 <section id="shap-shapley-additive-explanations" class="slide level2">
 <h2>SHAP (SHapley Additive exPlanations)</h2>
 <p>SHAP is a leading XAI method based on game theory. It calculates the contribution of each feature to a prediction for each individual observation.</p>
@@ -1891,7 +1911,7 @@ Table&nbsp;1
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-33-1.png"></p>
+<p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-34-1.png"></p>
 </figure>
 </div>
 </div>
