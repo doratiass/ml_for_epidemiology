@@ -51,7 +51,7 @@ load("data/syn_data.RData")
 ml_df <- syn %>%
   mutate(id = row_number(), .before = dmg_admission_age) %>% # Add ID column for realism
   mutate(
-    outcome = factor(outcome, levels = c("not_centenarian", "centenarian"))
+    outcome = factor(outcome, levels = c("centenarian", "not_centenarian"))
   ) %>% # Ensure correct outcome reference level
   mutate_if(is.logical, as.factor) # Convert logicals to factors for modeling
 
@@ -79,31 +79,31 @@ df_train <- training(df_split)
 df_test <- testing(df_split)
 df_train_cv <- vfold_cv(df_train, v = 10, strata = outcome)
 
-### Impute Train Data ----------------------------------------------------------
-# Create imputed training data for EDA and SHAP analysis (for later use)
-imp_rec <- recipe(
-  outcome ~ .,
-  data = df_train,
-  strings_as_factors = FALSE
-) %>%
-  update_role(id, new_role = "ID") %>%
-  step_rm(all_of(!!miss_10_vars)) %>%
-  step_impute_knn(all_predictors(), neighbors = 3) %>%
-  step_date(
-    all_date_predictors(),
-    keep_original_cols = FALSE,
-    features = "month"
-  ) %>%
-  step_corr(
-    all_numeric_predictors(),
-    threshold = thresh_corr,
-    method = "spearman"
-  )
+# ### Impute Train Data ----------------------------------------------------------
+# # Create imputed training data for EDA and SHAP analysis (for later use)
+# imp_rec <- recipe(
+#   outcome ~ .,
+#   data = df_train,
+#   strings_as_factors = FALSE
+# ) %>%
+#   update_role(id, new_role = "ID") %>%
+#   step_rm(all_of(!!miss_10_vars)) %>%
+#   step_impute_knn(all_predictors(), neighbors = 3) %>%
+#   step_date(
+#     all_date_predictors(),
+#     keep_original_cols = FALSE,
+#     features = "month"
+#   ) %>%
+#   step_corr(
+#     all_numeric_predictors(),
+#     threshold = thresh_corr,
+#     method = "spearman"
+#   )
 
-imp_prep <- imp_rec %>%
-  prep(log_changes = TRUE, verbose = TRUE)
+# imp_prep <- imp_rec %>%
+#   prep(log_changes = TRUE, verbose = TRUE)
 
-imp_train_df <- bake(imp_prep, df_train)
+# imp_train_df <- bake(imp_prep, df_train)
 # ============================================================================ #
 # LASSO Imputed Model --------------------------------------------------------
 # ============================================================================ #

@@ -75,7 +75,7 @@ ctl_grid <- control_resamples(
 
 ```
 
-```{r}
+```{HAP{r}
 #| include: false 
 # Load pre-prepared modeling dataset
 load("data/model_fits.RData")
@@ -1305,7 +1305,7 @@ top_vars %>%
              fill = penalty)) +
   geom_col(position = "dodge", width = 0.7) +
   coord_flip() +
-scale_x_discrete(labels = vars_label) +
+  scale_x_discrete(labels = vars_label) +
   labs(
     x = "",
     y = "Coefficient Value",
@@ -1421,7 +1421,7 @@ plot_ly(
     round(learn_rate, 4)
   )
 ) %>%
-  layout(
+  plotly::layout(
     scene = list(
       xaxis = list(title = "log₁₀(λ)"),
       yaxis = list(title = "Max Depth"),
@@ -2565,6 +2565,7 @@ ml_df <- syn %>%
   mutate_if(is.logical, as.factor) # Convert logicals to factors for modeling
 ```
 :::
+
 ## Step 2: Data Splitting & Resampling
 
 We split our data into a **training set** (to build the model) and a **test set** (to evaluate it). We also create 10-fold cross-validation (CV) resamples from the training data for robust hyperparameter tuning.
@@ -2583,6 +2584,7 @@ df_test <- testing(df_split)
 df_train_cv <- vfold_cv(df_train, v = 10, strata = outcome)
 ```
 :::
+
 ## Step 3: Data Preprocessing with recipes
 
 A `recipe` is a powerful tidymodels object that defines all our preprocessing steps. These steps are only learned from the training data and then consistently applied to any other data (like the test set or new data), preventing **data leakage**.
@@ -2648,6 +2650,7 @@ xgb_rec <- recipe(outcome ~ ., data = df_train, strings_as_factors = FALSE) %>%
   )   # Remove highly correlated variables
 ```
 :::
+
 ## Step 4: Model Specification & Tuning
 
 We define our models using the `parsnip` package. Note the `penalty = tune()` and `trees = tune()`, etc. These are placeholders that tell tidymodels we want to find the best values for these hyperparameters during tuning.
@@ -2705,7 +2708,6 @@ Now we find the optimal hyperparameters using our cross-validation folds.
 The `tune_grid` function automates the process of fitting the model on each CV fold for each hyperparameter combination and evaluating the performance.
 
 ::: {style="font-size:1.6em"}
-
 ```{r}
 #| echo: true
 #| code-fold: show
@@ -2736,6 +2738,7 @@ xgb_res <- tune_grid(
 )
 plan(sequential) # Return to sequential processing
 ```
+
 ```{r}
 #| echo: true
 #| code-fold: true
@@ -2807,7 +2810,7 @@ final_xgb <- finalize_workflow(xgb_wf, xgb_best_auc)
 final_lasso_fit <- final_lasso %>% last_fit(df_split)
 final_xgb_fit <- final_xgb %>% last_fit(df_split)
 ```
-::: 
+:::
 
 ## Step 8: Final Model Evaluation
 
@@ -2838,9 +2841,9 @@ XAI methods help us understand:
 
 This is crucial for clinical trust, model debugging, and discovering new insights.
 
-## LASSO Coefficients 
+## LASSO Coefficients
 
-LASSO provides direct interpretability through its coefficients. 
+LASSO provides direct interpretability through its coefficients.
 
 ```{r}
 lasso_imp_vars %>%

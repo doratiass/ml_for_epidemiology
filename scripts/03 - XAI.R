@@ -74,9 +74,8 @@ xgb_shap_data <- bake(
 
 shap_xgb <- shapviz(
   extract_fit_engine(final_xgb_fit),
-  X_pred = xgb_shap_data[1:10, ],
-  interactions = TRUE,
-  which_class = "not_centenarian"
+  X_pred = xgb_shap_data,
+  interactions = TRUE
 )
 
 # ============================================================================ #
