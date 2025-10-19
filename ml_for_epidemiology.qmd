@@ -75,7 +75,7 @@ ctl_grid <- control_resamples(
 
 ```
 
-```{HAP{r}
+```{r}
 #| include: false 
 # Load pre-prepared modeling dataset
 load("data/model_fits.RData")
