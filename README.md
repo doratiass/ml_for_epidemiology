@@ -6,6 +6,8 @@ This repository contains the materials for a guest lecture on the application of
 
 The lecture provides a comprehensive introduction to the machine learning workflow, from study design to model interpretation, using a real-world case study. The goal is to bridge the gap between traditional epidemiological methods and modern predictive modeling techniques, equipping students with the conceptual understanding and practical R coding skills to apply ML in their own research.
 
+The lecture is publicly available here [ML for Epidemiology Presentation](https://doratiass.github.io/ml_for_epidemiology/ "null").
+
 ## Case Study and Publication
 
 The concepts and examples presented in this lecture are based on the following published paper:
@@ -42,7 +44,7 @@ To run the code and render the lecture presentation, you will need:
 
 2.  Clone this repository to your local machine.
 
-3.  Open the repository folder in RStudio \ Positron.
+3.  Open the repository folder in RStudio  Positron.
 
 4.  Install the required R packages listed in the `00 - funcs.R` script.
 
