@@ -2697,7 +2697,7 @@ xgb_wf <- workflow() %>%
 ```
 :::
 
-## Step 6: Hyperparameter Tuning
+## Step 6: Hyperparameter Tuning - define grind
 
 Now we find the optimal hyperparameters using our cross-validation folds.
 
@@ -2705,14 +2705,15 @@ Now we find the optimal hyperparameters using our cross-validation folds.
 
 -   For XGBoost, we use a `grid_space_filling` design to efficiently test 500 different combinations of its many hyperparameters.
 
-The `tune_grid` function automates the process of fitting the model on each CV fold for each hyperparameter combination and evaluating the performance.
-
 ::: {style="font-size:1.6em"}
 ```{r}
 #| echo: true
 #| code-fold: show
 #| eval: false
-# Create grid of hyperparameter values for tuning
+
+# Create grid of penalty values for tuning
+lambda_grid <- grid_regular(penalty(), levels = 100)
+
 # Using space-filling design for efficient coverage of hyperparameter space
 xgb_grid <- grid_space_filling(
   trees(),
@@ -2725,27 +2726,18 @@ xgb_grid <- grid_space_filling(
   size = 500
 )
 
-# Tune hyperparameters using cross-validation and parallel processing
-all_cores <- parallel::detectCores()
-plan(multisession, workers = all_cores - 1)
-set.seed(2020)
-xgb_res <- tune_grid(
-  xgb_wf,
-  resamples = df_train_cv,
-  grid = xgb_grid,
-  metrics = metric_set(roc_auc, pr_auc), # Evaluate using ROC-AUC and PR-AUC
-  control = ctl_grid
-)
-plan(sequential) # Return to sequential processing
 ```
+:::
 
+## Step 6: Hyperparameter Tuning - define grind
+
+The `tune_grid` function automates the process of fitting the model on each CV fold for each hyperparameter combination and evaluating the performance.
+
+::: {style="font-size:1.6em"}
 ```{r}
 #| echo: true
-#| code-fold: true
+#| code-fold: show
 #| eval: false
-# Create grid of penalty values for tuning
-lambda_grid <- grid_regular(penalty(), levels = 100)
-
 # Tune hyperparameters using cross-validation and parallel processing
 all_cores <- parallel::detectCores()
 plan(multisession, workers = all_cores - 1)
@@ -2759,24 +2751,58 @@ lasso_res <- tune_grid(
 )
 plan(sequential) # Return to sequential processing
 ```
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| eval: false
+# Tune hyperparameters using cross-validation and parallel processing
+all_cores <- parallel::detectCores()
+plan(multisession, workers = all_cores - 1)
+set.seed(2020)
+xgb_res <- tune_grid(
+  xgb_wf,
+  resamples = df_train_cv,
+  grid = xgb_grid,
+  metrics = metric_set(roc_auc, pr_auc), # Evaluate using ROC-AUC and PR-AUC
+  control = ctl_grid
+)
+plan(sequential) # Return to sequential processing
+```
 :::
 
-## Step 6: Tuning Results
+## Step 6: Hyperparameter Tuning - Tuning Results
 
 Visualizing the tuning results helps us understand how hyperparameters affect performance. The plot shows the ROC AUC for each penalty value tested for the LASSO model. We want to pick the penalty that gives the highest AUC.
 
 ::::: columns
 ::: {.column width="50%"}
 ```{r}
+#| fig-height: 6
 lasso_res %>%
-  autoplot()
+  collect_metrics() %>%
+  ggplot(aes(penalty, mean, color = .metric)) +
+  geom_line(size = 1.5, alpha = 0.6) +
+  geom_point(size = 2) +
+  facet_wrap(~ .metric, scales = "free", nrow = 2) +
+  scale_x_log10(labels = scales::label_number()) +
+  my_theme
 ```
 :::
 
 ::: {.column width="50%"}
 ```{r}
+#| fig-height: 6
 xgb_res %>%
-  autoplot()
+  collect_metrics() %>%
+  pivot_longer(cols = c(mtry, trees, min_n, tree_depth, learn_rate, loss_reduction, sample_size), 
+  names_to = "var", values_to = "val") %>%
+  ggplot(aes(val, mean, color = var)) +
+  geom_point(size = 2) +
+  facet_grid(.metric ~ var, scales = "free") +
+  labs(x = "Hyperparameter Value", y = "Mean metric") +
+  my_theme +
+  theme(legend.position = "none")
 ```
 :::
 :::::
@@ -2797,7 +2823,6 @@ This provides an unbiased estimate of how our model will perform on new data.
 ```{r}
 #| echo: true
 #| eval: false
-
 # Select best hyperparameters based on ROC AUC
 lasso_best_auc <- select_best(lasso_res, metric = "roc_auc")
 xgb_best_auc <- select_best(xgb_res, metric = "roc_auc")
@@ -2818,11 +2843,32 @@ The `collect_metrics()` function shows the performance on the hold-out test set.
 
 ```{r}
 #| code-fold: false
-# Show metrics for LASSO
-collect_metrics(final_lasso_fit)
 
-# Show metrics for XGBoost
-collect_metrics(final_xgb_fit)
+#| echo: false
+#| results: 'asis'
+#| code-fold: false
+m_lasso <- collect_metrics(final_lasso_fit) %>% mutate(Model = "LASSO")
+m_xgb <- collect_metrics(final_xgb_fit) %>% mutate(Model = "XGBoost")
+
+tbl <- bind_rows(m_lasso, m_xgb) %>%
+  pivot_wider(names_from = Model, values_from = .estimate) %>%
+  mutate(
+    Metric = recode(.metric, roc_auc = "ROC AUC", brier_class = "Brier Score", accuracy = "Accuracy")
+  ) %>%
+  select(Metric, LASSO, XGBoost) %>%
+  arrange(Metric)
+
+knitr::kable(
+  tbl,
+  format = "html",
+  escape = FALSE,
+  digits = 3
+) %>%
+  kable_styling(
+    bootstrap_options = c("striped", "hover", "condensed"),
+    full_width = FALSE,
+    position = "center"
+  )
 ```
 
 # Explainable AI: Opening the Black Box
@@ -2887,6 +2933,8 @@ SHAP is a leading XAI method based on game theory. It calculates the contributio
 ::: {.column width="50%"}
 ```{r}
 #| fig-height: 8
+shap_xgb$S <- -shap_xgb$S #reverse sign for correct interpretation
+
 sv_importance(
   shap_xgb,
   kind = "beeswarm",

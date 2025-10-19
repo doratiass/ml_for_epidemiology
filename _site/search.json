@@ -336,18 +336,25 @@
     "text": "Step 5: Building the workflow\nA workflow object bundles our recipe and model specification. This is a convenient container that makes it easy to apply the same preprocessing and model fitting steps consistently.\n\n\n# LASSO Workflow\nlasso_wf &lt;- workflow() %&gt;%\n  add_model(lasso_spec) %&gt;% # Add model\n  add_recipe(lasso_rec) # Add recipe with preprocessing steps\n\n# XGBoost Workflow\nxgb_wf &lt;- workflow() %&gt;% \n  add_model(xgb_spec)  %&gt;%# Add model\n  add_recipe(xgb_rec) # Add recipe with preprocessing steps"
   },
   {
-    "objectID": "ml_for_epidemiology.html#step-6-hyperparameter-tuning",
-    "href": "ml_for_epidemiology.html#step-6-hyperparameter-tuning",
+    "objectID": "ml_for_epidemiology.html#step-6-hyperparameter-tuning---define-grind",
+    "href": "ml_for_epidemiology.html#step-6-hyperparameter-tuning---define-grind",
     "title": "Machine Learning in Epidemiology",
-    "section": "Step 6: Hyperparameter Tuning",
-    "text": "Step 6: Hyperparameter Tuning\nNow we find the optimal hyperparameters using our cross-validation folds.\n\nFor LASSO, we test 100 different values for the penalty (λ).\nFor XGBoost, we use a grid_space_filling design to efficiently test 500 different combinations of its many hyperparameters.\n\nThe tune_grid function automates the process of fitting the model on each CV fold for each hyperparameter combination and evaluating the performance.\n\n\nCode# Create grid of hyperparameter values for tuning\n# Using space-filling design for efficient coverage of hyperparameter space\nxgb_grid &lt;- grid_space_filling(\n  trees(),\n  tree_depth(),\n  min_n(),\n  loss_reduction(),\n  sample_size = sample_prop(),\n  finalize(mtry(), df_train),\n  learn_rate(),\n  size = 500\n)\n\n# Tune hyperparameters using cross-validation and parallel processing\nall_cores &lt;- parallel::detectCores()\nplan(multisession, workers = all_cores - 1)\nset.seed(2020)\nxgb_res &lt;- tune_grid(\n  xgb_wf,\n  resamples = df_train_cv,\n  grid = xgb_grid,\n  metrics = metric_set(roc_auc, pr_auc), # Evaluate using ROC-AUC and PR-AUC\n  control = ctl_grid\n)\nplan(sequential) # Return to sequential processing\n\n\n\nCode# Create grid of penalty values for tuning\nlambda_grid &lt;- grid_regular(penalty(), levels = 100)\n\n# Tune hyperparameters using cross-validation and parallel processing\nall_cores &lt;- parallel::detectCores()\nplan(multisession, workers = all_cores - 1)\nset.seed(2020)\nlasso_res &lt;- tune_grid(\n  lasso_wf,\n  resamples = df_train_cv, # Use defined CV folds\n  grid = lambda_grid, # Use defined grid of penalty values\n  metrics = metric_set(roc_auc, pr_auc), # Evaluate using ROC-AUC and PR-AUC\n  control = ctl_grid_lasso # Use parallel processing controls\n)\nplan(sequential) # Return to sequential processing"
+    "section": "Step 6: Hyperparameter Tuning - define grind",
+    "text": "Step 6: Hyperparameter Tuning - define grind\nNow we find the optimal hyperparameters using our cross-validation folds.\n\nFor LASSO, we test 100 different values for the penalty (λ).\nFor XGBoost, we use a grid_space_filling design to efficiently test 500 different combinations of its many hyperparameters.\n\n\n\nCode# Create grid of penalty values for tuning\nlambda_grid &lt;- grid_regular(penalty(), levels = 100)\n\n# Using space-filling design for efficient coverage of hyperparameter space\nxgb_grid &lt;- grid_space_filling(\n  trees(),\n  tree_depth(),\n  min_n(),\n  loss_reduction(),\n  sample_size = sample_prop(),\n  finalize(mtry(), df_train),\n  learn_rate(),\n  size = 500\n)"
   },
   {
-    "objectID": "ml_for_epidemiology.html#step-6-tuning-results",
-    "href": "ml_for_epidemiology.html#step-6-tuning-results",
+    "objectID": "ml_for_epidemiology.html#step-6-hyperparameter-tuning---define-grind-1",
+    "href": "ml_for_epidemiology.html#step-6-hyperparameter-tuning---define-grind-1",
     "title": "Machine Learning in Epidemiology",
-    "section": "Step 6: Tuning Results",
-    "text": "Step 6: Tuning Results\nVisualizing the tuning results helps us understand how hyperparameters affect performance. The plot shows the ROC AUC for each penalty value tested for the LASSO model. We want to pick the penalty that gives the highest AUC."
+    "section": "Step 6: Hyperparameter Tuning - define grind",
+    "text": "Step 6: Hyperparameter Tuning - define grind\nThe tune_grid function automates the process of fitting the model on each CV fold for each hyperparameter combination and evaluating the performance.\n\n\nCode# Tune hyperparameters using cross-validation and parallel processing\nall_cores &lt;- parallel::detectCores()\nplan(multisession, workers = all_cores - 1)\nset.seed(2020)\nlasso_res &lt;- tune_grid(\n  lasso_wf,\n  resamples = df_train_cv, # Use defined CV folds\n  grid = lambda_grid, # Use defined grid of penalty values\n  metrics = metric_set(roc_auc, pr_auc), # Evaluate using ROC-AUC and PR-AUC\n  control = ctl_grid_lasso # Use parallel processing controls\n)\nplan(sequential) # Return to sequential processing\n\n\n\nCode# Tune hyperparameters using cross-validation and parallel processing\nall_cores &lt;- parallel::detectCores()\nplan(multisession, workers = all_cores - 1)\nset.seed(2020)\nxgb_res &lt;- tune_grid(\n  xgb_wf,\n  resamples = df_train_cv,\n  grid = xgb_grid,\n  metrics = metric_set(roc_auc, pr_auc), # Evaluate using ROC-AUC and PR-AUC\n  control = ctl_grid\n)\nplan(sequential) # Return to sequential processing"
+  },
+  {
+    "objectID": "ml_for_epidemiology.html#step-6-hyperparameter-tuning---tuning-results",
+    "href": "ml_for_epidemiology.html#step-6-hyperparameter-tuning---tuning-results",
+    "title": "Machine Learning in Epidemiology",
+    "section": "Step 6: Hyperparameter Tuning - Tuning Results",
+    "text": "Step 6: Hyperparameter Tuning - Tuning Results\nVisualizing the tuning results helps us understand how hyperparameters affect performance. The plot shows the ROC AUC for each penalty value tested for the LASSO model. We want to pick the penalty that gives the highest AUC."
   },
   {
     "objectID": "ml_for_epidemiology.html#step-7-finalizing-and-fitting",
@@ -361,7 +368,7 @@
     "href": "ml_for_epidemiology.html#step-8-final-model-evaluation",
     "title": "Machine Learning in Epidemiology",
     "section": "Step 8: Final Model Evaluation",
-    "text": "Step 8: Final Model Evaluation\nThe collect_metrics() function shows the performance on the hold-out test set. We can see that the XGBoost model achieved a higher ROC AUC and PR AUC compared to the LASSO model.\n\n\n# A tibble: 3 × 4\n  .metric     .estimator .estimate .config        \n  &lt;chr&gt;       &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;          \n1 accuracy    binary        0.933  pre0_mod0_post0\n2 roc_auc     binary        0.632  pre0_mod0_post0\n3 brier_class binary        0.0619 pre0_mod0_post0\n\n\n# A tibble: 3 × 4\n  .metric     .estimator .estimate .config        \n  &lt;chr&gt;       &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;          \n1 accuracy    binary        0.933  pre0_mod0_post0\n2 roc_auc     binary        0.696  pre0_mod0_post0\n3 brier_class binary        0.0677 pre0_mod0_post0"
+    "text": "Step 8: Final Model Evaluation\nThe collect_metrics() function shows the performance on the hold-out test set. We can see that the XGBoost model achieved a higher ROC AUC and PR AUC compared to the LASSO model.\n\n\n\n\nMetric\nLASSO\nXGBoost\n\n\n\nAccuracy\n0.933\n0.933\n\n\nBrier Score\n0.062\n0.068\n\n\nROC AUC\n0.632\n0.696"
   },
   {
     "objectID": "ml_for_epidemiology.html#why-we-need-explainable-ai-xai",
