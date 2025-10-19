@@ -1,2 +1,6 @@
 /.quarto/
 **/*.quarto_ipynb
+ml_for_epidemiology_cache
+_freeze
+_site
+ml_for_epidemiology_files
