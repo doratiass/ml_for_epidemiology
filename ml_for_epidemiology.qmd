@@ -3,7 +3,7 @@ title: "Machine Learning in Epidemiology"
 subtitle: "An Introduction with Case Study of Predicting Extreme Centenarianism"
 author: "Dr. Dor Atias, MD-MPH"
 institute: "Tel-Aviv University"
-date: today
+date: 2026-01-07
 format:
   revealjs: 
     theme: serif
@@ -104,6 +104,16 @@ This lecture bridges traditional epidemiological training with modern ML methods
 
 -   This lecture is based on our published research: [Machine learning in epidemiology: An introduction, comparison with traditional methods, and a case study of predicting extreme longevity](https://doi.org/10.1016/j.annepidem.2025.07.024) - elaborated information can be found there
 
+    -   Prospective cohort of **10,059 middle-aged Israeli men,** median entry age 49; **6.9% reached age ≥95.**
+
+    -   R**ecruited in 1963**, with repeat assessments in 1965 and 1968
+
+    -   Long-term follow-up to ensure capture of survival to advanced ages
+
+    -   The target outcome is **near-centenarianism**, defined pragmatically as **survival to age 95 years or older** (rather than ≥100, due to rarity). 
+
+    -   The **prediction task** is a supervised, individual-level **binary classification**: using **midlife predictors** spanning demographic, clinical, lifestyle/physical activity, occupational, family, and dietary factors (146 modeled variables) to predict who will reach **≥95 years**.
+
 -   The data in this lecture was synthetically made with [synthpop](https://www.synthpop.org.uk) package in R based on the original dataset
 
 -   The scripts and data for this lecture can be found in my [GitHub repository](https://github.com/doratiass/ml_for_epidemiology)
@@ -122,50 +132,6 @@ This lecture bridges traditional epidemiological training with modern ML methods
 
 ::: notes
 Start with the classic definition from Arthur Samuel, one of the pioneers of machine learning. This emphasizes that ML is about pattern recognition and learning from data, not just following pre-programmed rules.
-:::
-
-## Prediction vs. Causation: Different Tools for Different Questions
-
-::::: columns
-::: {.column width="50%"}
-### Traditional Epidemiological Methods
-
--   **Causal inference** focus: understanding mechanisms
-
--   Clear **parametric assumptions**
-
--   **Linear** relationships
-
--   Need for **Pre-specified interactions**
-
--   Relatively parsimonious models
-
--   **Interpretable** coefficients
-
-> *"Does smoking **cause** cardiovascular disease?"*
-:::
-
-::: {.column width="50%"}
-### Machine Learning Methods
-
--   Optimizing **predictions**
-
--   **Flexible model** assumptions
-
--   **Non-linear** relationships
-
--   Discover unknown patterns and **complex interactions**
-
--   **High-dimensional** datasets (Large p, p\>N)
-
--   Complex models: **"black box"** by nature
-
-> *"**Who** will develop cardiovascular disease?"*
-:::
-:::::
-
-::: callout-important
-Machine learning can also be used for causal inference, but this is outside the scope of this lecture
 :::
 
 ## Why ML in Healthcare Now?
@@ -260,6 +226,50 @@ Emphasize that this isn't just about having better computers—it's about the co
 
 ::: notes
 This slide serves as a powerful transition from "why now" to "what ML can do." The bridge metaphor visually reinforces that ML connects our data-rich reality with actionable clinical solutions.
+:::
+
+## Prediction vs. Causation: Different Tools for Different Questions
+
+::::: columns
+::: {.column width="50%"}
+### Traditional Epidemiological Methods
+
+-   **Causal inference** focus: understanding mechanisms
+
+-   Clear **parametric assumptions**
+
+-   **Linear** relationships
+
+-   Need for **Pre-specified interactions**
+
+-   Relatively parsimonious models
+
+-   **Interpretable** coefficients
+
+> *"Does smoking **cause** cardiovascular disease?"*
+:::
+
+::: {.column width="50%"}
+### Machine Learning Methods
+
+-   Optimizing **predictions**
+
+-   **Flexible model** assumptions
+
+-   **Non-linear** relationships
+
+-   Discover unknown patterns and **complex interactions**
+
+-   **High-dimensional** datasets (Large p, p\>N)
+
+-   Complex models: **"black box"** by nature
+
+> *"**Who** will develop cardiovascular disease?"*
+:::
+:::::
+
+::: callout-important
+Machine learning can also be used for causal inference, but this is outside the scope of this lecture
 :::
 
 # Core Concepts of Machine Learning
@@ -593,8 +603,8 @@ $$\text{Likelihood}(\theta) = \prod_{i=1}^{m} [\hat{y}^{(i)}]^{y^{(i)}} [1 - \ha
 ### Key Characteristics
 
 -   **High interpretability**: Coefficients have direct clinical meaning
--   **Linear assumption**: Assumes linear relationship between predictors and log-odds
 -   **Reseachers involvement:** Manual variable selection and interactions
+-   **Linear assumption**: Assumes linear relationship between predictors and log-odds
 -   **Cannot handle missing data**: Needs complete cases or imputation
 -   **Limited to p \< N scenarios**: Not suitable when predictors exceed observations
 
@@ -1459,6 +1469,32 @@ plot_ly(
 
 -   **Cross-validation**: Most robust for estimating performance
 
+### What Is Cross-Validation?
+
+Cross-validation (CV) divides your **training data** into multiple (k) folds to get more robust estimates of model performance during hyperparameter tuning.
+
+1.  **Divide training data** into k equal parts (typically k=5 or k=10)
+2.  **For each hyperparameter combination:**
+    -   Train model on k-1 folds
+    -   Test on the remaining fold
+    -   Repeat k times (each fold serves as validation once)
+    -   Average performance across all k tests
+:::
+
+::: {.column width="50%"}
+![](images/cv_test_train.png)
+:::
+:::::
+
+::: {.callout-tip title="Key Principle"}
+Cross-validation improves model reliability by **reducing overfitting**, **maximizing data use**, and **quantifying uncertainty**.\
+It averages performance across multiple validation folds, ensuring stable hyperparameter selection even with limited epidemiological data.
+:::
+
+## Hyperparameters: How to Tune Them?
+
+::::: columns
+::: {.column width="50%"}
 ### Step 3: Select Optimization Metric
 
 Choose based on your epidemiological context:
@@ -1557,40 +1593,38 @@ inherit.aes = FALSE,
 :::
 :::::
 
-## Cross-Validation: Beyond Simple Splitting
+## Quick recap — Core concepts
 
 ::::: columns
 ::: {.column width="50%"}
-### What Is Cross-Validation?
-
-Cross-validation (CV) divides your **training data** into multiple folds to get more robust estimates of model performance during hyperparameter tuning.
-
-### How K-Fold Cross-Validation Works
-
-1.  **Divide training data** into k equal parts (typically k=5 or k=10)
-2.  **For each hyperparameter combination:**
-    -   Train model on k-1 folds
-    -   Test on the remaining fold
-    -   Repeat k times (each fold serves as validation once)
-    -   Average performance across all k tests
+- **Loss** — Model error measure (e.g., log‑loss for binary); lower is better.
+- **Bias vs Variance** — Bias = underfit; Variance = overfit. Balance via complexity & data.
+- **Train / Test split** — Hold out unseen data. Stratify for imbalance; avoid leakage.
 :::
-
 ::: {.column width="50%"}
-![](images/cv_test_train.png)
+- **Hyperparameters** — Pre-training knobs (λ, trees, depth, η). Tune with grid, random, or Latin‑hypercube searches.
+- **Regularization** — Penalizes complexity: L1 → sparsity; L2 → shrinkage; Elastic Net → both. Choose λ via CV.
+- **Cross‑validation** — k‑fold (stratify when needed); select metric that matches the clinical aim.
 :::
 :::::
 
-::: {.callout-tip title="Key Principle"}
-Cross-validation improves model reliability by **reducing overfitting**, **maximizing data use**, and **quantifying uncertainty**.\
-It averages performance across multiple validation folds, ensuring stable hyperparameter selection even with limited epidemiological data.
+::: callout-tip
+Align loss & metric with the clinical question, prevent data leakage, tune with appropriate CV, and report final performance on a held‑out test set.
 :::
 
 ## Decision Trees
 
-Decision Trees are intuitive, non-parametric models that recursively split data to achieve homogenous outcome groups, effectively mimicking clinical decision-making processes.
+Decision Trees are intuitive, non-parametric models that recursively split data to achieve homogenous outcome groups, effectively mimicking clinical decision-making processes. 
 
 ::::: columns
 ::: {.column width="50%"}
+
+### Decision Tree Architecture
+-   **Root Node**: Represents the entire dataset before any splits
+-   **Internal Nodes**: Decision points based on feature values
+-   **Branches**: Outcomes of decisions leading to further nodes
+-   **Leaf Nodes**: Final outcome predictions (class labels or continuous values)
+
 ### Key Characteristics
 
 -   **Non-parametric architecture**: No assumptions about data distribution or linear relationships
@@ -1598,11 +1632,6 @@ Decision Trees are intuitive, non-parametric models that recursively split data 
 -   **Handles mixed data types**: Works with both continuous and categorical predictors natively
 -   **Interpretable**: Easy to understand and explain to clinicians
 
-### Decision Trees hyperparameters
-
--   **cost_complexity**: Penalty for tree complexity (higher = simpler trees)
--   **tree_depth**: Maximum depth of the tree (higher = more complex)
--   **min_n**: Minimum samples required to split a node (higher = fewer splits)
 :::
 
 ::: {.column width="50%"}
@@ -1660,11 +1689,14 @@ tree_fit$fit %>%
 
 Decision trees split data using decision criteria, similar to clinical flowcharts, to create homogeneous (pure) groups with each split. Common metrics include Gini impurity, enthropy and information gain.
 
-$$\text{Total Gini} = \sum{j=1}^{L} \frac{N_j}{N} \times \left(1 - \sum_{i=1}^{c} p_{ij}^2\right)$$
+$$\text{Total Gini} = \sum_{j=1}^{L} \frac{N_j}{N} \times \left(1 - \sum_{i=1}^{c} p_{ij}^2\right)$$
 
 Where:
 
 $L$ = number of leaf nodes in the tree; $N_j$ = number of samples in leaf node $j$; $N$ = total number of samples in the dataset; $1 - \sum_{i=1}^{c} p_{ij}^2$ = Gini impurity of leaf node $j$; $c =$ the number of classes; $p_{ij}$ = proportion of class $i$ in leaf node $j$
+
+::::: columns
+::: {.column width="50%"}
 
 ### Mathematical Intuition
 
@@ -1678,11 +1710,27 @@ $L$ = number of leaf nodes in the tree; $N_j$ = number of samples in leaf node $
 
 -   **Larger leaves** contribute more to the total impurity due to weighting by $\frac{N_j}{N}$
 
+:::
+::: {.column width="50%"}
+
+### Decision Trees hyperparameters
+
+-   **cost_complexity**: Penalty for tree complexity (higher = simpler trees)
+
+-   **tree_depth**: Maximum depth of the tree (higher = more complex)
+
+-   **min_n**: Minimum samples required to split a node (higher = fewer splits)
+
+:::
+:::::
+
 ::: callout-warning
 Decision trees are intuitive but prone to overfitting and thus rarely used alone. They serve as the building blocks for more robust ensemble methods like Random Forest and XGBoost.
 :::
 
 ## Random Forest: Wisdom of the Crowd {.center}
+
+Random Forest is an ensemble of decision trees (**forest**) that combines many trees trained on bootstrap samples, using the **random** feature selection at each split (which de‑correlates trees).
 
 ::::: columns
 ::: {.column width="50%"}
@@ -1730,51 +1778,59 @@ All these lead to **less overfitting**
 
 XGBoost employs **sequential ensemble learning** where each tree **corrects errors** from previous learners, building **weak decision** trees that collectively form a powerful predictor.
 
+:::::: columns
+::: {.column width="50%"}
+
 ### How XGBoost Works
 
 **Step 1:** Start with initial prediction (typically 0.5)
 
 **Step 2:** Calculate **pseudo-residuals** (errors from previous predictions)
 
-**Step 3:** Build trees to predict residuals using **similarity scores**:
+**Step 3:** Build trees to predict residuals using **similarity scores**
 
-$\text{Similarity} = \frac{(\sum \text{residuals})^2}{\sum [\text{previous probabilities} \times (1 - \text{previous probabilities})] + \lambda}$
-
-**Step 4:** For each split calculate the **gain** to find optimal splits:
-
-$\text{Gain} = \text{Similarity}_{\text{left}} + \text{Similarity}_{\text{right}} - \text{Similarity}_{\text{root}}$
+**Step 4:** For each split calculate the **gain** to find optimal splits
 
 **Step 5:** **Prune** using gamma (complexity parameter, if gain \< γ, do not split)
 
-**Step 6:** Scale by learning rate (η) and repeat
+**Step 6:**  The prediction is scaled by a learning rate (η) and added to the ensemble's overall prediction. 
 
-## eXtreme Gradient Boosting (XGBoost) - under the hood
+**Step 7:** Repeat Steps 2-6 for a specified number of trees or until convergence.
 
-### Key Mathematical Concepts
+:::
 
-:::::: columns
-::: {.column width="33.3%"}
+::: {.column width="50%"} 
+:::: {.r-stack}
+::::: {.fragment .fade-in-then-out}
 **Similarity Scores:**
+
+$\text{Similarity} = \frac{(\sum \text{residuals})^2}{\sum [\text{previous probabilities} \times (1 - \text{previous probabilities})] + \lambda}$
 
 -   When residuals are **similar**, they don't cancel out → **high similarity** score.
 
 -   When residuals are **different**, they cancel out → **low similarity** score.
-:::
 
-::: {.column width="33.3%"}
+$\text{Gain} = \text{Similarity}_{\text{left}} + \text{Similarity}_{\text{right}} - \text{Similarity}_{\text{root}}$
+
+:::::
+
+::::: {.fragment .fade-in-then-out}
 **Regularization Effects:**
 
 -   **Lambda (λ) \> 0**: Shrinks similarity scores → easier pruning → prevents overfitting
 
 -   **Gamma (γ)**: Sets minimum gain threshold for splits → controls tree complexity
-:::
 
-::: {.column width="33.3%"}
+:::::
+
+::::: {.fragment .fade-in-then-out}
 **Learning Rate (η):**
 
 -   Takes "small steps in the right direction"
 
 -   empirical evidence shows many small steps outperform few large steps.
+:::::
+::::
 :::
 ::::::
 

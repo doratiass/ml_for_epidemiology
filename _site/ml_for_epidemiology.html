@@ -6,11 +6,11 @@
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.25">
+<meta name="generator" content="quarto-1.8.26">
 <meta name="author" content="Dr.&nbsp;Dor Atias, MD-MPH">
-<meta name="dcterms.date" content="2025-10-19">
+<meta name="dcterms.date" content="2026-01-07">
 <title>Machine Learning in Epidemiology</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -210,7 +210,7 @@ Dr.&nbsp;Dor Atias, MD-MPH
     </div>
 </div>
 
-  <p class="date">2025-10-19</p>
+  <p class="date">2026-01-07</p>
 </section><section id="learning-objectives" class="slide level2"><h2>Learning Objectives</h2>
 <p>By the end of this lecture, you will be able to:</p>
 <ul>
@@ -240,7 +240,16 @@ Dr.&nbsp;Dor Atias, MD-MPH
           display:block!important;
       }</style></aside></section><section id="a-roadmap-for-this-lecture" class="slide level2"><h2>A roadmap for this lecture</h2>
 <ul>
-<li><p>This lecture is based on our published research: <a href="https://doi.org/10.1016/j.annepidem.2025.07.024">Machine learning in epidemiology: An introduction, comparison with traditional methods, and a case study of predicting extreme longevity</a> - elaborated information can be found there</p></li>
+<li>
+<p>This lecture is based on our published research: <a href="https://doi.org/10.1016/j.annepidem.2025.07.024">Machine learning in epidemiology: An introduction, comparison with traditional methods, and a case study of predicting extreme longevity</a> - elaborated information can be found there</p>
+<ul>
+<li><p>Prospective cohort of <strong>10,059 middle-aged Israeli men,</strong> median entry age 49; <strong>6.9% reached age ≥95.</strong></p></li>
+<li><p>R<strong>ecruited in 1963</strong>, with repeat assessments in 1965 and 1968</p></li>
+<li><p>Long-term follow-up to ensure capture of survival to advanced ages</p></li>
+<li><p>The target outcome is <strong>near-centenarianism</strong>, defined pragmatically as <strong>survival to age 95 years or older</strong> (rather than ≥100, due to rarity).&nbsp;</p></li>
+<li><p>The <strong>prediction task</strong> is a supervised, individual-level <strong>binary classification</strong>: using <strong>midlife predictors</strong> spanning demographic, clinical, lifestyle/physical activity, occupational, family, and dietary factors (146 modeled variables) to predict who will reach <strong>≥95 years</strong>.</p></li>
+</ul>
+</li>
 <li><p>The data in this lecture was synthetically made with <a href="https://www.synthpop.org.uk">synthpop</a> package in R based on the original dataset</p></li>
 <li><p>The scripts and data for this lecture can be found in my <a href="https://github.com/doratiass/ml_for_epidemiology">GitHub repository</a></p></li>
 <li><p><strong>StatQuest</strong> <a href="https://statquest.org">website</a> and <a href="https://www.youtube.com/@statquest">YouTube channel</a> by <strong>Josh Starmer</strong> - great resource for learning ML concepts</p></li>
@@ -264,49 +273,7 @@ Dr.&nbsp;Dor Atias, MD-MPH
           width: 1px!important;
           overflow: hidden!important;
           display:block!important;
-      }</style></aside></section><section id="prediction-vs.-causation-different-tools-for-different-questions" class="slide level2"><h2>Prediction vs.&nbsp;Causation: Different Tools for Different Questions</h2>
-<div class="columns">
-<div class="column" style="width:50%;">
-<h3 id="traditional-epidemiological-methods">Traditional Epidemiological Methods</h3>
-<ul>
-<li><p><strong>Causal inference</strong> focus: understanding mechanisms</p></li>
-<li><p>Clear <strong>parametric assumptions</strong></p></li>
-<li><p><strong>Linear</strong> relationships</p></li>
-<li><p>Need for <strong>Pre-specified interactions</strong></p></li>
-<li><p>Relatively parsimonious models</p></li>
-<li><p><strong>Interpretable</strong> coefficients</p></li>
-</ul>
-<blockquote>
-<p><em>“Does smoking <strong>cause</strong> cardiovascular disease?”</em></p>
-</blockquote>
-</div><div class="column" style="width:50%;">
-<h3 id="machine-learning-methods">Machine Learning Methods</h3>
-<ul>
-<li><p>Optimizing <strong>predictions</strong></p></li>
-<li><p><strong>Flexible model</strong> assumptions</p></li>
-<li><p><strong>Non-linear</strong> relationships</p></li>
-<li><p>Discover unknown patterns and <strong>complex interactions</strong></p></li>
-<li><p><strong>High-dimensional</strong> datasets (Large p, p&gt;N)</p></li>
-<li><p>Complex models: <strong>“black box”</strong> by nature</p></li>
-</ul>
-<blockquote>
-<p><em>“<strong>Who</strong> will develop cardiovascular disease?”</em></p>
-</blockquote>
-</div></div>
-<div class="callout callout-important callout-titled callout-style-default">
-<div class="callout-body">
-<div class="callout-title">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<p><strong>Important</strong></p>
-</div>
-<div class="callout-content">
-<p>Machine learning can also be used for causal inference, but this is outside the scope of this lecture</p>
-</div>
-</div>
-</div>
-</section><section id="why-ml-in-healthcare-now" class="slide level2"><h2>Why ML in Healthcare Now?</h2>
+      }</style></aside></section><section id="why-ml-in-healthcare-now" class="slide level2"><h2>Why ML in Healthcare Now?</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
 <h3 id="the-data-revolution">📊 The Data Revolution</h3>
@@ -402,7 +369,49 @@ Dr.&nbsp;Dor Atias, MD-MPH
           width: 1px!important;
           overflow: hidden!important;
           display:block!important;
-      }</style></aside></section></section><section><section id="core-concepts-of-machine-learning" class="title-slide slide level1 center"><h1>Core Concepts of Machine Learning</h1>
+      }</style></aside></section><section id="prediction-vs.-causation-different-tools-for-different-questions" class="slide level2"><h2>Prediction vs.&nbsp;Causation: Different Tools for Different Questions</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<h3 id="traditional-epidemiological-methods">Traditional Epidemiological Methods</h3>
+<ul>
+<li><p><strong>Causal inference</strong> focus: understanding mechanisms</p></li>
+<li><p>Clear <strong>parametric assumptions</strong></p></li>
+<li><p><strong>Linear</strong> relationships</p></li>
+<li><p>Need for <strong>Pre-specified interactions</strong></p></li>
+<li><p>Relatively parsimonious models</p></li>
+<li><p><strong>Interpretable</strong> coefficients</p></li>
+</ul>
+<blockquote>
+<p><em>“Does smoking <strong>cause</strong> cardiovascular disease?”</em></p>
+</blockquote>
+</div><div class="column" style="width:50%;">
+<h3 id="machine-learning-methods">Machine Learning Methods</h3>
+<ul>
+<li><p>Optimizing <strong>predictions</strong></p></li>
+<li><p><strong>Flexible model</strong> assumptions</p></li>
+<li><p><strong>Non-linear</strong> relationships</p></li>
+<li><p>Discover unknown patterns and <strong>complex interactions</strong></p></li>
+<li><p><strong>High-dimensional</strong> datasets (Large p, p&gt;N)</p></li>
+<li><p>Complex models: <strong>“black box”</strong> by nature</p></li>
+</ul>
+<blockquote>
+<p><em>“<strong>Who</strong> will develop cardiovascular disease?”</em></p>
+</blockquote>
+</div></div>
+<div class="callout callout-important callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Important</strong></p>
+</div>
+<div class="callout-content">
+<p>Machine learning can also be used for causal inference, but this is outside the scope of this lecture</p>
+</div>
+</div>
+</div>
+</section></section><section><section id="core-concepts-of-machine-learning" class="title-slide slide level1 center"><h1>Core Concepts of Machine Learning</h1>
 
 </section><section id="machine-learning-workflow-for-epidemiological-research" class="slide level2"><h2>Machine Learning Workflow for Epidemiological Research</h2>
 
@@ -504,9 +513,9 @@ Dr.&nbsp;Dor Atias, MD-MPH
 <li>
 <strong>High interpretability</strong>: Coefficients have direct clinical meaning</li>
 <li>
-<strong>Linear assumption</strong>: Assumes linear relationship between predictors and log-odds</li>
-<li>
 <strong>Reseachers involvement:</strong> Manual variable selection and interactions</li>
+<li>
+<strong>Linear assumption</strong>: Assumes linear relationship between predictors and log-odds</li>
 <li>
 <strong>Cannot handle missing data</strong>: Needs complete cases or imputation</li>
 <li>
@@ -1010,30 +1019,8 @@ Dr.&nbsp;Dor Atias, MD-MPH
 <li><p><strong>Hold-out validation</strong>: Simpler but less reliable</p></li>
 <li><p><strong>Cross-validation</strong>: Most robust for estimating performance</p></li>
 </ul>
-<h3 id="step-3-select-optimization-metric">Step 3: Select Optimization Metric</h3>
-<p>Choose based on your epidemiological context:</p>
-<ul>
-<li><p><strong>Classification tasks</strong>: AUC-ROC, accuracy, F1-score</p></li>
-<li><p><strong>Rare diseases</strong>: Use Precision-Recall AUC instead of ROC-AUC</p></li>
-<li><p><strong>Risk prediction</strong>: Consider calibration alongside discrimination</p></li>
-<li><p><strong>Screening tools</strong>: Prioritize sensitivity (catch all cases)</p></li>
-</ul>
-</div><div class="column" style="width:50%;">
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure><p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-12-1.png"></p>
-</figure>
-</div>
-</div>
-</div>
-</div></div>
-</section><section id="cross-validation-beyond-simple-splitting" class="slide level2"><h2>Cross-Validation: Beyond Simple Splitting</h2>
-<div class="columns">
-<div class="column" style="width:50%;">
 <h3 id="what-is-cross-validation">What Is Cross-Validation?</h3>
-<p>Cross-validation (CV) divides your <strong>training data</strong> into multiple folds to get more robust estimates of model performance during hyperparameter tuning.</p>
-<h3 id="how-k-fold-cross-validation-works">How K-Fold Cross-Validation Works</h3>
+<p>Cross-validation (CV) divides your <strong>training data</strong> into multiple (k) folds to get more robust estimates of model performance during hyperparameter tuning.</p>
 <ol type="1">
 <li>
 <strong>Divide training data</strong> into k equal parts (typically k=5 or k=10)</li>
@@ -1066,10 +1053,76 @@ It averages performance across multiple validation folds, ensuring stable hyperp
 </div>
 </div>
 </div>
+</section><section id="hyperparameters-how-to-tune-them-2" class="slide level2"><h2>Hyperparameters: How to Tune Them?</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<h3 id="step-3-select-optimization-metric">Step 3: Select Optimization Metric</h3>
+<p>Choose based on your epidemiological context:</p>
+<ul>
+<li><p><strong>Classification tasks</strong>: AUC-ROC, accuracy, F1-score</p></li>
+<li><p><strong>Rare diseases</strong>: Use Precision-Recall AUC instead of ROC-AUC</p></li>
+<li><p><strong>Risk prediction</strong>: Consider calibration alongside discrimination</p></li>
+<li><p><strong>Screening tools</strong>: Prioritize sensitivity (catch all cases)</p></li>
+</ul>
+</div><div class="column" style="width:50%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure><p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-12-1.png"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+</section><section id="quick-recap-core-concepts" class="slide level2"><h2>Quick recap — Core concepts</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<ul>
+<li>
+<strong>Loss</strong> — Model error measure (e.g., log‑loss for binary); lower is better.</li>
+<li>
+<strong>Bias vs Variance</strong> — Bias = underfit; Variance = overfit. Balance via complexity &amp; data.</li>
+<li>
+<strong>Train / Test split</strong> — Hold out unseen data. Stratify for imbalance; avoid leakage.</li>
+</ul>
+</div><div class="column" style="width:50%;">
+<ul>
+<li>
+<strong>Hyperparameters</strong> — Pre-training knobs (λ, trees, depth, η). Tune with grid, random, or Latin‑hypercube searches.</li>
+<li>
+<strong>Regularization</strong> — Penalizes complexity: L1 → sparsity; L2 → shrinkage; Elastic Net → both. Choose λ via CV.</li>
+<li>
+<strong>Cross‑validation</strong> — k‑fold (stratify when needed); select metric that matches the clinical aim.</li>
+</ul>
+</div></div>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Tip</strong></p>
+</div>
+<div class="callout-content">
+<p>Align loss &amp; metric with the clinical question, prevent data leakage, tune with appropriate CV, and report final performance on a held‑out test set.</p>
+</div>
+</div>
+</div>
 </section><section id="decision-trees" class="slide level2"><h2>Decision Trees</h2>
 <p>Decision Trees are intuitive, non-parametric models that recursively split data to achieve homogenous outcome groups, effectively mimicking clinical decision-making processes.</p>
 <div class="columns">
 <div class="column" style="width:50%;">
+<h3 id="decision-tree-architecture">Decision Tree Architecture</h3>
+<ul>
+<li>
+<strong>Root Node</strong>: Represents the entire dataset before any splits</li>
+<li>
+<strong>Internal Nodes</strong>: Decision points based on feature values</li>
+<li>
+<strong>Branches</strong>: Outcomes of decisions leading to further nodes</li>
+<li>
+<strong>Leaf Nodes</strong>: Final outcome predictions (class labels or continuous values)</li>
+</ul>
 <h3 id="key-characteristics-3">Key Characteristics</h3>
 <ul>
 <li>
@@ -1080,15 +1133,6 @@ It averages performance across multiple validation folds, ensuring stable hyperp
 <strong>Handles mixed data types</strong>: Works with both continuous and categorical predictors natively</li>
 <li>
 <strong>Interpretable</strong>: Easy to understand and explain to clinicians</li>
-</ul>
-<h3 id="decision-trees-hyperparameters">Decision Trees hyperparameters</h3>
-<ul>
-<li>
-<strong>cost_complexity</strong>: Penalty for tree complexity (higher = simpler trees)</li>
-<li>
-<strong>tree_depth</strong>: Maximum depth of the tree (higher = more complex)</li>
-<li>
-<strong>min_n</strong>: Minimum samples required to split a node (higher = fewer splits)</li>
 </ul>
 </div><div class="column" style="width:50%;">
 <div class="cell">
@@ -1103,9 +1147,11 @@ It averages performance across multiple validation folds, ensuring stable hyperp
 </section><section id="descision-trees---under-the-hood" class="slide level2"><h2>Descision Trees - under the hood</h2>
 <h3 id="mathematical-foundation-2">Mathematical Foundation</h3>
 <p>Decision trees split data using decision criteria, similar to clinical flowcharts, to create homogeneous (pure) groups with each split. Common metrics include Gini impurity, enthropy and information gain.</p>
-<p><span class="math display">\[\text{Total Gini} = \sum{j=1}^{L} \frac{N_j}{N} \times \left(1 - \sum_{i=1}^{c} p_{ij}^2\right)\]</span></p>
+<p><span class="math display">\[\text{Total Gini} = \sum_{j=1}^{L} \frac{N_j}{N} \times \left(1 - \sum_{i=1}^{c} p_{ij}^2\right)\]</span></p>
 <p>Where:</p>
 <p><span class="math inline">\(L\)</span> = number of leaf nodes in the tree; <span class="math inline">\(N_j\)</span> = number of samples in leaf node <span class="math inline">\(j\)</span>; <span class="math inline">\(N\)</span> = total number of samples in the dataset; <span class="math inline">\(1 - \sum_{i=1}^{c} p_{ij}^2\)</span> = Gini impurity of leaf node <span class="math inline">\(j\)</span>; <span class="math inline">\(c =\)</span> the number of classes; <span class="math inline">\(p_{ij}\)</span> = proportion of class <span class="math inline">\(i\)</span> in leaf node <span class="math inline">\(j\)</span></p>
+<div class="columns">
+<div class="column" style="width:50%;">
 <h3 id="mathematical-intuition">Mathematical Intuition</h3>
 <ul>
 <li><p><strong>Gini = 0</strong>: Perfect classification (all samples same class)</p></li>
@@ -1114,6 +1160,14 @@ It averages performance across multiple validation folds, ensuring stable hyperp
 <li><p><strong>No splits</strong>: Total Gini = original root Gini</p></li>
 <li><p><strong>Larger leaves</strong> contribute more to the total impurity due to weighting by <span class="math inline">\(\frac{N_j}{N}\)</span></p></li>
 </ul>
+</div><div class="column" style="width:50%;">
+<h3 id="decision-trees-hyperparameters">Decision Trees hyperparameters</h3>
+<ul>
+<li><p><strong>cost_complexity</strong>: Penalty for tree complexity (higher = simpler trees)</p></li>
+<li><p><strong>tree_depth</strong>: Maximum depth of the tree (higher = more complex)</p></li>
+<li><p><strong>min_n</strong>: Minimum samples required to split a node (higher = fewer splits)</p></li>
+</ul>
+</div></div>
 <div class="callout callout-warning callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
@@ -1128,6 +1182,7 @@ It averages performance across multiple validation folds, ensuring stable hyperp
 </div>
 </div>
 </section><section id="random-forest-wisdom-of-the-crowd" class="slide level2 center"><h2>Random Forest: Wisdom of the Crowd</h2>
+<p>Random Forest is an ensemble of decision trees (<strong>forest</strong>) that combines many trees trained on bootstrap samples, using the <strong>random</strong> feature selection at each split (which de‑correlates trees).</p>
 <div class="columns">
 <div class="column" style="width:50%;">
 <h3 id="key-characteristics-4">Key Characteristics</h3>
@@ -1168,36 +1223,42 @@ It averages performance across multiple validation folds, ensuring stable hyperp
       }</style></aside></section><section id="extreme-gradient-boosting-xgboost---under-the-hood" class="slide level2"><h2>eXtreme Gradient Boosting (XGBoost) - under the hood</h2>
 <h3 id="algorithm-overview">Algorithm Overview</h3>
 <p>XGBoost employs <strong>sequential ensemble learning</strong> where each tree <strong>corrects errors</strong> from previous learners, building <strong>weak decision</strong> trees that collectively form a powerful predictor.</p>
+<div class="columns">
+<div class="column" style="width:50%;">
 <h3 id="how-xgboost-works">How XGBoost Works</h3>
 <p><strong>Step 1:</strong> Start with initial prediction (typically 0.5)</p>
 <p><strong>Step 2:</strong> Calculate <strong>pseudo-residuals</strong> (errors from previous predictions)</p>
-<p><strong>Step 3:</strong> Build trees to predict residuals using <strong>similarity scores</strong>:</p>
-<p><span class="math inline">\(\text{Similarity} = \frac{(\sum \text{residuals})^2}{\sum [\text{previous probabilities} \times (1 - \text{previous probabilities})] + \lambda}\)</span></p>
-<p><strong>Step 4:</strong> For each split calculate the <strong>gain</strong> to find optimal splits:</p>
-<p><span class="math inline">\(\text{Gain} = \text{Similarity}_{\text{left}} + \text{Similarity}_{\text{right}} - \text{Similarity}_{\text{root}}\)</span></p>
+<p><strong>Step 3:</strong> Build trees to predict residuals using <strong>similarity scores</strong></p>
+<p><strong>Step 4:</strong> For each split calculate the <strong>gain</strong> to find optimal splits</p>
 <p><strong>Step 5:</strong> <strong>Prune</strong> using gamma (complexity parameter, if gain &lt; γ, do not split)</p>
-<p><strong>Step 6:</strong> Scale by learning rate (η) and repeat</p>
-</section><section id="extreme-gradient-boosting-xgboost---under-the-hood-1" class="slide level2"><h2>eXtreme Gradient Boosting (XGBoost) - under the hood</h2>
-<h3 id="key-mathematical-concepts">Key Mathematical Concepts</h3>
-<div class="columns">
-<div class="column" style="width:33.3%;">
+<p><strong>Step 6:</strong> The prediction is scaled by a learning rate (η) and added to the ensemble’s overall prediction.</p>
+<p><strong>Step 7:</strong> Repeat Steps 2-6 for a specified number of trees or until convergence.</p>
+</div><div class="column" style="width:50%;">
+<div class="r-stack">
+<div class="fragment fade-in-then-out">
 <p><strong>Similarity Scores:</strong></p>
+<p><span class="math inline">\(\text{Similarity} = \frac{(\sum \text{residuals})^2}{\sum [\text{previous probabilities} \times (1 - \text{previous probabilities})] + \lambda}\)</span></p>
 <ul>
 <li><p>When residuals are <strong>similar</strong>, they don’t cancel out → <strong>high similarity</strong> score.</p></li>
 <li><p>When residuals are <strong>different</strong>, they cancel out → <strong>low similarity</strong> score.</p></li>
 </ul>
-</div><div class="column" style="width:33.3%;">
+<p><span class="math inline">\(\text{Gain} = \text{Similarity}_{\text{left}} + \text{Similarity}_{\text{right}} - \text{Similarity}_{\text{root}}\)</span></p>
+</div>
+<div class="fragment fade-in-then-out">
 <p><strong>Regularization Effects:</strong></p>
 <ul>
 <li><p><strong>Lambda (λ) &gt; 0</strong>: Shrinks similarity scores → easier pruning → prevents overfitting</p></li>
 <li><p><strong>Gamma (γ)</strong>: Sets minimum gain threshold for splits → controls tree complexity</p></li>
 </ul>
-</div><div class="column" style="width:33.3%;">
+</div>
+<div class="fragment fade-in-then-out">
 <p><strong>Learning Rate (η):</strong></p>
 <ul>
 <li><p>Takes “small steps in the right direction”</p></li>
 <li><p>empirical evidence shows many small steps outperform few large steps.</p></li>
 </ul>
+</div>
+</div>
 </div></div>
 </section><section id="xgboost---under-the-hood" class="slide level2"><h2>XGBoost - under the hood</h2>
 
