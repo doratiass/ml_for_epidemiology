@@ -138,7 +138,7 @@ Start with the classic definition from Arthur Samuel, one of the pioneers of mac
 
 ::::: columns
 ::: {.column width="50%"}
-### 📊 The Data Revolution
+### 📊 Data are bigger
 
 **Exponential Growth:**
 
@@ -151,7 +151,7 @@ Start with the classic definition from Arthur Samuel, one of the pioneers of mac
 
 ------------------------------------------------------------------------
 
-### 🧩 Complex Medical Challenges
+### 🧩 Problems are messier
 
 **New Complexities:**
 
@@ -164,7 +164,7 @@ Start with the classic definition from Arthur Samuel, one of the pioneers of mac
 :::
 
 ::: {.column width="50%"}
-### 🎯 Personalized Medicine Era
+### 🎯 Medicine is personalized
 
 **Individual Focus:**
 
@@ -177,7 +177,7 @@ Start with the classic definition from Arthur Samuel, one of the pioneers of mac
 
 ------------------------------------------------------------------------
 
-### 💻 Technology Enablers
+### 💻 Compute is accessible
 
 **Infrastructure Ready:**
 
@@ -738,9 +738,9 @@ Yes! Overfitting occurs when a model learns noise instead of signal, leading to 
 ::: {.column width="50%"}
 ### Key Concepts
 
-**Bias**: measures how far off, on average, a model’s predictions are from the ground truth values.
+**Bias**: systematic wrongness. measures how far off, on average, a model’s predictions are from the ground truth values.
 
-**Variance**: measures how much a model’s predictions change with different training datasets
+**Variance**: instability. measures how much a model’s predictions change with different training datasets
 
 **Underfitting** occurs when the model is too simple, bias is high
 
@@ -1597,14 +1597,15 @@ inherit.aes = FALSE,
 
 ::::: columns
 ::: {.column width="50%"}
-- **Loss** — Model error measure (e.g., log‑loss for binary); lower is better.
-- **Bias vs Variance** — Bias = underfit; Variance = overfit. Balance via complexity & data.
-- **Train / Test split** — Hold out unseen data. Stratify for imbalance; avoid leakage.
+-   **Loss** — Model error measure (e.g., log‑loss for binary); lower is better.
+-   **Bias vs Variance** — Bias = underfit; Variance = overfit. Balance via complexity & data.
+-   **Train / Test split** — Hold out unseen data. Stratify for imbalance; avoid leakage.
 :::
+
 ::: {.column width="50%"}
-- **Hyperparameters** — Pre-training knobs (λ, trees, depth, η). Tune with grid, random, or Latin‑hypercube searches.
-- **Regularization** — Penalizes complexity: L1 → sparsity; L2 → shrinkage; Elastic Net → both. Choose λ via CV.
-- **Cross‑validation** — k‑fold (stratify when needed); select metric that matches the clinical aim.
+-   **Hyperparameters** — Pre-training knobs (λ, trees, depth, η). Tune with grid, random, or Latin‑hypercube searches.
+-   **Regularization** — Penalizes complexity: L1 → sparsity; L2 → shrinkage; Elastic Net → both. Choose λ via CV.
+-   **Cross‑validation** — k‑fold (stratify when needed); select metric that matches the clinical aim.
 :::
 :::::
 
@@ -1614,12 +1615,12 @@ Align loss & metric with the clinical question, prevent data leakage, tune with 
 
 ## Decision Trees
 
-Decision Trees are intuitive, non-parametric models that recursively split data to achieve homogenous outcome groups, effectively mimicking clinical decision-making processes. 
+Decision Trees are intuitive, non-parametric models that recursively split data to achieve homogenous outcome groups, effectively mimicking clinical decision-making processes.
 
 ::::: columns
 ::: {.column width="50%"}
-
 ### Decision Tree Architecture
+
 -   **Root Node**: Represents the entire dataset before any splits
 -   **Internal Nodes**: Decision points based on feature values
 -   **Branches**: Outcomes of decisions leading to further nodes
@@ -1631,7 +1632,6 @@ Decision Trees are intuitive, non-parametric models that recursively split data 
 -   **Automatic interaction detection**: Naturally captures variable interactions through hierarchical splits
 -   **Handles mixed data types**: Works with both continuous and categorical predictors natively
 -   **Interpretable**: Easy to understand and explain to clinicians
-
 :::
 
 ::: {.column width="50%"}
@@ -1697,7 +1697,6 @@ $L$ = number of leaf nodes in the tree; $N_j$ = number of samples in leaf node $
 
 ::::: columns
 ::: {.column width="50%"}
-
 ### Mathematical Intuition
 
 -   **Gini = 0**: Perfect classification (all samples same class)
@@ -1709,10 +1708,9 @@ $L$ = number of leaf nodes in the tree; $N_j$ = number of samples in leaf node $
 -   **No splits**: Total Gini = original root Gini
 
 -   **Larger leaves** contribute more to the total impurity due to weighting by $\frac{N_j}{N}$
-
 :::
-::: {.column width="50%"}
 
+::: {.column width="50%"}
 ### Decision Trees hyperparameters
 
 -   **cost_complexity**: Penalty for tree complexity (higher = simpler trees)
@@ -1720,7 +1718,6 @@ $L$ = number of leaf nodes in the tree; $N_j$ = number of samples in leaf node $
 -   **tree_depth**: Maximum depth of the tree (higher = more complex)
 
 -   **min_n**: Minimum samples required to split a node (higher = fewer splits)
-
 :::
 :::::
 
@@ -1778,9 +1775,8 @@ All these lead to **less overfitting**
 
 XGBoost employs **sequential ensemble learning** where each tree **corrects errors** from previous learners, building **weak decision** trees that collectively form a powerful predictor.
 
-:::::: columns
+::::::::: columns
 ::: {.column width="50%"}
-
 ### How XGBoost Works
 
 **Step 1:** Start with initial prediction (typically 0.5)
@@ -1793,15 +1789,14 @@ XGBoost employs **sequential ensemble learning** where each tree **corrects erro
 
 **Step 5:** **Prune** using gamma (complexity parameter, if gain \< γ, do not split)
 
-**Step 6:**  The prediction is scaled by a learning rate (η) and added to the ensemble's overall prediction. 
+**Step 6:** The prediction is scaled by a learning rate (η) and added to the ensemble's overall prediction.
 
 **Step 7:** Repeat Steps 2-6 for a specified number of trees or until convergence.
-
 :::
 
-::: {.column width="50%"} 
-:::: {.r-stack}
-::::: {.fragment .fade-in-then-out}
+::::::: {.column width="50%"}
+:::::: r-stack
+::: {.fragment .fade-in-then-out}
 **Similarity Scores:**
 
 $\text{Similarity} = \frac{(\sum \text{residuals})^2}{\sum [\text{previous probabilities} \times (1 - \text{previous probabilities})] + \lambda}$
@@ -1811,28 +1806,26 @@ $\text{Similarity} = \frac{(\sum \text{residuals})^2}{\sum [\text{previous proba
 -   When residuals are **different**, they cancel out → **low similarity** score.
 
 $\text{Gain} = \text{Similarity}_{\text{left}} + \text{Similarity}_{\text{right}} - \text{Similarity}_{\text{root}}$
+:::
 
-:::::
-
-::::: {.fragment .fade-in-then-out}
+::: {.fragment .fade-in-then-out}
 **Regularization Effects:**
 
 -   **Lambda (λ) \> 0**: Shrinks similarity scores → easier pruning → prevents overfitting
 
 -   **Gamma (γ)**: Sets minimum gain threshold for splits → controls tree complexity
+:::
 
-:::::
-
-::::: {.fragment .fade-in-then-out}
+::: {.fragment .fade-in-then-out}
 **Learning Rate (η):**
 
 -   Takes "small steps in the right direction"
 
 -   empirical evidence shows many small steps outperform few large steps.
-:::::
-::::
 :::
 ::::::
+:::::::
+:::::::::
 
 ## XGBoost - under the hood
 
