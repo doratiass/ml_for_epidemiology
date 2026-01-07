@@ -738,9 +738,9 @@ Yes! Overfitting occurs when a model learns noise instead of signal, leading to 
 ::: {.column width="50%"}
 ### Key Concepts
 
-**Bias**: systematic wrongness. measures how far off, on average, a model’s predictions are from the ground truth values.
+**Bias**: measures how far off, on average, a model’s predictions are from the ground truth values.
 
-**Variance**: instability. measures how much a model’s predictions change with different training datasets
+**Variance**: measures how much a model’s predictions change with different training datasets
 
 **Underfitting** occurs when the model is too simple, bias is high
 
@@ -1742,6 +1742,12 @@ Random Forest is an ensemble of decision trees (**forest**) that combines many t
 -   Average predictions across all trees
 
 **Feature Randomness:** At each bootstrap, consider only $\sqrt{p}$ randomly selected features (where $p$ = total features)
+
+**Aggregate predictions**
+
+-   Classification: majority vote, or average predicted probabilities across trees
+
+-   Regression: average predictions
 :::
 
 ::: {.column width="50%"}
@@ -1750,8 +1756,6 @@ Random Forest is an ensemble of decision trees (**forest**) that combines many t
 **Ensemble Prediction:** $$\hat{y} = \frac{1}{B} \sum_{b=1}^{B} \hat{f}_b(x)$$
 
 Where $\hat{f}_b$ is the $b$-th tree trained on bootstrap sample
-:::
-:::::
 
 -   **De-correlated trees**: Random feature selection ensures trees are diverse
 
@@ -1760,6 +1764,12 @@ Where $\hat{f}_b$ is the $b$-th tree trained on bootstrap sample
 -   **Robustness**: Handles outliers and noise well
 
 All these lead to **less overfitting**
+:::
+:::::
+
+::: callout-warning
+Random forests often have good AUC because they rank risk well, but their probabilities can be miscalibrated: trees optimizes class separation rather than probability accuracy. More on that later!
+:::
 
 ::: notes
 -   Random Forest is like having a committee of doctors each looking at different aspects of a patient
@@ -2410,6 +2420,10 @@ xgb_roc <- final_xgb_fit %>%
   ) +
   coord_equal() +
   my_theme +
+  labs(
+    x = "False Positive Rate (1 - Specificity)",
+    y = "True Positive Rate (Sensitivity)"
+  ) +
   theme(legend.position = "none", legend.title = element_blank())
 ```
 :::
@@ -2478,6 +2492,10 @@ rbind(lasso_pr, xgb_pr) %>%
   ) +
   coord_equal() +
   my_theme +
+  labs(
+    x = "Recall (Sensitivity)",
+    y = "Precision (Positive Predictive Value)"
+  ) +
   theme(legend.position = "none", legend.title = element_blank())
 ```
 :::

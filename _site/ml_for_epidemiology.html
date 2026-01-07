@@ -1193,17 +1193,35 @@ It averages performance across multiple validation folds, ensuring stable hyperp
 <li><p>Average predictions across all trees</p></li>
 </ul>
 <p><strong>Feature Randomness:</strong> At each bootstrap, consider only <span class="math inline">\(\sqrt{p}\)</span> randomly selected features (where <span class="math inline">\(p\)</span> = total features)</p>
+<p><strong>Aggregate predictions</strong></p>
+<ul>
+<li><p>Classification: majority vote, or average predicted probabilities across trees</p></li>
+<li><p>Regression: average predictions</p></li>
+</ul>
 </div><div class="column" style="width:50%;">
 <h3 id="mathematical-foundation-3">Mathematical Foundation</h3>
 <p><strong>Ensemble Prediction:</strong> <span class="math display">\[\hat{y} = \frac{1}{B} \sum_{b=1}^{B} \hat{f}_b(x)\]</span></p>
 <p>Where <span class="math inline">\(\hat{f}_b\)</span> is the <span class="math inline">\(b\)</span>-th tree trained on bootstrap sample</p>
-</div></div>
 <ul>
 <li><p><strong>De-correlated trees</strong>: Random feature selection ensures trees are diverse</p></li>
 <li><p><strong>Variability reduction</strong>: Bagging reduces variance by averaging multiple trees</p></li>
 <li><p><strong>Robustness</strong>: Handles outliers and noise well</p></li>
 </ul>
 <p>All these lead to <strong>less overfitting</strong></p>
+</div></div>
+<div class="callout callout-warning callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Warning</strong></p>
+</div>
+<div class="callout-content">
+<p>Random forests often have good AUC because they rank risk well, but their probabilities can be miscalibrated: trees optimizes class separation rather than probability accuracy. More on that later!</p>
+</div>
+</div>
+</div>
 <aside class="notes"><ul>
 <li>Random Forest is like having a committee of doctors each looking at different aspects of a patient</li>
 <li>Each “doctor” (tree) sees different patients (bootstrap samples) and focuses on different symptoms (random features)</li>
