@@ -2913,8 +2913,6 @@ final_xgb_fit <- final_xgb %>% last_fit(df_split)
 The `collect_metrics()` function shows the performance on the hold-out test set. We can see that the XGBoost model achieved a higher ROC AUC and PR AUC compared to the LASSO model.
 
 ```{r}
-#| code-fold: false
-
 #| echo: false
 #| results: 'asis'
 #| code-fold: false
