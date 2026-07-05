@@ -67,7 +67,7 @@
     "href": "ml_for_epidemiology.html#logistic-regression-results-predictors-of-centenarianism",
     "title": "Machine Learning in Epidemiology",
     "section": "Logistic Regression Results: Predictors of Centenarianism",
-    "text": "Logistic Regression Results: Predictors of Centenarianism\n\n\n\n\n\nPredictor\nOdds Ratio\n95% CI Lower\n95% CI Upper\nP-value\n\n\n\n\nSystolic Blood Pressure (per 10 mmHg)\n0.837\n0.800\n0.876\n&lt; 0.001\n\n\nEx-Smoker\n0.909\n0.730\n1.131\n0.391\n\n\n1-10 Cigarettes/Day\n1.074\n0.868\n1.330\n0.512\n\n\n11-20 Cigarettes/Day\n0.452\n0.348\n0.587\n&lt; 0.001\n\n\n20+ Cigarettes/Day\n0.483\n0.380\n0.615\n&lt; 0.001\n\n\nMyocardial Infarction\n1.105\n0.834\n1.465\n0.487\n\n\nDiabetes Mellitus\n0.901\n0.669\n1.212\n0.491\n\n\nBody Mass Index\n0.985\n0.961\n1.010\n0.235"
+    "text": "Logistic Regression Results: Predictors of Centenarianism\n\n\n\n\n\n\n\n\n\n\n\n\nPredictor\nOdds Ratio\n95% CI Lower\n95% CI Upper\nP-value\n\n\n\n\nSystolic Blood Pressure (per 10 mmHg)\n0.837\n0.800\n0.876\n&lt; 0.001\n\n\nEx-Smoker\n0.909\n0.730\n1.131\n0.391\n\n\n1-10 Cigarettes/Day\n1.074\n0.868\n1.330\n0.512\n\n\n11-20 Cigarettes/Day\n0.452\n0.348\n0.587\n&lt; 0.001\n\n\n20+ Cigarettes/Day\n0.483\n0.380\n0.615\n&lt; 0.001\n\n\nMyocardial Infarction\n1.105\n0.834\n1.465\n0.487\n\n\nDiabetes Mellitus\n0.901\n0.669\n1.212\n0.491\n\n\nBody Mass Index\n0.985\n0.961\n1.010\n0.235"
   },
   {
     "objectID": "ml_for_epidemiology.html#loss-function-the-cost-of-being-wrong",
@@ -368,7 +368,7 @@
     "href": "ml_for_epidemiology.html#step-8-final-model-evaluation",
     "title": "Machine Learning in Epidemiology",
     "section": "Step 8: Final Model Evaluation",
-    "text": "Step 8: Final Model Evaluation\nThe collect_metrics() function shows the performance on the hold-out test set. We can see that the XGBoost model achieved a higher ROC AUC and PR AUC compared to the LASSO model.\n\n\n\n\n\nMetric\nLASSO\nXGBoost\n\n\n\n\nAccuracy\n0.933\n0.933\n\n\nBrier Score\n0.062\n0.068\n\n\nROC AUC\n0.632\n0.696"
+    "text": "Step 8: Final Model Evaluation\nThe collect_metrics() function shows the performance on the hold-out test set. We can see that the XGBoost model achieved a higher ROC AUC and PR AUC compared to the LASSO model.\n\n\n\nMetric\nLASSO\nXGBoost\n\n\n\n\nAccuracy\n0.933\n0.933\n\n\nBrier Score\n0.062\n0.068\n\n\nROC AUC\n0.632\n0.696"
   },
   {
     "objectID": "ml_for_epidemiology.html#why-we-need-explainable-ai-xai",

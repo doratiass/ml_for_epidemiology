@@ -6,8 +6,8 @@
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.8.26">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.9.38">
 
   <meta name="author" content="Dr.&nbsp;Dor Atias, MD-MPH">
   <meta name="dcterms.date" content="2026-01-07">
@@ -18,6 +18,9 @@
   <link rel="stylesheet" href="site_libs/revealjs/dist/reset.css">
   <link rel="stylesheet" href="site_libs/revealjs/dist/reveal.css">
   <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
     div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -96,7 +99,7 @@
     code span.vs { color: #20794d; } /* VerbatimString */
     code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </style>
-  <link rel="stylesheet" href="site_libs/revealjs/dist/theme/quarto-90e3b8fd6a10ecdc1972d3bbffe56c76.css">
+  <link rel="stylesheet" href="site_libs/revealjs/dist/theme/quarto-fa4c145eae2bb4cdf11c24c40bc0a9b1.css">
   <link href="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -190,8 +193,6 @@
       margin-right: 0; 
     }
   </style>
-  <script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
-  <link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
 </head>
 <body class="quarto-light">
   <div class="reveal">
@@ -552,14 +553,21 @@ Dr.&nbsp;Dor Atias, MD-MPH
 <h2>Logistic Regression Results: Predictors of Centenarianism</h2>
 <div class="cell">
 <div class="cell-output-display">
-<table class="table table-striped table-hover table-condensed caption-top" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<table class="caption-top">
+<colgroup>
+<col style="width: 43%">
+<col style="width: 13%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 10%">
+</colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;" data-quarto-table-cell-role="th">Predictor</th>
-<th style="text-align: center;" data-quarto-table-cell-role="th">Odds Ratio</th>
-<th style="text-align: center;" data-quarto-table-cell-role="th">95% CI Lower</th>
-<th style="text-align: center;" data-quarto-table-cell-role="th">95% CI Upper</th>
-<th style="text-align: center;" data-quarto-table-cell-role="th">P-value</th>
+<th style="text-align: left;">Predictor</th>
+<th style="text-align: center;">Odds Ratio</th>
+<th style="text-align: center;">95% CI Lower</th>
+<th style="text-align: center;">95% CI Upper</th>
+<th style="text-align: center;">P-value</th>
 </tr>
 </thead>
 <tbody>
@@ -1899,9 +1907,7 @@ Table&nbsp;1
 <section id="step-8-final-model-evaluation" class="slide level2">
 <h2>Step 8: Final Model Evaluation</h2>
 <p>The <code>collect_metrics()</code> function shows the performance on the hold-out test set. We can see that the XGBoost model achieved a higher ROC AUC and PR AUC compared to the LASSO model.</p>
-<div class="cell">
-<div class="cell-output-display">
-<table class="table table-striped table-hover table-condensed caption-top" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<table class="caption-top">
 <thead>
 <tr class="header">
 <th style="text-align: left;" data-quarto-table-cell-role="th">Metric</th>
@@ -1927,8 +1933,6 @@ Table&nbsp;1
 </tr>
 </tbody>
 </table>
-</div>
-</div>
 </section></section>
 <section>
 <section id="explainable-ai-opening-the-black-box" class="title-slide slide level1 center">
