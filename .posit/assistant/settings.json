@@ -1,0 +1,10 @@
+{
+  "permission": {
+    "read": {
+      "*.lock": "allow",
+      "*/.Rprofile": "allow",
+      "*.qmd": "allow",
+      "*.yml": "allow"
+    }
+  }
+}

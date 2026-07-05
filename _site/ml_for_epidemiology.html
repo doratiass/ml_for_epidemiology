@@ -6,18 +6,21 @@
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.26">
-<meta name="author" content="Dr.&nbsp;Dor Atias, MD-MPH">
-<meta name="dcterms.date" content="2026-01-07">
-<title>Machine Learning in Epidemiology</title>
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
-<link rel="stylesheet" href="site_libs/revealjs/dist/reset.css">
-<link rel="stylesheet" href="site_libs/revealjs/dist/reveal.css">
-<style>
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.9.38">
+
+  <meta name="author" content="Dr.&nbsp;Dor Atias, MD-MPH">
+  <meta name="dcterms.date" content="2026-01-07">
+  <title>Machine Learning in Epidemiology</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="site_libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="site_libs/revealjs/dist/reveal.css">
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
     div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -96,14 +99,14 @@
     code span.vs { color: #20794d; } /* VerbatimString */
     code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </style>
-<link rel="stylesheet" href="site_libs/revealjs/dist/theme/quarto-90e3b8fd6a10ecdc1972d3bbffe56c76.css">
-<link href="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
-<link href="site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
-<link href="site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
-<link href="site_libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
-<link href="site_libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
-<link href="site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
-<style type="text/css">
+  <link rel="stylesheet" href="site_libs/revealjs/dist/theme/quarto-fa4c145eae2bb4cdf11c24c40bc0a9b1.css">
+  <link href="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
     .reveal div.sourceCode {
       margin: 0;
       overflow: auto;
@@ -190,13 +193,13 @@
       margin-right: 0; 
     }
   </style>
-<script src="site_libs/kePrint-0.0.1/kePrint.js"></script><link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
 </head>
 <body class="quarto-light">
   <div class="reveal">
     <div class="slides">
 
-<section id="title-slide" class="quarto-title-block center"><h1 class="title">Machine Learning in Epidemiology</h1>
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">Machine Learning in Epidemiology</h1>
   <p class="subtitle">An Introduction with Case Study of Predicting Extreme Centenarianism</p>
 
 <div class="quarto-title-authors">
@@ -211,23 +214,20 @@ Dr.&nbsp;Dor Atias, MD-MPH
 </div>
 
   <p class="date">2026-01-07</p>
-</section><section id="learning-objectives" class="slide level2"><h2>Learning Objectives</h2>
+</section>
+<section id="learning-objectives" class="slide level2">
+<h2>Learning Objectives</h2>
 <p>By the end of this lecture, you will be able to:</p>
 <ul>
-<li class="fragment">
-<strong>Distinguish</strong> between machine learning and traditional epidemiological approaches</li>
-<li class="fragment">
-<strong>Recognize</strong> when ML is appropriate vs.&nbsp;traditional methods</li>
-<li class="fragment">
-<strong>Understand</strong> core ML concepts: the ML workflow, models, overfitting, cross-validation</li>
-<li class="fragment">
-<strong>Implement</strong> ML workflows using R and tidymodels</li>
-<li class="fragment">
-<strong>Evaluate</strong> model performance using appropriate metrics</li>
-<li class="fragment">
-<strong>Apply</strong> explainable AI tools to interpret complex models</li>
+<li class="fragment"><strong>Distinguish</strong> between machine learning and traditional epidemiological approaches</li>
+<li class="fragment"><strong>Recognize</strong> when ML is appropriate vs.&nbsp;traditional methods</li>
+<li class="fragment"><strong>Understand</strong> core ML concepts: the ML workflow, models, overfitting, cross-validation</li>
+<li class="fragment"><strong>Implement</strong> ML workflows using R and tidymodels</li>
+<li class="fragment"><strong>Evaluate</strong> model performance using appropriate metrics</li>
+<li class="fragment"><strong>Apply</strong> explainable AI tools to interpret complex models</li>
 </ul>
-<aside class="notes"><p>This lecture bridges traditional epidemiological training with modern ML methods. We’ll use the Centenarianism prediction study throughout as our practical example.</p>
+<aside class="notes">
+<p>This lecture bridges traditional epidemiological training with modern ML methods. We’ll use the Centenarianism prediction study throughout as our practical example.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -238,31 +238,39 @@ Dr.&nbsp;Dor Atias, MD-MPH
           width: 1px!important;
           overflow: hidden!important;
           display:block!important;
-      }</style></aside></section><section id="a-roadmap-for-this-lecture" class="slide level2"><h2>A roadmap for this lecture</h2>
+      }</style></aside>
+</section>
+<section id="a-roadmap-for-this-lecture" class="slide level2">
+<h2>A roadmap for this lecture</h2>
 <ul>
-<li>
-<p>This lecture is based on our published research: <a href="https://doi.org/10.1016/j.annepidem.2025.07.024">Machine learning in epidemiology: An introduction, comparison with traditional methods, and a case study of predicting extreme longevity</a> - elaborated information can be found there</p>
+<li><p>This lecture is based on our published research: <a href="https://doi.org/10.1016/j.annepidem.2025.07.024">Machine learning in epidemiology: An introduction, comparison with traditional methods, and a case study of predicting extreme longevity</a> - elaborated information can be found there</p>
 <ul>
 <li><p>Prospective cohort of <strong>10,059 middle-aged Israeli men,</strong> median entry age 49; <strong>6.9% reached age ≥95.</strong></p></li>
 <li><p>R<strong>ecruited in 1963</strong>, with repeat assessments in 1965 and 1968</p></li>
 <li><p>Long-term follow-up to ensure capture of survival to advanced ages</p></li>
 <li><p>The target outcome is <strong>near-centenarianism</strong>, defined pragmatically as <strong>survival to age 95 years or older</strong> (rather than ≥100, due to rarity).&nbsp;</p></li>
 <li><p>The <strong>prediction task</strong> is a supervised, individual-level <strong>binary classification</strong>: using <strong>midlife predictors</strong> spanning demographic, clinical, lifestyle/physical activity, occupational, family, and dietary factors (146 modeled variables) to predict who will reach <strong>≥95 years</strong>.</p></li>
-</ul>
-</li>
+</ul></li>
 <li><p>The data in this lecture was synthetically made with <a href="https://www.synthpop.org.uk">synthpop</a> package in R based on the original dataset</p></li>
 <li><p>The scripts and data for this lecture can be found in my <a href="https://github.com/doratiass/ml_for_epidemiology">GitHub repository</a></p></li>
 <li><p><strong>StatQuest</strong> <a href="https://statquest.org">website</a> and <a href="https://www.youtube.com/@statquest">YouTube channel</a> by <strong>Josh Starmer</strong> - great resource for learning ML concepts</p></li>
-</ul></section><section><section id="why-machine-learning-in-public-health" class="title-slide slide level1 center"><h1>Why Machine Learning in Public Health?</h1>
+</ul>
+</section>
+<section>
+<section id="why-machine-learning-in-public-health" class="title-slide slide level1 center">
+<h1>Why Machine Learning in Public Health?</h1>
 
-</section><section id="what-is-machine-learning" class="slide level2"><h2>What is Machine Learning?</h2>
+</section>
+<section id="what-is-machine-learning" class="slide level2">
+<h2>What is Machine Learning?</h2>
 <div style="text-align: center; margin-top: 2em;">
 <blockquote>
 <p><em>“The field of study that gives computers the ability to learn without being explicitly programmed”</em></p>
 <p><strong>— Arthur Samuel (1959)</strong></p>
 </blockquote>
 </div>
-<aside class="notes"><p>Start with the classic definition from Arthur Samuel, one of the pioneers of machine learning. This emphasizes that ML is about pattern recognition and learning from data, not just following pre-programmed rules.</p>
+<aside class="notes">
+<p>Start with the classic definition from Arthur Samuel, one of the pioneers of machine learning. This emphasizes that ML is about pattern recognition and learning from data, not just following pre-programmed rules.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -273,7 +281,10 @@ Dr.&nbsp;Dor Atias, MD-MPH
           width: 1px!important;
           overflow: hidden!important;
           display:block!important;
-      }</style></aside></section><section id="why-ml-in-healthcare-now" class="slide level2"><h2>Why ML in Healthcare Now?</h2>
+      }</style></aside>
+</section>
+<section id="why-ml-in-healthcare-now" class="slide level2">
+<h2>Why ML in Healthcare Now?</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
 <h3 id="data-are-bigger">📊 Data are bigger</h3>
@@ -316,7 +327,8 @@ Dr.&nbsp;Dor Atias, MD-MPH
 </ul>
 <p><em>The computational barrier dissolved</em></p>
 </div></div>
-<aside class="notes"><p>Emphasize that this isn’t just about having better computers—it’s about the convergence of multiple trends creating a unique opportunity for healthcare improvement.</p>
+<aside class="notes">
+<p>Emphasize that this isn’t just about having better computers—it’s about the convergence of multiple trends creating a unique opportunity for healthcare improvement.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -327,7 +339,10 @@ Dr.&nbsp;Dor Atias, MD-MPH
           width: 1px!important;
           overflow: hidden!important;
           display:block!important;
-      }</style></aside></section><section id="machine-learning-the-perfect-bridge" class="slide level2 center"><h2>🧠 Machine Learning: The Perfect Bridge</h2>
+      }</style></aside>
+</section>
+<section id="machine-learning-the-perfect-bridge" class="slide level2 center">
+<h2>🧠 Machine Learning: The Perfect Bridge</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
 <div style="background-color: #f8f9fa; padding: 1.5em; border-radius: 10px; margin: 1em 0;">
@@ -358,7 +373,8 @@ Dr.&nbsp;Dor Atias, MD-MPH
 </div>
 </div>
 </div>
-<aside class="notes"><p>This slide serves as a powerful transition from “why now” to “what ML can do.” The bridge metaphor visually reinforces that ML connects our data-rich reality with actionable clinical solutions.</p>
+<aside class="notes">
+<p>This slide serves as a powerful transition from “why now” to “what ML can do.” The bridge metaphor visually reinforces that ML connects our data-rich reality with actionable clinical solutions.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -369,7 +385,10 @@ Dr.&nbsp;Dor Atias, MD-MPH
           width: 1px!important;
           overflow: hidden!important;
           display:block!important;
-      }</style></aside></section><section id="prediction-vs.-causation-different-tools-for-different-questions" class="slide level2"><h2>Prediction vs.&nbsp;Causation: Different Tools for Different Questions</h2>
+      }</style></aside>
+</section>
+<section id="prediction-vs.-causation-different-tools-for-different-questions" class="slide level2">
+<h2>Prediction vs.&nbsp;Causation: Different Tools for Different Questions</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
 <h3 id="traditional-epidemiological-methods">Traditional Epidemiological Methods</h3>
@@ -411,9 +430,14 @@ Dr.&nbsp;Dor Atias, MD-MPH
 </div>
 </div>
 </div>
-</section></section><section><section id="core-concepts-of-machine-learning" class="title-slide slide level1 center"><h1>Core Concepts of Machine Learning</h1>
+</section></section>
+<section>
+<section id="core-concepts-of-machine-learning" class="title-slide slide level1 center">
+<h1>Core Concepts of Machine Learning</h1>
 
-</section><section id="machine-learning-workflow-for-epidemiological-research" class="slide level2"><h2>Machine Learning Workflow for Epidemiological Research</h2>
+</section>
+<section id="machine-learning-workflow-for-epidemiological-research" class="slide level2">
+<h2>Machine Learning Workflow for Epidemiological Research</h2>
 
 <img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-3-1.png" class="quarto-figure quarto-figure-center r-stretch"><div class="callout callout-important callout-titled callout-style-default">
 <div class="callout-body">
@@ -428,7 +452,8 @@ Dr.&nbsp;Dor Atias, MD-MPH
 </div>
 </div>
 </div>
-<aside class="notes"><p>Emphasize that the overall process is similar to traditional epidemiological studies. We will dive deeper into each step in the following slides.</p>
+<aside class="notes">
+<p>Emphasize that the overall process is similar to traditional epidemiological studies. We will dive deeper into each step in the following slides.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -439,7 +464,10 @@ Dr.&nbsp;Dor Atias, MD-MPH
           width: 1px!important;
           overflow: hidden!important;
           display:block!important;
-      }</style></aside></section><section id="supervised-vs.-unsupervised-learning" class="slide level2"><h2>Supervised vs.&nbsp;Unsupervised Learning</h2>
+      }</style></aside>
+</section>
+<section id="supervised-vs.-unsupervised-learning" class="slide level2">
+<h2>Supervised vs.&nbsp;Unsupervised Learning</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
 <p><strong>Supervised Learning</strong></p>
@@ -448,13 +476,13 @@ Dr.&nbsp;Dor Atias, MD-MPH
 <li>Known outcomes (labels)</li>
 <li>Learn input → output mapping</li>
 <li>Like medical diagnosis training</li>
-<li>
-<strong>Examples:</strong> Predicting disease, mortality risk</li>
+<li><strong>Examples:</strong> Predicting disease, mortality risk</li>
 </ul>
 <div class="cell">
 <div class="cell-output-display">
 <div>
-<figure><p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-4-1.png"></p>
+<figure>
+<p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-4-1.png"></p>
 </figure>
 </div>
 </div>
@@ -466,13 +494,13 @@ Dr.&nbsp;Dor Atias, MD-MPH
 <li>No known outcomes</li>
 <li>Discover structure in data</li>
 <li>Like organizing library without categories</li>
-<li>
-<strong>Examples:</strong> Patient clustering, pattern discovery, disease subtyping</li>
+<li><strong>Examples:</strong> Patient clustering, pattern discovery, disease subtyping</li>
 </ul>
 <div class="cell">
 <div class="cell-output-display">
 <div>
-<figure><p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-5-1.png"></p>
+<figure>
+<p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-5-1.png"></p>
 </figure>
 </div>
 </div>
@@ -493,7 +521,8 @@ Dr.&nbsp;Dor Atias, MD-MPH
 </div>
 </div>
 </div>
-<aside class="notes"><p>Supervised learning is like medical school - students learn from cases with known diagnoses. Unsupervised is like research - discovering patterns without knowing what to look for.</p>
+<aside class="notes">
+<p>Supervised learning is like medical school - students learn from cases with known diagnoses. Unsupervised is like research - discovering patterns without knowing what to look for.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -504,33 +533,43 @@ Dr.&nbsp;Dor Atias, MD-MPH
           width: 1px!important;
           overflow: hidden!important;
           display:block!important;
-      }</style></aside></section><section id="logistic-regression" class="slide level2"><h2>Logistic Regression</h2>
+      }</style></aside>
+</section>
+<section id="logistic-regression" class="slide level2">
+<h2>Logistic Regression</h2>
 <h3 id="mathematical-foundation">Mathematical Foundation</h3>
 <p>Maximizes the likelihood function:</p>
 <p><span class="math display">\[\text{Likelihood}(\theta) = \prod_{i=1}^{m} [\hat{y}^{(i)}]^{y^{(i)}} [1 - \hat{y}^{(i)}]^{1-y^{(i)}}\]</span></p>
 <h3 id="key-characteristics">Key Characteristics</h3>
 <ul>
-<li>
-<strong>High interpretability</strong>: Coefficients have direct clinical meaning</li>
-<li>
-<strong>Reseachers involvement:</strong> Manual variable selection and interactions</li>
-<li>
-<strong>Linear assumption</strong>: Assumes linear relationship between predictors and log-odds</li>
-<li>
-<strong>Cannot handle missing data</strong>: Needs complete cases or imputation</li>
-<li>
-<strong>Limited to p &lt; N scenarios</strong>: Not suitable when predictors exceed observations</li>
-</ul></section><section id="logistic-regression-results-predictors-of-centenarianism" class="slide level2"><h2>Logistic Regression Results: Predictors of Centenarianism</h2>
+<li><strong>High interpretability</strong>: Coefficients have direct clinical meaning</li>
+<li><strong>Reseachers involvement:</strong> Manual variable selection and interactions</li>
+<li><strong>Linear assumption</strong>: Assumes linear relationship between predictors and log-odds</li>
+<li><strong>Cannot handle missing data</strong>: Needs complete cases or imputation</li>
+<li><strong>Limited to p &lt; N scenarios</strong>: Not suitable when predictors exceed observations</li>
+</ul>
+</section>
+<section id="logistic-regression-results-predictors-of-centenarianism" class="slide level2">
+<h2>Logistic Regression Results: Predictors of Centenarianism</h2>
 <div class="cell">
 <div class="cell-output-display">
-<table class="table table-striped table-hover table-condensed caption-top" style="width: auto !important; margin-left: auto; margin-right: auto;">
-<thead><tr class="header">
-<th style="text-align: left;" data-quarto-table-cell-role="th">Predictor</th>
-<th style="text-align: center;" data-quarto-table-cell-role="th">Odds Ratio</th>
-<th style="text-align: center;" data-quarto-table-cell-role="th">95% CI Lower</th>
-<th style="text-align: center;" data-quarto-table-cell-role="th">95% CI Upper</th>
-<th style="text-align: center;" data-quarto-table-cell-role="th">P-value</th>
-</tr></thead>
+<table class="caption-top">
+<colgroup>
+<col style="width: 43%">
+<col style="width: 13%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 10%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Predictor</th>
+<th style="text-align: center;">Odds Ratio</th>
+<th style="text-align: center;">95% CI Lower</th>
+<th style="text-align: center;">95% CI Upper</th>
+<th style="text-align: center;">P-value</th>
+</tr>
+</thead>
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">Systolic Blood Pressure (per 10 mmHg)</td>
@@ -592,7 +631,9 @@ Dr.&nbsp;Dor Atias, MD-MPH
 </table>
 </div>
 </div>
-</section><section id="loss-function-the-cost-of-being-wrong" class="slide level2"><h2>Loss Function: “The Cost of Being Wrong”</h2>
+</section>
+<section id="loss-function-the-cost-of-being-wrong" class="slide level2">
+<h2>Loss Function: “The Cost of Being Wrong”</h2>
 <p><strong>Model training = Optimization.</strong></p>
 <p>In classical stats we <em>maximize</em> likelihood. In ML we typically <em>minimize</em> a <strong>loss</strong>.</p>
 <h3 id="what-is-a-loss-function">What is a Loss Function?</h3>
@@ -616,7 +657,8 @@ Dr.&nbsp;Dor Atias, MD-MPH
 </div>
 </div>
 </div>
-<aside class="notes"><p>Emphasize that the loss function is like a “feedback signal” that tells the algorithm what mistakes are most costly. In epidemiology, we often care more about false negatives (missing cases) than false positives.</p>
+<aside class="notes">
+<p>Emphasize that the loss function is like a “feedback signal” that tells the algorithm what mistakes are most costly. In epidemiology, we often care more about false negatives (missing cases) than false positives.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -627,7 +669,10 @@ Dr.&nbsp;Dor Atias, MD-MPH
           width: 1px!important;
           overflow: hidden!important;
           display:block!important;
-      }</style></aside></section><section id="logistic-regression-loss-function" class="slide level2"><h2>Logistic Regression Loss Function</h2>
+      }</style></aside>
+</section>
+<section id="logistic-regression-loss-function" class="slide level2">
+<h2>Logistic Regression Loss Function</h2>
 <p>For binary classification (like Centenarianism prediction):</p>
 <p><span class="math display">\[\text{Log-Loss} = -\frac{1}{m} \sum_{i=1}^{m} [y^{(i)} \log(\hat{y}^{(i)}) + (1 - y^{(i)}) \log(1 - \hat{y}^{(i)})]\]</span></p>
 <p>Where:</p>
@@ -657,7 +702,9 @@ Dr.&nbsp;Dor Atias, MD-MPH
 </div>
 </div>
 </div>
-</section><section id="the-bias-variance-trade-off" class="slide level2 center"><h2>The Bias-Variance Trade-off</h2>
+</section>
+<section id="the-bias-variance-trade-off" class="slide level2 center">
+<h2>The Bias-Variance Trade-off</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
 <h3 id="key-concepts">Key Concepts</h3>
@@ -670,7 +717,8 @@ Dr.&nbsp;Dor Atias, MD-MPH
 <div class="cell">
 <div class="cell-output-display">
 <div>
-<figure><p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-7-1.png"></p>
+<figure>
+<p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-7-1.png"></p>
 </figure>
 </div>
 </div>
@@ -689,7 +737,9 @@ Dr.&nbsp;Dor Atias, MD-MPH
 </div>
 </div>
 </div>
-</section><section id="the-overfitting-problem-student-learning-analogy" class="slide level2"><h2>The Overfitting Problem (Student Learning Analogy)</h2>
+</section>
+<section id="the-overfitting-problem-student-learning-analogy" class="slide level2">
+<h2>The Overfitting Problem (Student Learning Analogy)</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
 <p><strong>Definition</strong>: <em>Model learns noise instead of signal</em></p>
@@ -711,13 +761,15 @@ Dr.&nbsp;Dor Atias, MD-MPH
 <div class="cell">
 <div class="cell-output-display">
 <div>
-<figure><p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-8-1.png"></p>
+<figure>
+<p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-8-1.png"></p>
 </figure>
 </div>
 </div>
 </div>
 </div></div>
-<aside class="notes"><p>The student analogy is powerful because everyone can relate to the difference between memorizing and understanding. Emphasize that overfitting is the #1 reason ML models fail in practice.</p>
+<aside class="notes">
+<p>The student analogy is powerful because everyone can relate to the difference between memorizing and understanding. Emphasize that overfitting is the #1 reason ML models fail in practice.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -728,19 +780,18 @@ Dr.&nbsp;Dor Atias, MD-MPH
           width: 1px!important;
           overflow: hidden!important;
           display:block!important;
-      }</style></aside></section><section id="overfitting-memorizing-vs.-understanding" class="slide level2 center"><h2>Overfitting: “Memorizing vs.&nbsp;Understanding”</h2>
+      }</style></aside>
+</section>
+<section id="overfitting-memorizing-vs.-understanding" class="slide level2 center">
+<h2>Overfitting: “Memorizing vs.&nbsp;Understanding”</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
 <h3 id="warning-signs">Warning Signs</h3>
 <ol type="1">
-<li>
-<strong>Perfect training scores</strong>: Usually too good to be true</li>
-<li>
-<strong>Large gap</strong>: Training accuracy &gt;&gt; Test accuracy</li>
-<li>
-<strong>Complex model</strong>: Too many parameters for data size</li>
-<li>
-<strong>Unstable predictions</strong>: Small data changes → big prediction changes</li>
+<li><strong>Perfect training scores</strong>: Usually too good to be true</li>
+<li><strong>Large gap</strong>: Training accuracy &gt;&gt; Test accuracy</li>
+<li><strong>Complex model</strong>: Too many parameters for data size</li>
+<li><strong>Unstable predictions</strong>: Small data changes → big prediction changes</li>
 </ol>
 </div><div class="column" style="width:50%;">
 <h3 id="prevention-strategies">Prevention Strategies</h3>
@@ -764,67 +815,59 @@ Dr.&nbsp;Dor Atias, MD-MPH
 </div>
 </div>
 </div>
-</section><section id="traintest-split-why-do-we-split-our-data" class="slide level2"><h2>Train/Test Split: Why Do We Split Our Data?</h2>
+</section>
+<section id="traintest-split-why-do-we-split-our-data" class="slide level2">
+<h2>Train/Test Split: Why Do We Split Our Data?</h2>
 <h3 id="the-fundamental-problem">The Fundamental Problem</h3>
 <ul>
-<li>
-<strong>Goal</strong>: Build models that work on <em>new, unseen</em> patients</li>
-<li>
-<strong>Challenge</strong>: We only have the data we collected</li>
-<li>
-<strong>Solution</strong>: Simulate “unseen” data by holding some back</li>
+<li><strong>Goal</strong>: Build models that work on <em>new, unseen</em> patients</li>
+<li><strong>Challenge</strong>: We only have the data we collected</li>
+<li><strong>Solution</strong>: Simulate “unseen” data by holding some back</li>
 </ul>
 <h3 id="what-happens-without-proper-splitting">What Happens Without Proper Splitting?</h3>
 <ul>
-<li>
-<strong>Overly optimistic performance</strong>: Model appears better than it really is</li>
-<li>
-<strong>Overfitting detection</strong>: Can’t tell if model learned noise vs.&nbsp;signal</li>
-<li>
-<strong>Poor generalization</strong>: Model fails when deployed in practice</li>
-</ul></section><section id="traintest-split-how-to-split" class="slide level2"><h2>Train/Test Split: How to Split</h2>
+<li><strong>Overly optimistic performance</strong>: Model appears better than it really is</li>
+<li><strong>Overfitting detection</strong>: Can’t tell if model learned noise vs.&nbsp;signal</li>
+<li><strong>Poor generalization</strong>: Model fails when deployed in practice</li>
+</ul>
+</section>
+<section id="traintest-split-how-to-split" class="slide level2">
+<h2>Train/Test Split: How to Split</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
 <h3 id="common-split-ratios">Common Split Ratios:</h3>
 <ul>
-<li>
-<strong>75/25</strong>: Good balance for moderate sample sizes (n &gt; 1,000)</li>
-<li>
-<strong>80/20</strong>: When you have large datasets and need more training data</li>
-<li>
-<strong>70/30</strong>: When you have smaller datasets and need robust testing</li>
+<li><strong>75/25</strong>: Good balance for moderate sample sizes (n &gt; 1,000)</li>
+<li><strong>80/20</strong>: When you have large datasets and need more training data</li>
+<li><strong>70/30</strong>: When you have smaller datasets and need robust testing</li>
 </ul>
 <h3 id="special-considerations-for-epidemiological-data">Special Considerations for Epidemiological Data</h3>
 <ul>
-<li>
-<strong>Well-balanced outcomes</strong>: Random splits usually suffice</li>
-<li>
-<strong>Class Imbalance</strong>: Stratify splits to maintain outcome proportions</li>
-<li>
-<strong>Temporal Data</strong>: Use time-based splits to mimic real-world prediction</li>
-<li>
-<strong>Clustered Data</strong>: Split by site or cluster to avoid leakage</li>
+<li><strong>Well-balanced outcomes</strong>: Random splits usually suffice</li>
+<li><strong>Class Imbalance</strong>: Stratify splits to maintain outcome proportions</li>
+<li><strong>Temporal Data</strong>: Use time-based splits to mimic real-world prediction</li>
+<li><strong>Clustered Data</strong>: Split by site or cluster to avoid leakage</li>
 </ul>
 </div><div class="column" style="width:50%;">
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure><p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-9-1.png" class="quarto-figure quarto-figure-center"></p>
+<figure>
+<p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-9-1.png" class="quarto-figure quarto-figure-center"></p>
 </figure>
 </div>
 </div>
 </div>
 </div></div>
-</section><section id="regularization" class="slide level2"><h2>Regularization</h2>
+</section>
+<section id="regularization" class="slide level2">
+<h2>Regularization</h2>
 <h3 id="the-regularization-concept">The Regularization Concept</h3>
 <p><strong>Core Idea</strong>: <em>Prevent overly complex models</em></p>
 <ul>
-<li>
-<strong>Occam’s Razor</strong>: Simpler explanations are usually better</li>
-<li>
-<strong>Biological basis</strong>: Parsimonious models often generalize better</li>
-<li>
-<strong>Prevents overfitting</strong>: Stops model from memorizing noise</li>
+<li><strong>Occam’s Razor</strong>: Simpler explanations are usually better</li>
+<li><strong>Biological basis</strong>: Parsimonious models often generalize better</li>
+<li><strong>Prevents overfitting</strong>: Stops model from memorizing noise</li>
 </ul>
 <h3 id="types-of-regularization">Types of Regularization</h3>
 <div class="columns">
@@ -852,20 +895,18 @@ Dr.&nbsp;Dor Atias, MD-MPH
 <li><p>e.g., Elastic Net</p></li>
 </ul>
 </div></div>
-</section><section id="lasso-regression-least-absolute-shrinkage-and-selection-operator" class="slide level2 center"><h2>LASSO Regression (Least Absolute Shrinkage and Selection Operator)</h2>
+</section>
+<section id="lasso-regression-least-absolute-shrinkage-and-selection-operator" class="slide level2 center">
+<h2>LASSO Regression (Least Absolute Shrinkage and Selection Operator)</h2>
 <p>A regularized version of logistic regression that adds a penalty to the loss function to shrink coefficients.</p>
 <div class="columns">
 <div class="column" style="width:50%;">
 <h3 id="key-characteristics-1">Key Characteristics</h3>
 <ul>
-<li>
-<strong>Automatic feature selection</strong>: Shrinks unimportant coefficients to zero</li>
-<li>
-<strong>Regularization</strong>: λ hyperparameter controls shrinkage amount</li>
-<li>
-<strong>Handles high-dimensional data</strong>: Can work when p &gt; N</li>
-<li>
-<strong>Maintains interpretability</strong>: Similar to logistic regression</li>
+<li><strong>Automatic feature selection</strong>: Shrinks unimportant coefficients to zero</li>
+<li><strong>Regularization</strong>: λ hyperparameter controls shrinkage amount</li>
+<li><strong>Handles high-dimensional data</strong>: Can work when p &gt; N</li>
+<li><strong>Maintains interpretability</strong>: Similar to logistic regression</li>
 </ul>
 </div><div class="column" style="width:50%;">
 <h3 id="advantages-over-standard-logistic-regression">Advantages Over Standard Logistic Regression</h3>
@@ -889,20 +930,21 @@ Dr.&nbsp;Dor Atias, MD-MPH
 </div>
 </div>
 </div>
-</section><section id="lasso-under-the-hood" class="slide level2 center"><h2>LASSO under the Hood</h2>
+</section>
+<section id="lasso-under-the-hood" class="slide level2 center">
+<h2>LASSO under the Hood</h2>
 <h3 id="mathematical-foundation-1">Mathematical Foundation</h3>
 <p>LASSO adds a regularization term to penalize coefficient magnitude:</p>
 <p><span class="math display">\[\text{Cost}(y, \hat{y}) = -\frac{1}{m} \sum_{i=1}^{m} [y^{(i)} \log(\hat{y}^{(i)}) + (1 - y^{(i)}) \log(1 - \hat{y}^{(i)})] + \lambda \sum_{j=1}^{n} |\beta_j|\]</span></p>
 <h3 id="mathematical-penalty">Mathematical Penalty</h3>
 <p><span class="math display">\[\text{Total Cost} = \text{Loss Function} + \lambda \times \text{Penalty}\]</span></p>
 <ul>
-<li>
-<span class="math inline">\(\beta_j\)</span>: Coefficients for each predictor</li>
-<li>
-<span class="math inline">\(\lambda\)</span> (lambda): Regularization strength</li>
+<li><span class="math inline">\(\beta_j\)</span>: Coefficients for each predictor</li>
+<li><span class="math inline">\(\lambda\)</span> (lambda): Regularization strength</li>
 <li>Higher <span class="math inline">\(\lambda\)</span> = More aggressive pruning</li>
 </ul>
-<aside class="notes"><p>Use the gardening analogy - just as pruning makes trees healthier and more robust, regularization makes models more generalizable by removing unnecessary complexity.</p>
+<aside class="notes">
+<p>Use the gardening analogy - just as pruning makes trees healthier and more robust, regularization makes models more generalizable by removing unnecessary complexity.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -913,7 +955,10 @@ Dr.&nbsp;Dor Atias, MD-MPH
           width: 1px!important;
           overflow: hidden!important;
           display:block!important;
-      }</style></aside></section><section id="lasso-coefficient-comparison-different-penalties" class="slide level2"><h2>LASSO Coefficient Comparison: Different Penalties</h2>
+      }</style></aside>
+</section>
+<section id="lasso-coefficient-comparison-different-penalties" class="slide level2">
+<h2>LASSO Coefficient Comparison: Different Penalties</h2>
 
 <img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-10-1.png" class="r-stretch"><div title="How can we tell whats the best penalty?">
 <div class="callout callout-note callout-titled callout-style-default">
@@ -930,7 +975,9 @@ Dr.&nbsp;Dor Atias, MD-MPH
 </div>
 </div>
 </div>
-</section><section id="hyperparameters-adjusting-the-recipe" class="slide level2"><h2>Hyperparameters: “Adjusting the Recipe”</h2>
+</section>
+<section id="hyperparameters-adjusting-the-recipe" class="slide level2">
+<h2>Hyperparameters: “Adjusting the Recipe”</h2>
 <h3 id="what-are-hyperparameters">What are Hyperparameters?</h3>
 <p><strong>Hyperparameters</strong> are configuration settings that we must specify <strong>before</strong> training a machine learning model begins.</p>
 <p>“Recipe” - like oven temperature and cooking time - that control how your algorithm learns from data.</p>
@@ -938,27 +985,21 @@ Dr.&nbsp;Dor Atias, MD-MPH
 <div class="column" style="width:60%;">
 <h3 id="key-characteristics-2">Key Characteristics:</h3>
 <ul>
-<li>
-<strong>Not learned from data</strong>: We set them manually based on systematic testing</li>
-<li>
-<strong>Control the learning process</strong>: They determine how the algorithm behaves during training</li>
-<li>
-<strong>Model-specific</strong>: Different algorithms have different hyperparameters</li>
-<li>
-<strong>Critical for performance</strong>: Poor hyperparameter choices can lead to suboptimal models and effect computational requirements</li>
+<li><strong>Not learned from data</strong>: We set them manually based on systematic testing</li>
+<li><strong>Control the learning process</strong>: They determine how the algorithm behaves during training</li>
+<li><strong>Model-specific</strong>: Different algorithms have different hyperparameters</li>
+<li><strong>Critical for performance</strong>: Poor hyperparameter choices can lead to suboptimal models and effect computational requirements</li>
 </ul>
 </div><div class="column" style="width:40%;">
 <h3 id="examples-in-epidemiology">Examples in Epidemiology:</h3>
 <ul>
-<li>
-<strong>LASSO regression</strong>: The penalty parameter (λ) that controls how much we shrink coefficients</li>
-<li>
-<strong>Random Forest</strong>: Number of trees, maximum tree depth, minimum samples per leaf</li>
-<li>
-<strong>XGBoost</strong>: Learning rate, tree depth, number of boosting rounds</li>
+<li><strong>LASSO regression</strong>: The penalty parameter (λ) that controls how much we shrink coefficients</li>
+<li><strong>Random Forest</strong>: Number of trees, maximum tree depth, minimum samples per leaf</li>
+<li><strong>XGBoost</strong>: Learning rate, tree depth, number of boosting rounds</li>
 </ul>
 </div></div>
-<aside class="notes"><p>Emphasize that hyperparameter tuning is like being a chef - you need to adjust the recipe based on ingredients (data) and desired outcome (prediction task). There’s no universal “best” setting.</p>
+<aside class="notes">
+<p>Emphasize that hyperparameter tuning is like being a chef - you need to adjust the recipe based on ingredients (data) and desired outcome (prediction task). There’s no universal “best” setting.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -969,30 +1010,27 @@ Dr.&nbsp;Dor Atias, MD-MPH
           width: 1px!important;
           overflow: hidden!important;
           display:block!important;
-      }</style></aside></section><section id="hyperparameters-how-to-tune-them" class="slide level2"><h2>Hyperparameters: How to Tune Them?</h2>
+      }</style></aside>
+</section>
+<section id="hyperparameters-how-to-tune-them" class="slide level2">
+<h2>Hyperparameters: How to Tune Them?</h2>
 <h3 id="step-1-define-the-search-space">Step 1: Define the Search Space</h3>
 <ul>
-<li>
-<strong>Grid Search</strong>: Exhaustively tests all combinations in a pre-defined grid of hyperparameters.
+<li><strong>Grid Search</strong>: Exhaustively tests all combinations in a pre-defined grid of hyperparameters.
 <ul>
 <li>Good for: The parameter ranges are <strong>small</strong>, <strong>well-understood</strong>, and <strong>computationally cheap</strong> to evaluate.</li>
 <li>Example: Testing λ values [0.001, 0.01, 0.1, 1.0, 10.0]</li>
-</ul>
-</li>
-<li>
-<strong>Random Search</strong>: Randomly samples parameter combinations uniformly across the search space.
+</ul></li>
+<li><strong>Random Search</strong>: Randomly samples parameter combinations uniformly across the search space.
 <ul>
 <li>The space is <strong>large</strong>, but only a subset is worth exploring</li>
 <li>Often finds near-optimal results faster than grid search</li>
-</ul>
-</li>
-<li>
-<strong>Space-Filling Designs</strong>: Systematically samples combinations to cover the search space <strong>evenly</strong> without redundancy.
+</ul></li>
+<li><strong>Space-Filling Designs</strong>: Systematically samples combinations to cover the search space <strong>evenly</strong> without redundancy.
 <ul>
 <li>Good for: When you want <strong>efficient coverage</strong> without exhaustive evaluation</li>
 <li>Common in model tuning with limited runs</li>
-</ul>
-</li>
+</ul></li>
 </ul>
 <div title="Key Principle">
 <div class="callout callout-tip callout-titled callout-style-default">
@@ -1009,9 +1047,13 @@ Dr.&nbsp;Dor Atias, MD-MPH
 </div>
 </div>
 </div>
-</section><section id="hyperparameters-visualizing-the-search-space" class="slide level2"><h2>Hyperparameters: Visualizing the Search Space</h2>
-<iframe width="100%" height="100%" frameborder="0" src="images/plotly_grid.html"></iframe>
-</section><section id="hyperparameters-how-to-tune-them-1" class="slide level2"><h2>Hyperparameters: How to Tune Them?</h2>
+</section>
+<section id="hyperparameters-visualizing-the-search-space" class="slide level2">
+<h2>Hyperparameters: Visualizing the Search Space</h2>
+<iframe width="100%" ,="" height="100%" frameborder="0" src="images/plotly_grid.html"></iframe>
+</section>
+<section id="hyperparameters-how-to-tune-them-1" class="slide level2">
+<h2>Hyperparameters: How to Tune Them?</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
 <h3 id="step-2-choose-evaluation-strategy">Step 2: Choose Evaluation Strategy</h3>
@@ -1022,17 +1064,14 @@ Dr.&nbsp;Dor Atias, MD-MPH
 <h3 id="what-is-cross-validation">What Is Cross-Validation?</h3>
 <p>Cross-validation (CV) divides your <strong>training data</strong> into multiple (k) folds to get more robust estimates of model performance during hyperparameter tuning.</p>
 <ol type="1">
-<li>
-<strong>Divide training data</strong> into k equal parts (typically k=5 or k=10)</li>
-<li>
-<strong>For each hyperparameter combination:</strong>
+<li><strong>Divide training data</strong> into k equal parts (typically k=5 or k=10)</li>
+<li><strong>For each hyperparameter combination:</strong>
 <ul>
 <li>Train model on k-1 folds</li>
 <li>Test on the remaining fold</li>
 <li>Repeat k times (each fold serves as validation once)</li>
 <li>Average performance across all k tests</li>
-</ul>
-</li>
+</ul></li>
 </ol>
 </div><div class="column" style="width:50%;">
 <p><img data-src="images/cv_test_train.png"></p>
@@ -1053,7 +1092,9 @@ It averages performance across multiple validation folds, ensuring stable hyperp
 </div>
 </div>
 </div>
-</section><section id="hyperparameters-how-to-tune-them-2" class="slide level2"><h2>Hyperparameters: How to Tune Them?</h2>
+</section>
+<section id="hyperparameters-how-to-tune-them-2" class="slide level2">
+<h2>Hyperparameters: How to Tune Them?</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
 <h3 id="step-3-select-optimization-metric">Step 3: Select Optimization Metric</h3>
@@ -1068,31 +1109,28 @@ It averages performance across multiple validation folds, ensuring stable hyperp
 <div class="cell">
 <div class="cell-output-display">
 <div>
-<figure><p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-12-1.png"></p>
+<figure>
+<p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-12-1.png"></p>
 </figure>
 </div>
 </div>
 </div>
 </div></div>
-</section><section id="quick-recap-core-concepts" class="slide level2"><h2>Quick recap — Core concepts</h2>
+</section>
+<section id="quick-recap-core-concepts" class="slide level2">
+<h2>Quick recap — Core concepts</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
 <ul>
-<li>
-<strong>Loss</strong> — Model error measure (e.g., log‑loss for binary); lower is better.</li>
-<li>
-<strong>Bias vs Variance</strong> — Bias = underfit; Variance = overfit. Balance via complexity &amp; data.</li>
-<li>
-<strong>Train / Test split</strong> — Hold out unseen data. Stratify for imbalance; avoid leakage.</li>
+<li><strong>Loss</strong> — Model error measure (e.g., log‑loss for binary); lower is better.</li>
+<li><strong>Bias vs Variance</strong> — Bias = underfit; Variance = overfit. Balance via complexity &amp; data.</li>
+<li><strong>Train / Test split</strong> — Hold out unseen data. Stratify for imbalance; avoid leakage.</li>
 </ul>
 </div><div class="column" style="width:50%;">
 <ul>
-<li>
-<strong>Hyperparameters</strong> — Pre-training knobs (λ, trees, depth, η). Tune with grid, random, or Latin‑hypercube searches.</li>
-<li>
-<strong>Regularization</strong> — Penalizes complexity: L1 → sparsity; L2 → shrinkage; Elastic Net → both. Choose λ via CV.</li>
-<li>
-<strong>Cross‑validation</strong> — k‑fold (stratify when needed); select metric that matches the clinical aim.</li>
+<li><strong>Hyperparameters</strong> — Pre-training knobs (λ, trees, depth, η). Tune with grid, random, or Latin‑hypercube searches.</li>
+<li><strong>Regularization</strong> — Penalizes complexity: L1 → sparsity; L2 → shrinkage; Elastic Net → both. Choose λ via CV.</li>
+<li><strong>Cross‑validation</strong> — k‑fold (stratify when needed); select metric that matches the clinical aim.</li>
 </ul>
 </div></div>
 <div class="callout callout-tip callout-titled callout-style-default">
@@ -1108,43 +1146,40 @@ It averages performance across multiple validation folds, ensuring stable hyperp
 </div>
 </div>
 </div>
-</section><section id="decision-trees" class="slide level2"><h2>Decision Trees</h2>
+</section>
+<section id="decision-trees" class="slide level2">
+<h2>Decision Trees</h2>
 <p>Decision Trees are intuitive, non-parametric models that recursively split data to achieve homogenous outcome groups, effectively mimicking clinical decision-making processes.</p>
 <div class="columns">
 <div class="column" style="width:50%;">
 <h3 id="decision-tree-architecture">Decision Tree Architecture</h3>
 <ul>
-<li>
-<strong>Root Node</strong>: Represents the entire dataset before any splits</li>
-<li>
-<strong>Internal Nodes</strong>: Decision points based on feature values</li>
-<li>
-<strong>Branches</strong>: Outcomes of decisions leading to further nodes</li>
-<li>
-<strong>Leaf Nodes</strong>: Final outcome predictions (class labels or continuous values)</li>
+<li><strong>Root Node</strong>: Represents the entire dataset before any splits</li>
+<li><strong>Internal Nodes</strong>: Decision points based on feature values</li>
+<li><strong>Branches</strong>: Outcomes of decisions leading to further nodes</li>
+<li><strong>Leaf Nodes</strong>: Final outcome predictions (class labels or continuous values)</li>
 </ul>
 <h3 id="key-characteristics-3">Key Characteristics</h3>
 <ul>
-<li>
-<strong>Non-parametric architecture</strong>: No assumptions about data distribution or linear relationships</li>
-<li>
-<strong>Automatic interaction detection</strong>: Naturally captures variable interactions through hierarchical splits</li>
-<li>
-<strong>Handles mixed data types</strong>: Works with both continuous and categorical predictors natively</li>
-<li>
-<strong>Interpretable</strong>: Easy to understand and explain to clinicians</li>
+<li><strong>Non-parametric architecture</strong>: No assumptions about data distribution or linear relationships</li>
+<li><strong>Automatic interaction detection</strong>: Naturally captures variable interactions through hierarchical splits</li>
+<li><strong>Handles mixed data types</strong>: Works with both continuous and categorical predictors natively</li>
+<li><strong>Interpretable</strong>: Easy to understand and explain to clinicians</li>
 </ul>
 </div><div class="column" style="width:50%;">
 <div class="cell">
 <div class="cell-output-display">
 <div>
-<figure><p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-13-1.png"></p>
+<figure>
+<p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-13-1.png"></p>
 </figure>
 </div>
 </div>
 </div>
 </div></div>
-</section><section id="descision-trees---under-the-hood" class="slide level2"><h2>Descision Trees - under the hood</h2>
+</section>
+<section id="descision-trees---under-the-hood" class="slide level2">
+<h2>Descision Trees - under the hood</h2>
 <h3 id="mathematical-foundation-2">Mathematical Foundation</h3>
 <p>Decision trees split data using decision criteria, similar to clinical flowcharts, to create homogeneous (pure) groups with each split. Common metrics include Gini impurity, enthropy and information gain.</p>
 <p><span class="math display">\[\text{Total Gini} = \sum_{j=1}^{L} \frac{N_j}{N} \times \left(1 - \sum_{i=1}^{c} p_{ij}^2\right)\]</span></p>
@@ -1181,7 +1216,9 @@ It averages performance across multiple validation folds, ensuring stable hyperp
 </div>
 </div>
 </div>
-</section><section id="random-forest-wisdom-of-the-crowd" class="slide level2 center"><h2>Random Forest: Wisdom of the Crowd</h2>
+</section>
+<section id="random-forest-wisdom-of-the-crowd" class="slide level2 center">
+<h2>Random Forest: Wisdom of the Crowd</h2>
 <p>Random Forest is an ensemble of decision trees (<strong>forest</strong>) that combines many trees trained on bootstrap samples, using the <strong>random</strong> feature selection at each split (which de‑correlates trees).</p>
 <div class="columns">
 <div class="column" style="width:50%;">
@@ -1222,13 +1259,15 @@ It averages performance across multiple validation folds, ensuring stable hyperp
 </div>
 </div>
 </div>
-<aside class="notes"><ul>
+<aside class="notes">
+<ul>
 <li>Random Forest is like having a committee of doctors each looking at different aspects of a patient</li>
 <li>Each “doctor” (tree) sees different patients (bootstrap samples) and focuses on different symptoms (random features)</li>
 <li>The final diagnosis comes from majority vote - more reliable than any single opinion</li>
 <li>Great stepping stone between interpretable single trees and complex ensemble methods like XGBoost</li>
 <li>Emphasize that this introduces the key concept of ensemble learning that XGBoost will build upon</li>
-</ul><style type="text/css">
+</ul>
+<style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
           clip: rect(1px, 1px, 1px, 1px);
@@ -1238,7 +1277,10 @@ It averages performance across multiple validation folds, ensuring stable hyperp
           width: 1px!important;
           overflow: hidden!important;
           display:block!important;
-      }</style></aside></section><section id="extreme-gradient-boosting-xgboost---under-the-hood" class="slide level2"><h2>eXtreme Gradient Boosting (XGBoost) - under the hood</h2>
+      }</style></aside>
+</section>
+<section id="extreme-gradient-boosting-xgboost---under-the-hood" class="slide level2">
+<h2>eXtreme Gradient Boosting (XGBoost) - under the hood</h2>
 <h3 id="algorithm-overview">Algorithm Overview</h3>
 <p>XGBoost employs <strong>sequential ensemble learning</strong> where each tree <strong>corrects errors</strong> from previous learners, building <strong>weak decision</strong> trees that collectively form a powerful predictor.</p>
 <div class="columns">
@@ -1278,66 +1320,59 @@ It averages performance across multiple validation folds, ensuring stable hyperp
 </div>
 </div>
 </div></div>
-</section><section id="xgboost---under-the-hood" class="slide level2"><h2>XGBoost - under the hood</h2>
+</section>
+<section id="xgboost---under-the-hood" class="slide level2">
+<h2>XGBoost - under the hood</h2>
 
-<img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-14-1.png" class="r-stretch"></section><section id="xgboost" class="slide level2"><h2>XGBoost</h2>
+<img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-14-1.png" class="r-stretch"></section>
+<section id="xgboost" class="slide level2">
+<h2>XGBoost</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
 <h3 id="key-characteristics-5">Key Characteristics</h3>
 <ul>
-<li>
-<strong>Ensemble method</strong>: Combines multiple weak learners sequentially</li>
-<li>
-<strong>Gradient boosting</strong>: Each tree learns from previous trees’ errors</li>
-<li>
-<strong>Built-in regularization</strong>: λ (lambda) prevents overfitting by shrinking similarity scores</li>
-<li>
-<strong>Automatic pruning</strong>: γ (gamma) removes branches that don’t improve gain sufficiently</li>
-<li>
-<strong>Built-in feature selection</strong>: Automatically prioritizes important variables</li>
-<li>
-<strong>Handles outliers &amp; missing data</strong>: Native missing value support without imputation</li>
-<li>
-<strong>Complex relationships</strong>: Captures non-linear patterns and interactions</li>
+<li><strong>Ensemble method</strong>: Combines multiple weak learners sequentially</li>
+<li><strong>Gradient boosting</strong>: Each tree learns from previous trees’ errors</li>
+<li><strong>Built-in regularization</strong>: λ (lambda) prevents overfitting by shrinking similarity scores</li>
+<li><strong>Automatic pruning</strong>: γ (gamma) removes branches that don’t improve gain sufficiently</li>
+<li><strong>Built-in feature selection</strong>: Automatically prioritizes important variables</li>
+<li><strong>Handles outliers &amp; missing data</strong>: Native missing value support without imputation</li>
+<li><strong>Complex relationships</strong>: Captures non-linear patterns and interactions</li>
 </ul>
 </div><div class="column" style="width:50%;">
 <h3 id="limitations">Limitations</h3>
 <ul>
-<li>
-<strong>Black box nature</strong>: Requires post-hoc explanation methods (SHAP)</li>
-<li>
-<strong>Computational intensity</strong>: More resources than simpler models</li>
-<li>
-<strong>Hyperparameter sensitivity</strong>: Multiple parameters (η, λ, γ, max_depth and more) require tuning</li>
-<li>
-<strong>Overfitting risk</strong>: Despite regularization, still needs careful cross-validation</li>
+<li><strong>Black box nature</strong>: Requires post-hoc explanation methods (SHAP)</li>
+<li><strong>Computational intensity</strong>: More resources than simpler models</li>
+<li><strong>Hyperparameter sensitivity</strong>: Multiple parameters (η, λ, γ, max_depth and more) require tuning</li>
+<li><strong>Overfitting risk</strong>: Despite regularization, still needs careful cross-validation</li>
 </ul>
 </div></div>
-</section><section id="common-xgboost-hyperparameter" class="slide level2"><h2>Common XGBoost Hyperparameter</h2>
+</section>
+<section id="common-xgboost-hyperparameter" class="slide level2">
+<h2>Common XGBoost Hyperparameter</h2>
 
-<img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-15-1.png" class="r-stretch"></section><section id="neural-networks-the-foundation-of-modern-ai" class="slide level2"><h2>Neural Networks: The Foundation of Modern AI</h2>
+<img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-15-1.png" class="r-stretch"></section>
+<section id="neural-networks-the-foundation-of-modern-ai" class="slide level2">
+<h2>Neural Networks: The Foundation of Modern AI</h2>
 <h3 id="what-are-neural-networks">What are Neural Networks?</h3>
 <p><strong>Neural networks</strong> are computing systems inspired by biological neural networks that learn patterns through interconnected nodes (neurons) organized in layers.</p>
 <div class="columns">
 <div class="column" style="width:50%;">
 <h3 id="key-characteristics-6">Key Characteristics</h3>
 <ul>
-<li>
-<strong>Layered architecture</strong>: Input layer → Hidden layer(s) → Output layer</li>
-<li>
-<strong>Weighted connections</strong>: Each connection has a learnable weight</li>
-<li>
-<strong>Activation functions</strong>: Non-linear transformations (sigmoid, ReLU, tanh)</li>
-<li>
-<strong>Backpropagation</strong>: Algorithm that adjusts weights to minimize prediction errors</li>
-<li>
-<strong>Universal approximators</strong>: Can theoretically learn any continuous function</li>
+<li><strong>Layered architecture</strong>: Input layer → Hidden layer(s) → Output layer</li>
+<li><strong>Weighted connections</strong>: Each connection has a learnable weight</li>
+<li><strong>Activation functions</strong>: Non-linear transformations (sigmoid, ReLU, tanh)</li>
+<li><strong>Backpropagation</strong>: Algorithm that adjusts weights to minimize prediction errors</li>
+<li><strong>Universal approximators</strong>: Can theoretically learn any continuous function</li>
 </ul>
 </div><div class="column" style="width:50%;">
 <div class="cell">
 <div class="cell-output-display">
 <div>
-<figure><p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-16-1.png"></p>
+<figure>
+<p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-16-1.png"></p>
 </figure>
 </div>
 </div>
@@ -1356,45 +1391,34 @@ It averages performance across multiple validation folds, ensuring stable hyperp
 </div>
 </div>
 </div>
-</section><section id="neural-networks-strengths-and-limitations" class="slide level2"><h2>Neural Networks: Strengths and Limitations</h2>
+</section>
+<section id="neural-networks-strengths-and-limitations" class="slide level2">
+<h2>Neural Networks: Strengths and Limitations</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
 <h3 id="excellent-performance-on">Excellent Performance On:</h3>
 <ul>
-<li>
-<strong>Images/Video</strong>: Medical imaging, radiology, pathology slides</li>
-<li>
-<strong>Sound/Audio</strong>: Heart murmurs, lung sounds, speech patterns</li>
-<li>
-<strong>Text/Language</strong>: Clinical notes, literature mining, patient communications</li>
-<li>
-<strong>Sequential data</strong>: Time series, patient trajectories, treatment sequences</li>
+<li><strong>Images/Video</strong>: Medical imaging, radiology, pathology slides</li>
+<li><strong>Sound/Audio</strong>: Heart murmurs, lung sounds, speech patterns</li>
+<li><strong>Text/Language</strong>: Clinical notes, literature mining, patient communications</li>
+<li><strong>Sequential data</strong>: Time series, patient trajectories, treatment sequences</li>
 </ul>
 <h3 id="why-they-excel-here">Why They Excel Here:</h3>
 <ul>
-<li>
-<strong>Spatial patterns</strong>: Convolutional layers detect local features</li>
-<li>
-<strong>Temporal patterns</strong>: Recurrent layers capture sequences</li>
-<li>
-<strong>Hierarchical learning</strong>: Lower layers learn simple patterns, higher layers combine them</li>
-<li>
-<strong>End-to-end learning</strong>: Automatically learn optimal feature representations</li>
+<li><strong>Spatial patterns</strong>: Convolutional layers detect local features</li>
+<li><strong>Temporal patterns</strong>: Recurrent layers capture sequences</li>
+<li><strong>Hierarchical learning</strong>: Lower layers learn simple patterns, higher layers combine them</li>
+<li><strong>End-to-end learning</strong>: Automatically learn optimal feature representations</li>
 </ul>
 </div><div class="column" style="width:50%;">
 <h3 id="usually-not-as-good-on-tabular-data">Usually Not as Good on Tabular Data</h3>
 <p><strong>Epidemiological datasets are typically tabular</strong>:</p>
 <ul>
-<li>
-<strong>Limited spatial/temporal structure</strong>: Most epidemiological data lacks the spatial or sequential patterns that neural networks excel at</li>
-<li>
-<strong>Feature engineering matters more</strong>: Traditional ML methods often perform better with well-engineered features</li>
-<li>
-<strong>Interpretability trade-offs</strong>: Neural networks are “black boxes” - harder to understand than logistic regression or trees</li>
-<li>
-<strong>Sample efficiency</strong>: Often need very large datasets to perform well</li>
-<li>
-<strong>Overfitting prone</strong>: Can memorize patterns in smaller datasets</li>
+<li><strong>Limited spatial/temporal structure</strong>: Most epidemiological data lacks the spatial or sequential patterns that neural networks excel at</li>
+<li><strong>Feature engineering matters more</strong>: Traditional ML methods often perform better with well-engineered features</li>
+<li><strong>Interpretability trade-offs</strong>: Neural networks are “black boxes” - harder to understand than logistic regression or trees</li>
+<li><strong>Sample efficiency</strong>: Often need very large datasets to perform well</li>
+<li><strong>Overfitting prone</strong>: Can memorize patterns in smaller datasets</li>
 </ul>
 </div></div>
 <div class="callout callout-note callout-titled callout-style-default">
@@ -1410,119 +1434,101 @@ It averages performance across multiple validation folds, ensuring stable hyperp
 </div>
 </div>
 </div>
-</section><section id="performance-metrics-choosing-the-right-measure" class="slide level2"><h2>Performance Metrics: Choosing the Right Measure</h2>
+</section>
+<section id="performance-metrics-choosing-the-right-measure" class="slide level2">
+<h2>Performance Metrics: Choosing the Right Measure</h2>
 <h3 id="understanding-your-epidemiological-context">Understanding Your Epidemiological Context</h3>
 <p>The choice of performance metric should align with your <strong>clinical goals</strong> and the <strong>characteristics of your outcome</strong>.</p>
 <h3 id="types-of-metrics">Types of Metrics</h3>
 <ul>
-<li>
-<strong>Discrimination</strong>: Can the model rank patients by risk?</li>
-<li>
-<strong>Classification</strong>: At a specific threshold, how well do we classify patients?</li>
-<li>
-<strong>Calibration</strong>: Are the predicted probabilities accurate?</li>
-</ul></section><section id="discrimination-metrics-can-the-model-rank-patients-by-risk" class="slide level2"><h2>Discrimination Metrics: “Can the model rank patients by risk?”</h2>
+<li><strong>Discrimination</strong>: Can the model rank patients by risk?</li>
+<li><strong>Classification</strong>: At a specific threshold, how well do we classify patients?</li>
+<li><strong>Calibration</strong>: Are the predicted probabilities accurate?</li>
+</ul>
+</section>
+<section id="discrimination-metrics-can-the-model-rank-patients-by-risk" class="slide level2">
+<h2>Discrimination Metrics: “Can the model rank patients by risk?”</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
 <h3 id="roc-auc-area-under-receiver-operating-characteristic-curve"><strong>ROC-AUC (Area Under Receiver Operating Characteristic Curve)</strong></h3>
 <ul>
-<li>
-<strong>Range</strong>: 0.5 (random guessing) to 1.0 (perfect discrimination)</li>
-<li>
-<strong>Interpretation</strong>: Probability that model ranks a random case higher than a random control</li>
-<li>
-<strong>Good for</strong>: Balanced outcomes, general screening tools</li>
-<li>
-<strong>Clinical use</strong>: Risk stratification, identifying high-risk patients</li>
-<li>
-<strong>Ranges</strong>: &lt;0.6 poor, 0.6-0.7 fair, 0.7-0.8 good, 0.8-0.9 very good, &gt;0.9 excellent</li>
+<li><strong>Range</strong>: 0.5 (random guessing) to 1.0 (perfect discrimination)</li>
+<li><strong>Interpretation</strong>: Probability that model ranks a random case higher than a random control</li>
+<li><strong>Good for</strong>: Balanced outcomes, general screening tools</li>
+<li><strong>Clinical use</strong>: Risk stratification, identifying high-risk patients</li>
+<li><strong>Ranges</strong>: &lt;0.6 poor, 0.6-0.7 fair, 0.7-0.8 good, 0.8-0.9 very good, &gt;0.9 excellent</li>
 </ul>
 </div><div class="column" style="width:50%;">
 <div class="cell">
 <div class="cell-output-display">
 <div>
-<figure><p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-17-1.png"></p>
+<figure>
+<p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-17-1.png"></p>
 </figure>
 </div>
 </div>
 </div>
 </div></div>
-</section><section id="discrimination-metrics-can-the-model-rank-patients-by-risk-1" class="slide level2"><h2>Discrimination Metrics: “Can the model rank patients by risk?”</h2>
+</section>
+<section id="discrimination-metrics-can-the-model-rank-patients-by-risk-1" class="slide level2">
+<h2>Discrimination Metrics: “Can the model rank patients by risk?”</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
 <h3 id="precision-recall-auc"><strong>Precision-Recall AUC</strong></h3>
 <ul>
-<li>
-<strong>Better than ROC-AUC</strong> when outcome is rare (&lt; 10% prevalence)</li>
-<li>
-<strong>Precision</strong>: Of those flagged as high-risk, how many truly are? (PPV)</li>
-<li>
-<strong>Recall</strong>: Of all true cases, how many did we catch? (Sensitivity)</li>
-<li>
-<strong>Clinical use</strong>: Rare disease screening, adverse event prediction</li>
-<li>
-<strong>Ranges</strong>: Higher is better; Cutoffs depend on outcome prevalence</li>
+<li><strong>Better than ROC-AUC</strong> when outcome is rare (&lt; 10% prevalence)</li>
+<li><strong>Precision</strong>: Of those flagged as high-risk, how many truly are? (PPV)</li>
+<li><strong>Recall</strong>: Of all true cases, how many did we catch? (Sensitivity)</li>
+<li><strong>Clinical use</strong>: Rare disease screening, adverse event prediction</li>
+<li><strong>Ranges</strong>: Higher is better; Cutoffs depend on outcome prevalence</li>
 </ul>
 </div><div class="column" style="width:50%;">
 <div class="cell">
 <div class="cell-output-display">
 <div>
-<figure><p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-18-1.png"></p>
+<figure>
+<p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-18-1.png"></p>
 </figure>
 </div>
 </div>
 </div>
 </div></div>
-</section><section id="classification-metrics-at-a-specific-threshold-how-well-do-we-classify" class="slide level2"><h2>Classification Metrics: “At a specific threshold, how well do we classify?”</h2>
+</section>
+<section id="classification-metrics-at-a-specific-threshold-how-well-do-we-classify" class="slide level2">
+<h2>Classification Metrics: “At a specific threshold, how well do we classify?”</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
-<h3 id="sensitivity-recall-true-positive-rate">1. <strong>Sensitivity (Recall, True Positive Rate)</strong>
-</h3>
+<h3 id="sensitivity-recall-true-positive-rate">1. <strong>Sensitivity (Recall, True Positive Rate)</strong></h3>
 <ul>
-<li>
-<strong>Formula</strong>: TP / (TP + FN)</li>
-<li>
-<strong>Clinical question</strong>: “Of all people with the disease, how many did we correctly identify?”</li>
-<li>
-<strong>Priority when</strong>: Missing cases is very costly (cancer screening, infectious disease outbreaks)</li>
+<li><strong>Formula</strong>: TP / (TP + FN)</li>
+<li><strong>Clinical question</strong>: “Of all people with the disease, how many did we correctly identify?”</li>
+<li><strong>Priority when</strong>: Missing cases is very costly (cancer screening, infectious disease outbreaks)</li>
 </ul>
-<h3 id="specificity-true-negative-rate">2. <strong>Specificity (True Negative Rate)</strong>
-</h3>
+<h3 id="specificity-true-negative-rate">2. <strong>Specificity (True Negative Rate)</strong></h3>
 <ul>
-<li>
-<strong>Formula</strong>: TN / (TN + FP)</li>
-<li>
-<strong>Clinical question</strong>: “Of all healthy people, how many did we correctly identify as healthy?”</li>
-<li>
-<strong>Priority when</strong>: False alarms are costly (invasive procedures, patient anxiety)</li>
+<li><strong>Formula</strong>: TN / (TN + FP)</li>
+<li><strong>Clinical question</strong>: “Of all healthy people, how many did we correctly identify as healthy?”</li>
+<li><strong>Priority when</strong>: False alarms are costly (invasive procedures, patient anxiety)</li>
 </ul>
 </div><div class="column" style="width:50%;">
-<h3 id="positive-predictive-value-precision">3. <strong>Positive Predictive Value (Precision)</strong>
-</h3>
+<h3 id="positive-predictive-value-precision">3. <strong>Positive Predictive Value (Precision)</strong></h3>
 <ul>
-<li>
-<strong>Formula</strong>: TP / (TP + FP)</li>
-<li>
-<strong>Clinical question</strong>: “Of those we flagged as positive, how many actually have the disease?”</li>
-<li>
-<strong>Affected by</strong>: Disease prevalence in population</li>
-<li>
-<strong>Clinical use</strong>: Informing patients about test results</li>
+<li><strong>Formula</strong>: TP / (TP + FP)</li>
+<li><strong>Clinical question</strong>: “Of those we flagged as positive, how many actually have the disease?”</li>
+<li><strong>Affected by</strong>: Disease prevalence in population</li>
+<li><strong>Clinical use</strong>: Informing patients about test results</li>
 </ul>
-<h3 id="accuracy">4. <strong>Accuracy</strong>
-</h3>
+<h3 id="accuracy">4. <strong>Accuracy</strong></h3>
 <ul>
-<li>
-<strong>Formula</strong>: (TP + TN) / (TP + TN + FP + FN)</li>
-<li>
-<strong>Clinical question</strong>: “Overall, how many did we classify correctly?”</li>
-<li>
-<strong>Limitation</strong>: Can be misleading with imbalanced outcomes</li>
-<li>
-<strong>Use with caution</strong>: Prefer sensitivity, specificity, PPV in clinical contexts</li>
+<li><strong>Formula</strong>: (TP + TN) / (TP + TN + FP + FN)</li>
+<li><strong>Clinical question</strong>: “Overall, how many did we classify correctly?”</li>
+<li><strong>Limitation</strong>: Can be misleading with imbalanced outcomes</li>
+<li><strong>Use with caution</strong>: Prefer sensitivity, specificity, PPV in clinical contexts</li>
 </ul>
 </div></div>
-</section><section id="calibration-metrics-are-the-predicted-probabilities-accurate" class="slide level2"><h2>Calibration Metrics: “Are the predicted probabilities accurate?”</h2>
+</section>
+<section id="calibration-metrics-are-the-predicted-probabilities-accurate" class="slide level2">
+<h2>Calibration Metrics: “Are the predicted probabilities accurate?”</h2>
 <h3 id="why-calibration-matters">Why Calibration Matters</h3>
 <p>If your model predicts 20% risk, do 20% of those patients actually develop the outcome? This matters for:</p>
 <ul>
@@ -1532,13 +1538,13 @@ It averages performance across multiple validation folds, ensuring stable hyperp
 </ul>
 <h3 id="brier-score"><strong>Brier Score</strong></h3>
 <ul>
-<li>
-<strong>Formula</strong>: Mean squared difference between predicted probabilities and actual outcomes</li>
-<li>
-<strong>Range</strong>: 0 (perfect) to 1 (worst)</li>
-<li>
-<strong>Interpretation</strong>: Overall prediction accuracy including confidence levels</li>
-</ul></section><section id="calibration-metrics-are-the-predicted-probabilities-accurate-1" class="slide level2"><h2>Calibration Metrics: “Are the predicted probabilities accurate?”</h2>
+<li><strong>Formula</strong>: Mean squared difference between predicted probabilities and actual outcomes</li>
+<li><strong>Range</strong>: 0 (perfect) to 1 (worst)</li>
+<li><strong>Interpretation</strong>: Overall prediction accuracy including confidence levels</li>
+</ul>
+</section>
+<section id="calibration-metrics-are-the-predicted-probabilities-accurate-1" class="slide level2">
+<h2>Calibration Metrics: “Are the predicted probabilities accurate?”</h2>
 
 <img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-19-1.png" class="r-stretch"><div class="callout callout-tip callout-titled callout-style-default">
 <div class="callout-body">
@@ -1550,21 +1556,22 @@ It averages performance across multiple validation folds, ensuring stable hyperp
 </div>
 <div class="callout-content">
 <ul>
-<li>
-<strong>Perfect calibration</strong>: Intercept = 0, Slope = 1</li>
-<li>
-<strong>Slope &gt; 1</strong>: Under estimation of risk</li>
-<li>
-<strong>Slope &lt; 1</strong>: Over estimation of risk</li>
+<li><strong>Perfect calibration</strong>: Intercept = 0, Slope = 1</li>
+<li><strong>Slope &gt; 1</strong>: Under estimation of risk</li>
+<li><strong>Slope &lt; 1</strong>: Over estimation of risk</li>
 </ul>
 </div>
 </div>
 </div>
-</section><section id="model-comparison-summary" class="slide level2"><h2>Model Comparison Summary</h2>
+</section>
+<section id="model-comparison-summary" class="slide level2">
+<h2>Model Comparison Summary</h2>
 <div id="tbl-compare" class="tbl-cap quarto-float quarto-figure quarto-figure-center">
-<figure class="quarto-float quarto-float-tbl"><figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl quarto-uncaptioned" id="tbl-compare-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figure class="quarto-float quarto-float-tbl">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl quarto-uncaptioned" id="tbl-compare-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Table&nbsp;1
-</figcaption><div aria-describedby="tbl-compare-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+</figcaption>
+<div aria-describedby="tbl-compare-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <p><strong>Table 1. Comparison of data analysis algorithms</strong></p>
 <table class="caption-top">
 <colgroup>
@@ -1573,12 +1580,14 @@ Table&nbsp;1
 <col style="width: 24%">
 <col style="width: 24%">
 </colgroup>
-<thead><tr class="header">
+<thead>
+<tr class="header">
 <th style="text-align: left;"><strong>Aspect</strong></th>
 <th style="text-align: left;"><strong>Logistic Regression (LR)</strong></th>
 <th style="text-align: left;"><strong>LASSO</strong></th>
 <th style="text-align: left;"><strong>XGBoost</strong></th>
-</tr></thead>
+</tr>
+</thead>
 <tbody>
 <tr class="odd">
 <td style="text-align: left;"><strong>Variable selection</strong></td>
@@ -1627,9 +1636,14 @@ Table&nbsp;1
 </div>
 </figure>
 </div>
-</section></section><section><section id="ml-workflow-in-practice" class="title-slide slide level1 center"><h1>ML Workflow in Practice</h1>
+</section></section>
+<section>
+<section id="ml-workflow-in-practice" class="title-slide slide level1 center">
+<h1>ML Workflow in Practice</h1>
 
-</section><section id="step-1-setting-up" class="slide level2"><h2>Step 1: Setting Up</h2>
+</section>
+<section id="step-1-setting-up" class="slide level2">
+<h2>Step 1: Setting Up</h2>
 <p>First, we load the necessary packages and our synthetic dataset. Using the <code>tidymodels</code> framework helps keep our code clean and organized.</p>
 <div style="font-size:1.6em">
 <div class="cell">
@@ -1649,7 +1663,9 @@ Table&nbsp;1
 <span id="cb1-14"><a></a>  <span class="fu">mutate_if</span>(is.logical, as.factor) <span class="co"># Convert logicals to factors for modeling</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
-</section><section id="step-2-data-splitting-resampling" class="slide level2"><h2>Step 2: Data Splitting &amp; Resampling</h2>
+</section>
+<section id="step-2-data-splitting-resampling" class="slide level2">
+<h2>Step 2: Data Splitting &amp; Resampling</h2>
 <p>We split our data into a <strong>training set</strong> (to build the model) and a <strong>test set</strong> (to evaluate it). We also create 10-fold cross-validation (CV) resamples from the training data for robust hyperparameter tuning.</p>
 <div style="font-size:1.6em">
 <div class="cell">
@@ -1663,11 +1679,15 @@ Table&nbsp;1
 <span id="cb2-8"><a></a>df_train_cv <span class="ot">&lt;-</span> <span class="fu">vfold_cv</span>(df_train, <span class="at">v =</span> <span class="dv">10</span>, <span class="at">strata =</span> outcome)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
-</section><section id="step-3-data-preprocessing-with-recipes" class="slide level2"><h2>Step 3: Data Preprocessing with recipes</h2>
+</section>
+<section id="step-3-data-preprocessing-with-recipes" class="slide level2">
+<h2>Step 3: Data Preprocessing with recipes</h2>
 <p>A <code>recipe</code> is a powerful tidymodels object that defines all our preprocessing steps. These steps are only learned from the training data and then consistently applied to any other data (like the test set or new data), preventing <strong>data leakage</strong>.</p>
 <div style="font-size:1.6em">
 <div class="cell">
-<details open="" class="code-fold"><summary>Code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>lasso_rec <span class="ot">&lt;-</span> <span class="fu">recipe</span>(</span>
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>lasso_rec <span class="ot">&lt;-</span> <span class="fu">recipe</span>(</span>
 <span id="cb3-2"><a></a>  outcome <span class="sc">~</span> .,</span>
 <span id="cb3-3"><a></a>  <span class="at">data =</span> df_train,</span>
 <span id="cb3-4"><a></a>  <span class="at">strings_as_factors =</span> <span class="cn">FALSE</span></span>
@@ -1696,7 +1716,9 @@ Table&nbsp;1
 </details>
 </div>
 <div class="cell">
-<details class="code-fold"><summary>Code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a>xgb_rec <span class="ot">&lt;-</span> <span class="fu">recipe</span>(outcome <span class="sc">~</span> ., <span class="at">data =</span> df_train, <span class="at">strings_as_factors =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span></span>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a>xgb_rec <span class="ot">&lt;-</span> <span class="fu">recipe</span>(outcome <span class="sc">~</span> ., <span class="at">data =</span> df_train, <span class="at">strings_as_factors =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb4-2"><a></a>  <span class="co"># Remove ID variables from predictors</span></span>
 <span id="cb4-3"><a></a>  <span class="fu">update_role</span>(id, <span class="at">new_role =</span> <span class="st">"ID"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb4-4"><a></a>  <span class="fu">step_date</span>(</span>
@@ -1721,7 +1743,9 @@ Table&nbsp;1
 </details>
 </div>
 </div>
-</section><section id="step-4-model-specification-tuning" class="slide level2"><h2>Step 4: Model Specification &amp; Tuning</h2>
+</section>
+<section id="step-4-model-specification-tuning" class="slide level2">
+<h2>Step 4: Model Specification &amp; Tuning</h2>
 <p>We define our models using the <code>parsnip</code> package. Note the <code>penalty = tune()</code> and <code>trees = tune()</code>, etc. These are placeholders that tell tidymodels we want to find the best values for these hyperparameters during tuning.</p>
 <div style="font-size:1.6em">
 <div class="cell">
@@ -1742,7 +1766,9 @@ Table&nbsp;1
 <span id="cb5-15"><a></a>  <span class="fu">set_mode</span>(<span class="st">"classification"</span>) <span class="co"># Classification task - XGBoost can also do regression</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
-</section><section id="step-5-building-the-workflow" class="slide level2"><h2>Step 5: Building the workflow</h2>
+</section>
+<section id="step-5-building-the-workflow" class="slide level2">
+<h2>Step 5: Building the workflow</h2>
 <p>A <code>workflow</code> object bundles our recipe and model specification. This is a convenient container that makes it easy to apply the same preprocessing and model fitting steps consistently.</p>
 <div style="font-size:1.6em">
 <div class="cell">
@@ -1757,7 +1783,9 @@ Table&nbsp;1
 <span id="cb6-9"><a></a>  <span class="fu">add_recipe</span>(xgb_rec) <span class="co"># Add recipe with preprocessing steps</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
-</section><section id="step-6-hyperparameter-tuning---define-grind" class="slide level2"><h2>Step 6: Hyperparameter Tuning - define grind</h2>
+</section>
+<section id="step-6-hyperparameter-tuning---define-grind" class="slide level2">
+<h2>Step 6: Hyperparameter Tuning - define grind</h2>
 <p>Now we find the optimal hyperparameters using our cross-validation folds.</p>
 <ul>
 <li><p>For LASSO, we test 100 different values for the penalty (λ).</p></li>
@@ -1765,7 +1793,9 @@ Table&nbsp;1
 </ul>
 <div style="font-size:1.6em">
 <div class="cell">
-<details open="" class="code-fold"><summary>Code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a><span class="co"># Create grid of penalty values for tuning</span></span>
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a><span class="co"># Create grid of penalty values for tuning</span></span>
 <span id="cb7-2"><a></a>lambda_grid <span class="ot">&lt;-</span> <span class="fu">grid_regular</span>(<span class="fu">penalty</span>(), <span class="at">levels =</span> <span class="dv">100</span>)</span>
 <span id="cb7-3"><a></a></span>
 <span id="cb7-4"><a></a><span class="co"># Using space-filling design for efficient coverage of hyperparameter space</span></span>
@@ -1782,11 +1812,15 @@ Table&nbsp;1
 </details>
 </div>
 </div>
-</section><section id="step-6-hyperparameter-tuning---define-grind-1" class="slide level2"><h2>Step 6: Hyperparameter Tuning - define grind</h2>
+</section>
+<section id="step-6-hyperparameter-tuning---define-grind-1" class="slide level2">
+<h2>Step 6: Hyperparameter Tuning - define grind</h2>
 <p>The <code>tune_grid</code> function automates the process of fitting the model on each CV fold for each hyperparameter combination and evaluating the performance.</p>
 <div style="font-size:1.6em">
 <div class="cell">
-<details open="" class="code-fold"><summary>Code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a><span class="co"># Tune hyperparameters using cross-validation and parallel processing</span></span>
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a><span class="co"># Tune hyperparameters using cross-validation and parallel processing</span></span>
 <span id="cb8-2"><a></a>all_cores <span class="ot">&lt;-</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>()</span>
 <span id="cb8-3"><a></a><span class="fu">plan</span>(multisession, <span class="at">workers =</span> all_cores <span class="sc">-</span> <span class="dv">1</span>)</span>
 <span id="cb8-4"><a></a><span class="fu">set.seed</span>(<span class="dv">2020</span>)</span>
@@ -1801,7 +1835,9 @@ Table&nbsp;1
 </details>
 </div>
 <div class="cell">
-<details class="code-fold"><summary>Code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a><span class="co"># Tune hyperparameters using cross-validation and parallel processing</span></span>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a><span class="co"># Tune hyperparameters using cross-validation and parallel processing</span></span>
 <span id="cb9-2"><a></a>all_cores <span class="ot">&lt;-</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>()</span>
 <span id="cb9-3"><a></a><span class="fu">plan</span>(multisession, <span class="at">workers =</span> all_cores <span class="sc">-</span> <span class="dv">1</span>)</span>
 <span id="cb9-4"><a></a><span class="fu">set.seed</span>(<span class="dv">2020</span>)</span>
@@ -1816,14 +1852,17 @@ Table&nbsp;1
 </details>
 </div>
 </div>
-</section><section id="step-6-hyperparameter-tuning---tuning-results" class="slide level2"><h2>Step 6: Hyperparameter Tuning - Tuning Results</h2>
+</section>
+<section id="step-6-hyperparameter-tuning---tuning-results" class="slide level2">
+<h2>Step 6: Hyperparameter Tuning - Tuning Results</h2>
 <p>Visualizing the tuning results helps us understand how hyperparameters affect performance. The plot shows the ROC AUC for each penalty value tested for the LASSO model. We want to pick the penalty that gives the highest AUC.</p>
 <div class="columns">
 <div class="column" style="width:50%;">
 <div class="cell">
 <div class="cell-output-display">
 <div>
-<figure><p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-29-1.png"></p>
+<figure>
+<p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-29-1.png"></p>
 </figure>
 </div>
 </div>
@@ -1832,13 +1871,16 @@ Table&nbsp;1
 <div class="cell">
 <div class="cell-output-display">
 <div>
-<figure><p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-30-1.png"></p>
+<figure>
+<p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-30-1.png"></p>
 </figure>
 </div>
 </div>
 </div>
 </div></div>
-</section><section id="step-7-finalizing-and-fitting" class="slide level2"><h2>Step 7: Finalizing and Fitting</h2>
+</section>
+<section id="step-7-finalizing-and-fitting" class="slide level2">
+<h2>Step 7: Finalizing and Fitting</h2>
 <p>After tuning, we select the best hyperparameters and finalize our workflow.</p>
 <p>Then, we use <code>last_fit()</code> which does two things:</p>
 <ol type="1">
@@ -1861,16 +1903,20 @@ Table&nbsp;1
 <span id="cb10-11"><a></a>final_xgb_fit <span class="ot">&lt;-</span> final_xgb <span class="sc">%&gt;%</span> <span class="fu">last_fit</span>(df_split)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
-</section><section id="step-8-final-model-evaluation" class="slide level2"><h2>Step 8: Final Model Evaluation</h2>
+</section>
+<section id="step-8-final-model-evaluation" class="slide level2">
+<h2>Step 8: Final Model Evaluation</h2>
 <p>The <code>collect_metrics()</code> function shows the performance on the hold-out test set. We can see that the XGBoost model achieved a higher ROC AUC and PR AUC compared to the LASSO model.</p>
 <div class="cell">
 <div class="cell-output-display">
-<table class="table table-striped table-hover table-condensed caption-top" style="width: auto !important; margin-left: auto; margin-right: auto;">
-<thead><tr class="header">
+<table class="caption-top">
+<thead>
+<tr class="header">
 <th style="text-align: left;" data-quarto-table-cell-role="th">Metric</th>
 <th style="text-align: right;" data-quarto-table-cell-role="th">LASSO</th>
 <th style="text-align: right;" data-quarto-table-cell-role="th">XGBoost</th>
-</tr></thead>
+</tr>
+</thead>
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">Accuracy</td>
@@ -1891,9 +1937,14 @@ Table&nbsp;1
 </table>
 </div>
 </div>
-</section></section><section><section id="explainable-ai-opening-the-black-box" class="title-slide slide level1 center"><h1>Explainable AI: Opening the Black Box</h1>
+</section></section>
+<section>
+<section id="explainable-ai-opening-the-black-box" class="title-slide slide level1 center">
+<h1>Explainable AI: Opening the Black Box</h1>
 
-</section><section id="why-we-need-explainable-ai-xai" class="slide level2"><h2>Why We Need Explainable AI (XAI)</h2>
+</section>
+<section id="why-we-need-explainable-ai-xai" class="slide level2">
+<h2>Why We Need Explainable AI (XAI)</h2>
 <p>While models like XGBoost are powerful, their complexity makes them “black boxes.” We can’t just look at coefficients to understand them.</p>
 <p>XAI methods help us understand:</p>
 <ul>
@@ -1902,21 +1953,26 @@ Table&nbsp;1
 <li><p>How does a feature’s value affect the prediction? (Feature effects)</p></li>
 </ul>
 <p>This is crucial for clinical trust, model debugging, and discovering new insights.</p>
-</section><section id="lasso-coefficients" class="slide level2"><h2>LASSO Coefficients</h2>
+</section>
+<section id="lasso-coefficients" class="slide level2">
+<h2>LASSO Coefficients</h2>
 <p>LASSO provides direct interpretability through its coefficients.</p>
 
-<img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-33-1.png" class="r-stretch"></section><section id="shap-shapley-additive-explanations" class="slide level2"><h2>SHAP (SHapley Additive exPlanations)</h2>
+<img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-33-1.png" class="r-stretch"></section>
+<section id="shap-shapley-additive-explanations" class="slide level2">
+<h2>SHAP (SHapley Additive exPlanations)</h2>
 <p>SHAP is a leading XAI method based on game theory. It calculates the contribution of each feature to a prediction for each individual observation.</p>
 <ul>
 <li><p><strong>Analogy</strong>: Imagine the model prediction is a team’s final score. SHAP tells you how much “credit” each player (feature) deserves for that score, considering all possible combinations of players.</p></li>
-<li>
-<p><strong>Output</strong>: A SHAP value for every feature for every prediction.</p>
+<li><p><strong>Output</strong>: A SHAP value for every feature for every prediction.</p>
 <ul>
 <li><p><strong>Positive</strong> SHAP value: Pushes the prediction <strong>towards the outcome</strong> (centenarian).</p></li>
 <li><p><strong>Negative</strong> SHAP value: Pushes the prediction <strong>away from the outcome</strong>.</p></li>
+</ul></li>
 </ul>
-</li>
-</ul></section><section id="shap-summary-plot" class="slide level2"><h2>SHAP Summary Plot</h2>
+</section>
+<section id="shap-summary-plot" class="slide level2">
+<h2>SHAP Summary Plot</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
 <p><strong>Systolic Blood Pressure</strong> is the most important feature.</p>
@@ -1932,18 +1988,26 @@ Table&nbsp;1
 <div class="cell">
 <div class="cell-output-display">
 <div>
-<figure><p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-34-1.png"></p>
+<figure>
+<p><img data-src="ml_for_epidemiology_files/figure-revealjs/unnamed-chunk-34-1.png"></p>
 </figure>
 </div>
 </div>
 </div>
 </div></div>
-</section><section id="shap-dependence-plot" class="slide level2"><h2>SHAP Dependence Plot</h2>
+</section>
+<section id="shap-dependence-plot" class="slide level2">
+<h2>SHAP Dependence Plot</h2>
 <p>This plot shows how a single feature’s value affects its SHAP value across all samples. It helps us understand the relationship between a feature and the prediction outcome.</p>
 
-<img data-src="images/pdp.png" class="r-stretch"></section></section><section><section id="summary-take-home-messages" class="title-slide slide level1 center"><h1>Summary &amp; Take-Home Messages</h1>
+<img data-src="images/pdp.png" class="r-stretch"></section></section>
+<section>
+<section id="summary-take-home-messages" class="title-slide slide level1 center">
+<h1>Summary &amp; Take-Home Messages</h1>
 
-</section><section id="key-takeaways" class="slide level2"><h2>Key Takeaways</h2>
+</section>
+<section id="key-takeaways" class="slide level2">
+<h2>Key Takeaways</h2>
 <ul>
 <li><p>We demonstrated a complete ML workflow for epidemiological prediction (not <strong>causation</strong>) using R and tidymodels.</p></li>
 <li><p>The tidymodels framework provides a structured and safe workflow for building predictive models.</p></li>
@@ -1955,7 +2019,7 @@ Table&nbsp;1
 
 
 </section></section>
-</div>
+    </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <p><img src="images/logo.png" class="slide-logo"></p>
 <div class="footer footer-default">
@@ -1963,7 +2027,24 @@ Table&nbsp;1
 </div>
 </div></div>
 
-  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="site_libs/revealjs/dist/reveal.js"></script><!-- reveal.js plugins --><script src="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script><script src="site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script><script src="site_libs/revealjs/plugin/reveal-menu/menu.js"></script><script src="site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script><script src="site_libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script><script src="site_libs/revealjs/plugin/quarto-support/support.js"></script><script src="site_libs/revealjs/plugin/notes/notes.js"></script><script src="site_libs/revealjs/plugin/search/search.js"></script><script src="site_libs/revealjs/plugin/zoom/zoom.js"></script><script src="site_libs/revealjs/plugin/math/math.js"></script><script>window.define = window.backupDefine; window.backupDefine = undefined;</script><script>
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="site_libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="site_libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
+  <script src="site_libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="site_libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="site_libs/revealjs/plugin/search/search.js"></script>
+  <script src="site_libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="site_libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
 
       // Full list of configuration options available at:
       // https://revealjs.com/config/
@@ -2155,7 +2236,9 @@ Table&nbsp;1
           RevealZoom
         ]
       });
-    </script><script>
+    </script>
+    
+    <script>
       // htmlwidgets need to know to resize themselves when slides are shown/hidden.
       // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
       // slide changes (different for each slide format).
@@ -2190,7 +2273,9 @@ Table&nbsp;1
         }
 
       })();
-    </script><script id="quarto-html-after-body" type="application/javascript">
+    </script>
+
+    <script id="quarto-html-after-body" type="application/javascript">
       window.document.addEventListener("DOMContentLoaded", function (event) {
         const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
         tabsets.forEach(function(tabset) {
@@ -2358,6 +2443,6 @@ Table&nbsp;1
         }
       });
       </script>
-
+    
 
 </body></html>

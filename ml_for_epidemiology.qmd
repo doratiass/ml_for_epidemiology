@@ -663,19 +663,23 @@ logistic_coefs <- tidy(logistic_fit) %>%
     `P-value` = p_value_formatted
   )
 
-# Display the formatted results table
+# # Display the formatted results table
+# knitr::kable(
+#   logistic_coefs,
+#   digits = 3,
+# #  caption = "Logistic Regression Results: Predictors of Centenarianism",
+#   align = c("l", "c", "c", "c", "c")
+# ) %>%
+#   kableExtra::kable_styling(
+#     bootstrap_options = c("striped", "hover", "condensed"),
+#     full_width = FALSE,
+#     position = "center"
+#   ) 
 knitr::kable(
   logistic_coefs,
   digits = 3,
-#  caption = "Logistic Regression Results: Predictors of Centenarianism",
   align = c("l", "c", "c", "c", "c")
-) %>%
-  kableExtra::kable_styling(
-    bootstrap_options = c("striped", "hover", "condensed"),
-    full_width = FALSE,
-    position = "center"
-  ) 
-
+)
 ```
 
 ## Loss Function: "The Cost of Being Wrong"
@@ -2925,17 +2929,23 @@ tbl <- bind_rows(m_lasso, m_xgb) %>%
   select(Metric, LASSO, XGBoost) %>%
   arrange(Metric)
 
+# knitr::kable(
+#   tbl,
+#   format = "html",
+#   escape = FALSE,
+#   digits = 3
+# ) %>%
+#   kable_styling(
+#     bootstrap_options = c("striped", "hover", "condensed"),
+#     full_width = FALSE,
+#     position = "center"
+#   )
 knitr::kable(
   tbl,
   format = "html",
   escape = FALSE,
   digits = 3
-) %>%
-  kable_styling(
-    bootstrap_options = c("striped", "hover", "condensed"),
-    full_width = FALSE,
-    position = "center"
-  )
+)
 ```
 
 # Explainable AI: Opening the Black Box
